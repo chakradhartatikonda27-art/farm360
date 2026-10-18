@@ -101,18 +101,8 @@ export function SiteHeader() {
             })}
           </nav>
 
-          {/* Desktop Actions: WhatsApp + Consultation */}
-          <div className="hidden lg:flex items-center gap-3">
-            <a
-              href="https://wa.me/919876543210?text=Hello%20FarmCare%20360%C2%B0%2C%20I%20would%20like%20to%20discuss%20my%20property%20requirements."
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Chat with FarmCare 360° on WhatsApp"
-              className="inline-flex items-center gap-2 min-h-[42px] px-3.5 py-1.5 rounded-full bg-[#25D366]/10 hover:bg-[#25D366]/20 text-[#128C7E] font-medium text-[13.5px] transition-all border border-[#25D366]/30 shadow-xs"
-            >
-              <WhatsAppIcon className="w-4 h-4 fill-[#25D366]" />
-              <span className="hidden xl:inline">WhatsApp</span>
-            </a>
+          {/* Desktop Consultation Action (Champagne Gold per Reference) */}
+          <div className="hidden lg:flex items-center">
             <Link
               href="/contact"
               className="inline-flex items-center justify-center min-h-[42px] px-6 rounded-full bg-gold hover:bg-[#D4B66B] text-forest-deep font-sans font-semibold text-[14.5px] transition-all shadow-sm hover:shadow"
@@ -121,27 +111,18 @@ export function SiteHeader() {
             </Link>
           </div>
 
-          {/* Mobile Hamburger Button */}
-          <div className="flex lg:hidden items-center gap-2 sm:gap-3">
-            <a
-              href="https://wa.me/919876543210?text=Hello%20FarmCare%20360%C2%B0%2C%20I%20would%20like%20to%20discuss%20my%20property%20requirements."
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Chat on WhatsApp"
-              className="w-10 h-10 rounded-full bg-[#25D366]/15 border border-[#25D366]/30 flex items-center justify-center text-[#128C7E] active:scale-95 transition-all"
-            >
-              <WhatsAppIcon className="w-5 h-5 fill-[#25D366]" />
-            </a>
+          {/* Mobile Actions: Consultation + Hamburger Button */}
+          <div className="flex lg:hidden items-center gap-3">
             <Link
               href="/contact"
-              className="inline-flex items-center justify-center min-h-[40px] px-3.5 sm:px-4 rounded-full bg-gold text-forest-deep font-sans font-semibold text-xs sm:text-[13.5px] transition-all active:scale-95 shadow-sm"
+              className="inline-flex items-center justify-center min-h-[40px] px-4 rounded-full bg-gold text-forest-deep font-sans font-semibold text-xs sm:text-[13.5px] transition-all active:scale-95 shadow-sm"
             >
               Consultation
             </Link>
             <button
               type="button"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="w-11 h-11 flex flex-col items-center justify-center gap-1.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-gold rounded-xl active:bg-cream/60 transition-colors touch-manipulation"
+              className="w-12 h-12 flex flex-col items-center justify-center gap-1.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-gold rounded-xl active:bg-cream/60 transition-colors touch-manipulation"
               aria-label={isMobileMenuOpen ? "Close navigation" : "Open navigation"}
               aria-expanded={isMobileMenuOpen}
             >
