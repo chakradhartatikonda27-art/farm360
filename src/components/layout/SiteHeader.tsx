@@ -113,14 +113,14 @@ export function SiteHeader() {
           <div className="flex lg:hidden items-center gap-3">
             <Link
               href="/contact"
-              className="inline-flex items-center justify-center min-h-[38px] px-4 rounded-full bg-gold text-forest-deep font-sans font-semibold text-xs sm:text-[13px] transition-colors"
+              className="inline-flex items-center justify-center min-h-[40px] px-4 rounded-full bg-gold text-forest-deep font-sans font-semibold text-xs sm:text-[13.5px] transition-all active:scale-95 shadow-sm"
             >
               Consultation
             </Link>
             <button
               type="button"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="w-12 h-12 flex flex-col items-center justify-center gap-1.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-gold rounded-lg"
+              className="w-12 h-12 flex flex-col items-center justify-center gap-1.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-gold rounded-xl active:bg-cream/60 transition-colors touch-manipulation"
               aria-label={isMobileMenuOpen ? "Close navigation" : "Open navigation"}
               aria-expanded={isMobileMenuOpen}
             >
@@ -135,7 +135,11 @@ export function SiteHeader() {
       {/* Mobile Navigation Drawer */}
       {isMobileMenuOpen && (
         <nav 
-          className="lg:hidden fixed inset-x-0 top-[72px] bottom-0 bg-ivory z-50 flex flex-col px-6 py-6 overflow-y-auto animate-in fade-in duration-200 border-t border-charcoal/10"
+          className="lg:hidden fixed inset-x-0 top-[72px] h-[calc(100dvh-72px)] bg-ivory z-50 flex flex-col px-6 pt-6 pb-[calc(2.5rem+env(safe-area-inset-bottom,0px))] overflow-y-auto animate-in fade-in duration-200 border-t border-charcoal/10 overscroll-contain"
+          style={{
+            paddingLeft: 'max(1.5rem, env(safe-area-inset-left, 0px))',
+            paddingRight: 'max(1.5rem, env(safe-area-inset-right, 0px))',
+          }}
           aria-label="Mobile navigation"
         >
           <div className="flex flex-col divide-y divide-charcoal/10">
@@ -150,7 +154,7 @@ export function SiteHeader() {
                   key={link.label}
                   href={link.href}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className={`font-serif text-[28px] py-4 transition-colors ${
+                  className={`font-serif text-[26px] sm:text-[30px] py-4 transition-colors ${
                     isActive
                       ? 'text-forest font-semibold border-l-4 border-gold pl-3'
                       : 'text-forest-deep hover:text-forest'
@@ -162,15 +166,15 @@ export function SiteHeader() {
             })}
           </div>
 
-          <div className="mt-8 pt-6 border-t border-charcoal/10 space-y-3">
+          <div className="mt-auto pt-6 border-t border-charcoal/10 space-y-3">
             <Link
               href="/contact"
               onClick={() => setIsMobileMenuOpen(false)}
-              className="w-full inline-flex items-center justify-center min-h-[48px] px-6 rounded-full bg-gold hover:bg-[#D4B66B] text-forest-deep font-sans font-semibold text-base transition-colors"
+              className="w-full inline-flex items-center justify-center min-h-[50px] px-6 rounded-full bg-gold hover:bg-[#D4B66B] active:scale-[0.98] text-forest-deep font-sans font-semibold text-base transition-all shadow-sm"
             >
               Plan a Consultation
             </Link>
-            <p className="text-center text-xs tracking-wider uppercase text-charcoal/60 pt-2">
+            <p className="text-center text-xs tracking-wider uppercase text-charcoal/60 pt-1">
               Healthy land, brighter tomorrows.
             </p>
           </div>

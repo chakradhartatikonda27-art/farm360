@@ -5,9 +5,14 @@ import { SiteFooter } from '@/components/layout/SiteFooter';
 import { companyConfig } from '@/data/companyConfig';
 
 export const viewport: Viewport = {
-  themeColor: '#064B35',
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#064B35' },
+    { media: '(prefers-color-scheme: dark)', color: '#033D2B' },
+  ],
   width: 'device-width',
   initialScale: 1,
+  maximumScale: 5,
+  viewportFit: 'cover',
 };
 
 export const metadata: Metadata = {
@@ -53,6 +58,17 @@ export const metadata: Metadata = {
   icons: {
     icon: '/favicon.png',
     apple: '/favicon.png',
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: companyConfig.brandName,
+  },
+  formatDetection: {
+    telephone: true,
+    date: false,
+    address: false,
+    email: false,
   },
 };
 

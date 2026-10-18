@@ -15,6 +15,10 @@
   --color-charcoal: #252C26;
   --font-serif: 'DM Serif Display', 'Cormorant Garamond', Georgia, serif;
   --font-sans: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --sat: env(safe-area-inset-top, 0px);
+  --sab: env(safe-area-inset-bottom, 0px);
+  --sal: env(safe-area-inset-left, 0px);
+  --sar: env(safe-area-inset-right, 0px);
 }
 
 @layer base {
@@ -25,13 +29,20 @@
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    overflow-x: clip;
+    max-width: 100vw;
   }
 
   body {
     background-color: #F7F4EA;
     color: #252C26;
     min-height: 100vh;
-    overflow-x: hidden;
+    min-height: 100dvh;
+    overflow-x: clip;
+    max-width: 100vw;
   }
 
   ::selection {
@@ -44,10 +55,21 @@
     font-feature-settings: "liga" 1, "kern" 1;
   }
 
+  /* Prevent automatic form zoom on iOS Safari */
+  @media (max-width: 767px) {
+    input, select, textarea {
+      font-size: 16px !important;
+    }
+  }
+
   /* Accessible focus indicators */
   :focus-visible {
     outline: 2px solid #C7A65A;
     outline-offset: 3px;
+  }
+
+  button, a, input, select, textarea {
+    touch-action: manipulation;
   }
 }
 
@@ -122,15 +144,18 @@
   overflow: hidden;
   background: var(--color-forest-dark);
   padding: 14px 0;
+  touch-action: pan-y;
+  -webkit-overflow-scrolling: touch;
 }
 .strip .track {
   display: flex;
   gap: 14px;
   width: max-content;
   animation: slide 60s linear infinite;
+  will-change: transform;
 }
 .strip img {
-  height: clamp(150px, 22vw, 240px);
+  height: clamp(140px, 22vw, 240px);
   width: auto;
   aspect-ratio: 4/3;
   object-fit: cover;
@@ -147,12 +172,15 @@
 /* Reviews Marquee */
 .mq {
   overflow: hidden;
+  touch-action: pan-y;
+  -webkit-overflow-scrolling: touch;
 }
 .mq .track {
   display: flex;
   gap: 16px;
   width: max-content;
   animation: mql 55s linear infinite;
+  will-change: transform;
 }
 .mq.r .track {
   animation-name: mqr;

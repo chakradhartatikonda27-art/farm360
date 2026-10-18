@@ -132,7 +132,7 @@ export default function ForYourSpacePage() {
           </div>
 
           {/* Space Type Selector Tabs */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mt-8 sm:mt-10">
             {spaces.map((s) => {
               const isSelected = s.id === activeTab;
               return (
@@ -140,7 +140,7 @@ export default function ForYourSpacePage() {
                   key={s.id}
                   type="button"
                   onClick={() => setActiveTab(s.id)}
-                  className={`p-4 text-left rounded-2xl border transition-all duration-300 ${
+                  className={`p-4 text-left rounded-2xl border transition-all duration-200 touch-manipulation active:scale-[0.98] ${
                     isSelected
                       ? 'bg-forest text-ivory border-forest shadow-soft font-semibold'
                       : 'bg-ivory-surface border-cream hover:border-gold/50 text-charcoal'

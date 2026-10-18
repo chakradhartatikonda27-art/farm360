@@ -21,10 +21,10 @@ export function ContactCtaBanner() {
             </p>
           </div>
 
-          <div>
+          <div className="w-full sm:w-auto">
             <Link
               href="/contact"
-              className="inline-flex items-center justify-center min-h-[48px] px-8 rounded-full bg-gold hover:bg-[#D4B66B] text-forest-deep font-sans font-semibold text-[15px] transition-colors shadow-sm"
+              className="w-full sm:w-auto inline-flex items-center justify-center min-h-[50px] px-8 rounded-full bg-gold hover:bg-[#D4B66B] active:scale-[0.98] text-forest-deep font-sans font-semibold text-[15px] transition-all shadow-sm text-center"
             >
               Request a Consultation →
             </Link>

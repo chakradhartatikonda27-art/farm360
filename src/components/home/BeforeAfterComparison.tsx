@@ -14,6 +14,15 @@ export function BeforeAfterComparison() {
     }
   };
 
+  const updateFromClientX = (clientX: number) => {
+    if (!cmpRef.current) return;
+    const rect = cmpRef.current.getBoundingClientRect();
+    const x = clientX - rect.left;
+    const val = Math.max(5, Math.min(95, Math.round((x / rect.width) * 100)));
+    setPercent(val);
+    cmpRef.current.style.setProperty('--p', `${val}%`);
+  };
+
   return (
     <section className="py-16 sm:py-24 border-t border-charcoal/10" aria-labelledby="before-after-heading">
       <div className="max-w-[1280px] mx-auto px-5">
@@ -35,8 +44,12 @@ export function BeforeAfterComparison() {
             {/* Interactive Before / After Split Slider */}
             <div 
               ref={cmpRef}
-              className="cmp" 
-              style={{ ['--p' as any]: `${percent}%` }}
+              className="cmp select-none" 
+              style={{ ['--p' as any]: `${percent}%`, touchAction: 'pan-y' }}
+              onClick={(e) => updateFromClientX(e.clientX)}
+              onTouchMove={(e) => {
+                if (e.touches.length > 0) updateFromClientX(e.touches[0].clientX);
+              }}
               suppressHydrationWarning
             >
               <img

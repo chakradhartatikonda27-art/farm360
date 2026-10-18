@@ -218,10 +218,12 @@ export function ConsultationForm({
                   type="text"
                   name="fullName"
                   required
+                  autoComplete="name"
+                  autoCapitalize="words"
                   placeholder="e.g. Ramesh Kumar"
                   value={formData.fullName}
                   onChange={handleChange}
-                  className={`w-full px-3.5 py-2.5 rounded-lg border text-sm bg-white text-charcoal placeholder-charcoal/30 focus:outline-none focus:ring-2 focus:ring-forest ${
+                  className={`w-full px-3.5 py-3 rounded-lg border text-base sm:text-sm min-h-[46px] bg-white text-charcoal placeholder-charcoal/30 focus:outline-none focus:ring-2 focus:ring-forest touch-manipulation ${
                     errors.fullName ? 'border-red-400 bg-red-50/20' : 'border-cream'
                   }`}
                 />
@@ -236,11 +238,13 @@ export function ConsultationForm({
                   id="phone"
                   type="tel"
                   name="phone"
+                  inputMode="tel"
+                  autoComplete="tel"
                   required
                   placeholder="e.g. +91 98765 43210"
                   value={formData.phone}
                   onChange={handleChange}
-                  className={`w-full px-3.5 py-2.5 rounded-lg border text-sm bg-white text-charcoal placeholder-charcoal/30 focus:outline-none focus:ring-2 focus:ring-forest ${
+                  className={`w-full px-3.5 py-3 rounded-lg border text-base sm:text-sm min-h-[46px] bg-white text-charcoal placeholder-charcoal/30 focus:outline-none focus:ring-2 focus:ring-forest touch-manipulation ${
                     errors.phone ? 'border-red-400 bg-red-50/20' : 'border-cream'
                   }`}
                 />
@@ -255,11 +259,13 @@ export function ConsultationForm({
                   id="email"
                   type="email"
                   name="email"
+                  inputMode="email"
+                  autoComplete="email"
                   required
                   placeholder="e.g. ramesh@example.com"
                   value={formData.email}
                   onChange={handleChange}
-                  className={`w-full px-3.5 py-2.5 rounded-lg border text-sm bg-white text-charcoal placeholder-charcoal/30 focus:outline-none focus:ring-2 focus:ring-forest ${
+                  className={`w-full px-3.5 py-3 rounded-lg border text-base sm:text-sm min-h-[46px] bg-white text-charcoal placeholder-charcoal/30 focus:outline-none focus:ring-2 focus:ring-forest touch-manipulation ${
                     errors.email ? 'border-red-400 bg-red-50/20' : 'border-cream'
                   }`}
                 />
@@ -284,10 +290,11 @@ export function ConsultationForm({
                   type="text"
                   name="location"
                   required
+                  autoComplete="address-level2"
                   placeholder="e.g. Kanakapura, Ramanagara District"
                   value={formData.location}
                   onChange={handleChange}
-                  className={`w-full px-3.5 py-2.5 rounded-lg border text-sm bg-white text-charcoal placeholder-charcoal/30 focus:outline-none focus:ring-2 focus:ring-forest ${
+                  className={`w-full px-3.5 py-3 rounded-lg border text-base sm:text-sm min-h-[46px] bg-white text-charcoal placeholder-charcoal/30 focus:outline-none focus:ring-2 focus:ring-forest touch-manipulation ${
                     errors.location ? 'border-red-400 bg-red-50/20' : 'border-cream'
                   }`}
                 />
@@ -303,7 +310,7 @@ export function ConsultationForm({
                   name="propertyType"
                   value={formData.propertyType}
                   onChange={handleChange}
-                  className="w-full px-3.5 py-2.5 rounded-lg border border-cream text-sm bg-white text-charcoal focus:outline-none focus:ring-2 focus:ring-forest"
+                  className="w-full px-3.5 py-3 rounded-lg border border-cream text-base sm:text-sm min-h-[46px] bg-white text-charcoal focus:outline-none focus:ring-2 focus:ring-forest touch-manipulation"
                 >
                   <option value="Farm">Farm / Agricultural Acreage</option>
                   <option value="Agricultural Plot">Agricultural Plot / Subdivided Farmland</option>
@@ -325,7 +332,7 @@ export function ConsultationForm({
                   placeholder="e.g. 2.5 Acres, 1200 sq ft, 5 Guntas"
                   value={formData.approxSize}
                   onChange={handleChange}
-                  className="w-full px-3.5 py-2.5 rounded-lg border border-cream text-sm bg-white text-charcoal placeholder-charcoal/30 focus:outline-none focus:ring-2 focus:ring-forest"
+                  className="w-full px-3.5 py-3 rounded-lg border border-cream text-base sm:text-sm min-h-[46px] bg-white text-charcoal placeholder-charcoal/30 focus:outline-none focus:ring-2 focus:ring-forest touch-manipulation"
                 />
               </div>
 
@@ -338,7 +345,7 @@ export function ConsultationForm({
                   name="preferredEngagement"
                   value={formData.preferredEngagement}
                   onChange={handleChange}
-                  className="w-full px-3.5 py-2.5 rounded-lg border border-cream text-sm bg-white text-charcoal focus:outline-none focus:ring-2 focus:ring-forest"
+                  className="w-full px-3.5 py-3 rounded-lg border border-cream text-base sm:text-sm min-h-[46px] bg-white text-charcoal focus:outline-none focus:ring-2 focus:ring-forest touch-manipulation"
                 >
                   <option value="One-time Service">One-time Service (Setup, Testing, Fencing)</option>
                   <option value="Ongoing Managed Care">Ongoing Managed Care (Seasonal Stewardship)</option>
@@ -358,7 +365,7 @@ export function ConsultationForm({
                   placeholder="e.g. Drip Irrigation, High-Density Orchard Setup, Vacant Site Care"
                   value={formData.serviceCategory}
                   onChange={handleChange}
-                  className="w-full px-3.5 py-2.5 rounded-lg border border-cream text-sm bg-white text-charcoal placeholder-charcoal/30 focus:outline-none focus:ring-2 focus:ring-forest"
+                  className="w-full px-3.5 py-3 rounded-lg border border-cream text-base sm:text-sm min-h-[46px] bg-white text-charcoal placeholder-charcoal/30 focus:outline-none focus:ring-2 focus:ring-forest touch-manipulation"
                 />
               </div>
 
@@ -374,7 +381,7 @@ export function ConsultationForm({
                   placeholder="Describe current terrain condition, water availability (borewell/canal), your goals, and any specific questions you have."
                   value={formData.projectDescription}
                   onChange={handleChange}
-                  className={`w-full px-3.5 py-2.5 rounded-lg border text-sm bg-white text-charcoal placeholder-charcoal/30 focus:outline-none focus:ring-2 focus:ring-forest ${
+                  className={`w-full px-3.5 py-3 rounded-lg border text-base sm:text-sm bg-white text-charcoal placeholder-charcoal/30 focus:outline-none focus:ring-2 focus:ring-forest touch-manipulation leading-relaxed ${
                     errors.projectDescription ? 'border-red-400 bg-red-50/20' : 'border-cream'
                   }`}
                 />

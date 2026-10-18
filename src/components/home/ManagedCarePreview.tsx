@@ -55,7 +55,7 @@ export function ManagedCarePreview() {
             <div className="pt-4">
               <Link
                 href="/managed-care"
-                className="inline-flex items-center justify-center min-h-[48px] px-7 rounded-full bg-forest hover:bg-forest-deep text-white font-sans font-semibold text-[15px] transition-colors shadow-sm"
+                className="w-full sm:w-auto inline-flex items-center justify-center min-h-[50px] px-8 rounded-full bg-forest hover:bg-forest-deep active:scale-[0.98] text-white font-sans font-semibold text-[15px] transition-all shadow-sm text-center"
               >
                 Explore Managed Care
               </Link>

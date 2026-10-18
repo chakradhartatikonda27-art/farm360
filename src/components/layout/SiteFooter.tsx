@@ -6,8 +6,14 @@ import { Logo } from '../common/Logo';
 
 export function SiteFooter() {
   return (
-    <footer className="bg-forest-dark text-white/85 py-14 border-t border-white/10">
-      <div className="max-w-[1280px] mx-auto px-5">
+    <footer className="bg-forest-dark text-white/85 pt-12 sm:pt-14 pb-[calc(3.5rem+env(safe-area-inset-bottom,0px))] border-t border-white/10">
+      <div 
+        className="max-w-[1280px] mx-auto px-5"
+        style={{
+          paddingLeft: 'max(1.25rem, env(safe-area-inset-left, 0px))',
+          paddingRight: 'max(1.25rem, env(safe-area-inset-right, 0px))',
+        }}
+      >
         {/* Footer Grid: 1.3fr 1fr 1fr 1fr */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[1.3fr_1fr_1fr_1fr] gap-9">
           {/* Column 1: Brand & Philosophy */}
