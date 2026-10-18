@@ -1,0 +1,1698 @@
+{
+  "p-index": {
+    "id": "p-index",
+    "h1": "Your land. A world of possibilities.",
+    "eyebrow": "Complete Agricultural Solutions",
+    "lead": "",
+    "tag": "",
+    "challenge": "",
+    "benefits": [],
+    "whatsIncluded": [],
+    "steps": [],
+    "faqs": [],
+    "related": [
+      {
+        "slug": "farm-land-planning",
+        "title": "Farm &amp; land planning",
+        "description": "Crop, farm and plot layouts planned around your goals."
+      },
+      {
+        "slug": "land-preparation",
+        "title": "Land preparation",
+        "description": "Ground made ready for planting or development."
+      },
+      {
+        "slug": "fencing-boundary-protection",
+        "title": "Fencing &amp; boundary protection",
+        "description": "Boundaries, fencing and security matched to your land."
+      },
+      {
+        "slug": "driirrigation-sprinklers",
+        "title": "Drip irrigation &amp; sprinklers",
+        "description": "Efficient watering systems designed for your space."
+      },
+      {
+        "slug": "soil-water-testing",
+        "title": "Soil &amp; water testing coordination",
+        "description": "Testing support for informed farm and garden planning."
+      },
+      {
+        "slug": "kitchen-gardens-landscaping",
+        "title": "Kitchen gardens &amp; landscaping",
+        "description": "Gardens and landscaped spaces designed for your home."
+      },
+      {
+        "slug": "managed-farms-orchards",
+        "title": "Managed farms &amp; orchards",
+        "description": "Ongoing care for productive land."
+      },
+      {
+        "slug": "one-time-harvest-support",
+        "title": "One-time harvest support",
+        "description": "Extra hands and guidance when harvest arrives."
+      }
+    ]
+  },
+  "p-services": {
+    "id": "p-services",
+    "h1": "",
+    "eyebrow": "Our services",
+    "lead": "",
+    "tag": "",
+    "challenge": "",
+    "benefits": [],
+    "whatsIncluded": [],
+    "steps": [],
+    "faqs": [],
+    "related": [
+      {
+        "slug": "land-cleaning-levelling",
+        "title": "Land cleaning &amp; levelling",
+        "description": "A clean, even starting point for planting, fencing or building."
+      },
+      {
+        "slug": "farm-land-planning",
+        "title": "Farm &amp; land planning",
+        "description": "Crop, farm and plot layouts planned around your goals."
+      },
+      {
+        "slug": "land-preparation",
+        "title": "Land preparation",
+        "description": "Ground made ready for planting or development."
+      },
+      {
+        "slug": "fencing-boundary-protection",
+        "title": "Fencing &amp; boundary protection",
+        "description": "Boundaries, fencing and security matched to your land."
+      },
+      {
+        "slug": "borewell-coordination",
+        "title": "Borewell coordination",
+        "description": "Support with planning and coordinating borewell work, where offered."
+      },
+      {
+        "slug": "driirrigation-sprinklers",
+        "title": "Drip irrigation &amp; sprinklers",
+        "description": "Efficient watering systems designed for your space."
+      },
+      {
+        "slug": "soil-water-testing",
+        "title": "Soil &amp; water testing coordination",
+        "description": "Testing support for informed farm and garden planning."
+      },
+      {
+        "slug": "planting-orchard-setup",
+        "title": "Planting &amp; orchard setup",
+        "description": "Trees and crops planted properly, with early care guidance."
+      },
+      {
+        "slug": "pruning-tree-care",
+        "title": "Pruning &amp; tree care",
+        "description": "Shaping and caring for trees for health and yield."
+      },
+      {
+        "slug": "farm-electrical-work",
+        "title": "Farm electrical work",
+        "description": "Electrical works for farms and sites."
+      },
+      {
+        "slug": "one-time-harvest-support",
+        "title": "One-time harvest support",
+        "description": "Extra hands and guidance when harvest arrives."
+      },
+      {
+        "slug": "kitchen-gardens-landscaping",
+        "title": "Kitchen gardens &amp; landscaping",
+        "description": "Gardens and landscaped spaces designed for your home."
+      },
+      {
+        "slug": "construction-development-coordination",
+        "title": "Agricultural construction &amp; development coordination",
+        "description": "Coordination of farm construction and land development, where offered."
+      },
+      {
+        "slug": "managed-farms-orchards",
+        "title": "Managed farms &amp; orchards",
+        "description": "Ongoing care for productive land."
+      },
+      {
+        "slug": "vacant-land-upkeep",
+        "title": "Vacant-land upkeep",
+        "description": "Keep an unused plot clean, visible and cared for."
+      },
+      {
+        "slug": "farmhouse-garden-care",
+        "title": "Farmhouse garden care",
+        "description": "Landscape and lawn care for farmhouses and weekend homes."
+      },
+      {
+        "slug": "terrace-garden-maintenance",
+        "title": "Terrace garden maintenance",
+        "description": "Scheduled care so your terrace stays green."
+      },
+      {
+        "slug": "seasonal-planting-upkeep",
+        "title": "Seasonal planting &amp; upkeep",
+        "description": "Plan and grow what suits your space and the season."
+      },
+      {
+        "slug": "harvest-assistance",
+        "title": "Harvest assistance",
+        "description": "Support through each harvest, including surplus."
+      },
+      {
+        "slug": "landowner-enquiries",
+        "title": "Agricultural landowner enquiries",
+        "description": "Tell us about your land and what you are considering."
+      },
+      {
+        "slug": "farm-leasing-operator-partnerships",
+        "title": "Farm leasing &amp; operator partnerships",
+        "description": "Direct leasing or an introduction to a suitable operator, where offered."
+      },
+      {
+        "slug": "agricultural-project-enquiries",
+        "title": "Agricultural project enquiries",
+        "description": "Discuss an agricultural project involving your land."
+      }
+    ]
+  },
+  "p-managed-care": {
+    "id": "p-managed-care",
+    "h1": "",
+    "eyebrow": "Managed care",
+    "lead": "",
+    "tag": "",
+    "challenge": "",
+    "benefits": [],
+    "whatsIncluded": [],
+    "steps": [
+      {
+        "step": "01",
+        "title": "Share your space",
+        "description": "Tell us about the land or garden and what you want from it."
+      },
+      {
+        "step": "02",
+        "title": "Site assessment",
+        "description": "We visit and note what care it needs."
+      },
+      {
+        "step": "03",
+        "title": "Agreed plan",
+        "description": "Visit frequency, scope and pricing are set out for your approval."
+      }
+    ],
+    "faqs": [],
+    "related": [
+      {
+        "slug": "managed-farms-orchards",
+        "title": "Managed farms &amp; orchards",
+        "description": "Ongoing care for productive land."
+      },
+      {
+        "slug": "vacant-land-upkeep",
+        "title": "Vacant-land upkeep",
+        "description": "Keep an unused plot clean, visible and cared for."
+      },
+      {
+        "slug": "farmhouse-garden-care",
+        "title": "Farmhouse garden care",
+        "description": "Landscape and lawn care for farmhouses and weekend homes."
+      },
+      {
+        "slug": "terrace-garden-maintenance",
+        "title": "Terrace garden maintenance",
+        "description": "Scheduled care so your terrace stays green."
+      },
+      {
+        "slug": "seasonal-planting-upkeep",
+        "title": "Seasonal planting &amp; upkeep",
+        "description": "Plan and grow what suits your space and the season."
+      },
+      {
+        "slug": "harvest-assistance",
+        "title": "Harvest assistance",
+        "description": "Support through each harvest, including surplus."
+      }
+    ]
+  },
+  "p-landowners": {
+    "id": "p-landowners",
+    "h1": "",
+    "eyebrow": "For landowners",
+    "lead": "",
+    "tag": "",
+    "challenge": "",
+    "benefits": [],
+    "whatsIncluded": [],
+    "steps": [],
+    "faqs": [],
+    "related": [
+      {
+        "slug": "landowner-enquiries",
+        "title": "Agricultural landowner enquiries",
+        "description": "Tell us about your land and what you are considering."
+      },
+      {
+        "slug": "farm-leasing-operator-partnerships",
+        "title": "Farm leasing &amp; operator partnerships",
+        "description": "Direct leasing or an introduction to a suitable operator, where offered."
+      },
+      {
+        "slug": "agricultural-project-enquiries",
+        "title": "Agricultural project enquiries",
+        "description": "Discuss an agricultural project involving your land."
+      }
+    ]
+  },
+  "p-about": {
+    "id": "p-about",
+    "h1": "",
+    "eyebrow": "About us",
+    "lead": "",
+    "tag": "",
+    "challenge": "",
+    "benefits": [],
+    "whatsIncluded": [],
+    "steps": [],
+    "faqs": [],
+    "related": []
+  },
+  "p-contact": {
+    "id": "p-contact",
+    "h1": "",
+    "eyebrow": "Get in touch",
+    "lead": "",
+    "tag": "",
+    "challenge": "",
+    "benefits": [],
+    "whatsIncluded": [],
+    "steps": [],
+    "faqs": [],
+    "related": []
+  },
+  "p-privacy": {
+    "id": "p-privacy",
+    "h1": "Privacy Policy",
+    "eyebrow": "",
+    "lead": "",
+    "tag": "",
+    "challenge": "",
+    "benefits": [],
+    "whatsIncluded": [],
+    "steps": [],
+    "faqs": [],
+    "related": []
+  },
+  "p-terms": {
+    "id": "p-terms",
+    "h1": "Terms and Conditions",
+    "eyebrow": "",
+    "lead": "",
+    "tag": "",
+    "challenge": "",
+    "benefits": [],
+    "whatsIncluded": [],
+    "steps": [],
+    "faqs": [],
+    "related": []
+  },
+  "p-agricultural-project-enquiries": {
+    "id": "p-agricultural-project-enquiries",
+    "h1": "Agricultural project enquiries",
+    "eyebrow": "Landowners & projects",
+    "lead": "Discuss an agricultural project involving your land.",
+    "tag": "Offered where available. Please enquire.",
+    "challenge": "Larger agricultural ideas need careful scoping before anyone commits time or money.",
+    "benefits": [
+      "A structured first discussion",
+      "Honest view of what is practical",
+      "Next steps in writing"
+    ],
+    "whatsIncluded": [
+      "Project discussion",
+      "Property assessment and planning",
+      "Site visits where agreed"
+    ],
+    "steps": [
+      {
+        "step": "01",
+        "title": "Describe the project",
+        "description": "Share what you have in mind."
+      },
+      {
+        "step": "02",
+        "title": "Assess",
+        "description": "We review the property."
+      },
+      {
+        "step": "03",
+        "title": "Plan",
+        "description": "We outline a practical way forward."
+      }
+    ],
+    "faqs": [
+      {
+        "question": "Do you promise returns?",
+        "answer": "No. We do not promise investment returns."
+      },
+      {
+        "question": "Is this available now?",
+        "answer": "Availability is confirmed at enquiry."
+      }
+    ],
+    "related": [
+      {
+        "slug": "landowner-enquiries",
+        "title": "Agricultural landowner enquiries",
+        "description": "Tell us about your land and what you are considering."
+      },
+      {
+        "slug": "farm-leasing-operator-partnerships",
+        "title": "Farm leasing &amp; operator partnerships",
+        "description": "Direct leasing or an introduction to a suitable operator, where offered."
+      },
+      {
+        "slug": "farm-land-planning",
+        "title": "Farm &amp; land planning",
+        "description": "Crop, farm and plot layouts planned around your goals."
+      }
+    ]
+  },
+  "p-borewell-coordination": {
+    "id": "p-borewell-coordination",
+    "h1": "Borewell coordination",
+    "eyebrow": "One-time services",
+    "lead": "Support with planning and coordinating borewell work, where offered.",
+    "tag": "Offered where available. Please enquire.",
+    "challenge": "Finding and arranging borewell work involves several parties and many decisions. Coordination reduces missed steps.",
+    "benefits": [
+      "One point of contact for the process",
+      "Fewer delays between steps",
+      "Clear records of what was agreed"
+    ],
+    "whatsIncluded": [
+      "Discussion of water needs",
+      "Coordination with drilling contractors",
+      "Follow-up on pump and line connection where agreed"
+    ],
+    "steps": [
+      {
+        "step": "01",
+        "title": "Discuss your needs",
+        "description": "We note how much water the land requires."
+      },
+      {
+        "step": "02",
+        "title": "Coordinate",
+        "description": "We arrange the parties involved."
+      },
+      {
+        "step": "03",
+        "title": "Follow up",
+        "description": "We check the work against what was agreed."
+      }
+    ],
+    "faqs": [
+      {
+        "question": "Do you guarantee water?",
+        "answer": "No. Groundwater outcomes cannot be guaranteed by anyone."
+      },
+      {
+        "question": "Is this offered everywhere?",
+        "answer": "Availability depends on location. Please enquire."
+      }
+    ],
+    "related": [
+      {
+        "slug": "soil-water-testing",
+        "title": "Soil &amp; water testing coordination",
+        "description": "Testing support for informed farm and garden planning."
+      },
+      {
+        "slug": "driirrigation-sprinklers",
+        "title": "Drip irrigation &amp; sprinklers",
+        "description": "Efficient watering systems designed for your space."
+      },
+      {
+        "slug": "farm-electrical-work",
+        "title": "Farm electrical work",
+        "description": "Electrical works for farms and sites."
+      }
+    ]
+  },
+  "p-construction-development-coordination": {
+    "id": "p-construction-development-coordination",
+    "h1": "Agricultural construction &amp; development coordination",
+    "eyebrow": "One-time services",
+    "lead": "Coordination of farm construction and land development, where offered.",
+    "tag": "Offered where available. Please enquire.",
+    "challenge": "Farm buildings and land development involve many contractors. Without coordination, scope and schedule drift.",
+    "benefits": [
+      "One point of contact",
+      "Clear scope between parties",
+      "Fewer gaps and repeats"
+    ],
+    "whatsIncluded": [
+      "Discussion of requirements",
+      "Coordination between contractors",
+      "Progress updates against agreed scope"
+    ],
+    "steps": [
+      {
+        "step": "01",
+        "title": "Define requirements",
+        "description": "We note what is to be built."
+      },
+      {
+        "step": "02",
+        "title": "Coordinate",
+        "description": "We organise the parties involved."
+      },
+      {
+        "step": "03",
+        "title": "Update",
+        "description": "We share progress against scope."
+      }
+    ],
+    "faqs": [
+      {
+        "question": "Do you build directly?",
+        "answer": "Scope is confirmed at enquiry."
+      },
+      {
+        "question": "Are approvals included?",
+        "answer": "Approvals are handled separately. We can point you to the process."
+      }
+    ],
+    "related": [
+      {
+        "slug": "farm-land-planning",
+        "title": "Farm &amp; land planning",
+        "description": "Crop, farm and plot layouts planned around your goals."
+      },
+      {
+        "slug": "land-cleaning-levelling",
+        "title": "Land cleaning &amp; levelling",
+        "description": "A clean, even starting point for planting, fencing or building."
+      },
+      {
+        "slug": "farm-electrical-work",
+        "title": "Farm electrical work",
+        "description": "Electrical works for farms and sites."
+      }
+    ]
+  },
+  "p-drip-irrigation-sprinklers": {
+    "id": "p-drip-irrigation-sprinklers",
+    "h1": "Drip irrigation &amp; sprinklers",
+    "eyebrow": "One-time services",
+    "lead": "Efficient watering systems designed for your space.",
+    "tag": "",
+    "challenge": "Hand watering and uneven systems waste water and time. A well-planned layout delivers water where plants need it.",
+    "benefits": [
+      "More even watering",
+      "Less wasted water",
+      "A system you can operate and maintain"
+    ],
+    "whatsIncluded": [
+      "Layout of zones and lines",
+      "Supply of agreed components",
+      "Installation and testing",
+      "A short walkthrough on operating it"
+    ],
+    "steps": [
+      {
+        "step": "01",
+        "title": "Measure and plan",
+        "description": "We map the planting and water source."
+      },
+      {
+        "step": "02",
+        "title": "Install",
+        "description": "Lines and emitters are laid and connected."
+      },
+      {
+        "step": "03",
+        "title": "Test and explain",
+        "description": "We test coverage and show you how to run it."
+      }
+    ],
+    "faqs": [
+      {
+        "question": "Drip or sprinkler?",
+        "answer": "Drip suits rows and beds. Sprinklers suit lawns and some field crops. We advise per site."
+      },
+      {
+        "question": "Can I extend it later?",
+        "answer": "Yes. We plan zones with expansion in mind."
+      }
+    ],
+    "related": [
+      {
+        "slug": "farm-land-planning",
+        "title": "Farm &amp; land planning",
+        "description": "Crop, farm and plot layouts planned around your goals."
+      },
+      {
+        "slug": "borewell-coordination",
+        "title": "Borewell coordination",
+        "description": "Support with planning and coordinating borewell work, where offered."
+      },
+      {
+        "slug": "kitchen-gardens-landscaping",
+        "title": "Kitchen gardens &amp; landscaping",
+        "description": "Gardens and landscaped spaces designed for your home."
+      }
+    ]
+  },
+  "p-farm-electrical-work": {
+    "id": "p-farm-electrical-work",
+    "h1": "Farm electrical work",
+    "eyebrow": "One-time services",
+    "lead": "Electrical works for farms and sites.",
+    "tag": "",
+    "challenge": "Pumps, lighting and fencing need safe, reliable power. Poor wiring is a safety and reliability risk.",
+    "benefits": [
+      "Reliable power where it is needed",
+      "Work carried out for safety",
+      "Clear scope and materials"
+    ],
+    "whatsIncluded": [
+      "Review of electrical needs",
+      "Wiring and connections for agreed equipment",
+      "Testing before handover"
+    ],
+    "steps": [
+      {
+        "step": "01",
+        "title": "Review needs",
+        "description": "We list what needs power."
+      },
+      {
+        "step": "02",
+        "title": "Plan",
+        "description": "We agree the route and materials."
+      },
+      {
+        "step": "03",
+        "title": "Install and test",
+        "description": "Work is completed and tested."
+      }
+    ],
+    "faqs": [
+      {
+        "question": "Do you handle utility connections?",
+        "answer": "Utility applications are separate. We can guide you on the process."
+      },
+      {
+        "question": "Is solar covered?",
+        "answer": "Please ask. Scope is confirmed at enquiry."
+      }
+    ],
+    "related": [
+      {
+        "slug": "borewell-coordination",
+        "title": "Borewell coordination",
+        "description": "Support with planning and coordinating borewell work, where offered."
+      },
+      {
+        "slug": "fencing-boundary-protection",
+        "title": "Fencing &amp; boundary protection",
+        "description": "Boundaries, fencing and security matched to your land."
+      },
+      {
+        "slug": "driirrigation-sprinklers",
+        "title": "Drip irrigation &amp; sprinklers",
+        "description": "Efficient watering systems designed for your space."
+      }
+    ]
+  },
+  "p-farm-land-planning": {
+    "id": "p-farm-land-planning",
+    "h1": "Farm &amp; land planning",
+    "eyebrow": "One-time services",
+    "lead": "Crop, farm and plot layouts planned around your goals.",
+    "tag": "",
+    "challenge": "Many landowners know what they want from their land but not how to arrange it. Poor layout limits access, watering and future expansion.",
+    "benefits": [
+      "A layout that fits your land and goals",
+      "Clear zones for crops, water and access",
+      "A plan that can be carried out in stages"
+    ],
+    "whatsIncluded": [
+      "Discussion of goals and budget",
+      "Review of site conditions and access",
+      "Layout of crop, planting and service zones",
+      "A written plan to review with you"
+    ],
+    "steps": [
+      {
+        "step": "01",
+        "title": "Understand your goals",
+        "description": "We talk through what you want to grow, build or keep."
+      },
+      {
+        "step": "02",
+        "title": "Study the site",
+        "description": "We review the land, its access and its surroundings."
+      },
+      {
+        "step": "03",
+        "title": "Present the plan",
+        "description": "You review a layout and a proposed order of work."
+      }
+    ],
+    "faqs": [
+      {
+        "question": "Do I need to commit to other services?",
+        "answer": "No. Planning can be taken on its own."
+      },
+      {
+        "question": "Can the plan be phased?",
+        "answer": "Yes. Most plans are arranged so work can happen in stages."
+      }
+    ],
+    "related": [
+      {
+        "slug": "land-preparation",
+        "title": "Land preparation",
+        "description": "Ground made ready for planting or development."
+      },
+      {
+        "slug": "driirrigation-sprinklers",
+        "title": "Drip irrigation &amp; sprinklers",
+        "description": "Efficient watering systems designed for your space."
+      },
+      {
+        "slug": "planting-orchard-setup",
+        "title": "Planting &amp; orchard setup",
+        "description": "Trees and crops planted properly, with early care guidance."
+      }
+    ]
+  },
+  "p-farm-leasing-operator-partnerships": {
+    "id": "p-farm-leasing-operator-partnerships",
+    "h1": "Farm leasing &amp; operator partnerships",
+    "eyebrow": "Landowners & projects",
+    "lead": "Direct leasing or an introduction to a suitable operator, where offered.",
+    "tag": "Offered where available. Please enquire.",
+    "challenge": "Land that is not being used earns nothing and deteriorates. Leasing is one option, but terms need care.",
+    "benefits": [
+      "Options for productive use of your land",
+      "Structure agreed after assessment",
+      "Support through the process"
+    ],
+    "whatsIncluded": [
+      "Land assessment",
+      "Discussion of direct lease or operator introduction",
+      "Agreement support"
+    ],
+    "steps": [
+      {
+        "step": "01",
+        "title": "Assess",
+        "description": "We review the land."
+      },
+      {
+        "step": "02",
+        "title": "Choose an arrangement",
+        "description": "We discuss available options."
+      },
+      {
+        "step": "03",
+        "title": "Agree terms",
+        "description": "Structure, term and responsibilities are agreed in writing."
+      }
+    ],
+    "faqs": [
+      {
+        "question": "Is income guaranteed?",
+        "answer": "No. We do not guarantee lease income or returns."
+      },
+      {
+        "question": "Is leasing always available?",
+        "answer": "It depends on the land and on availability."
+      }
+    ],
+    "related": [
+      {
+        "slug": "landowner-enquiries",
+        "title": "Agricultural landowner enquiries",
+        "description": "Tell us about your land and what you are considering."
+      },
+      {
+        "slug": "managed-farms-orchards",
+        "title": "Managed farms &amp; orchards",
+        "description": "Ongoing care for productive land."
+      },
+      {
+        "slug": "agricultural-project-enquiries",
+        "title": "Agricultural project enquiries",
+        "description": "Discuss an agricultural project involving your land."
+      }
+    ]
+  },
+  "p-farmhouse-garden-care": {
+    "id": "p-farmhouse-garden-care",
+    "h1": "Farmhouse garden care",
+    "eyebrow": "Managed care",
+    "lead": "Landscape and lawn care for farmhouses and weekend homes.",
+    "tag": "",
+    "challenge": "Farmhouse gardens decline quickly when the owners are away. Regular care keeps the grounds welcoming.",
+    "benefits": [
+      "Grounds ready when you arrive",
+      "Trees, lawns and beds kept in order",
+      "Updates while you are away"
+    ],
+    "whatsIncluded": [
+      "Lawn and bed care",
+      "Pruning and clean-up",
+      "Watering checks",
+      "Visit updates"
+    ],
+    "steps": [
+      {
+        "step": "01",
+        "title": "Review the grounds",
+        "description": "We walk the property with you."
+      },
+      {
+        "step": "02",
+        "title": "Set the routine",
+        "description": "Tasks and visits are agreed."
+      },
+      {
+        "step": "03",
+        "title": "Care",
+        "description": "We maintain the garden through the seasons."
+      }
+    ],
+    "faqs": [
+      {
+        "question": "Can you care for it when I am not there?",
+        "answer": "Yes. That is a common use."
+      },
+      {
+        "question": "Do you do landscaping changes?",
+        "answer": "Yes, as a separate one-time service."
+      }
+    ],
+    "related": [
+      {
+        "slug": "kitchen-gardens-landscaping",
+        "title": "Kitchen gardens &amp; landscaping",
+        "description": "Gardens and landscaped spaces designed for your home."
+      },
+      {
+        "slug": "terrace-garden-maintenance",
+        "title": "Terrace garden maintenance",
+        "description": "Scheduled care so your terrace stays green."
+      },
+      {
+        "slug": "pruning-tree-care",
+        "title": "Pruning &amp; tree care",
+        "description": "Shaping and caring for trees for health and yield."
+      }
+    ]
+  },
+  "p-fencing-boundary-protection": {
+    "id": "p-fencing-boundary-protection",
+    "h1": "Fencing &amp; boundary protection",
+    "eyebrow": "One-time services",
+    "lead": "Boundaries, fencing and security matched to your land.",
+    "tag": "",
+    "challenge": "Unprotected land is open to trespass, animals and boundary disputes. The right fencing depends on terrain, use and budget.",
+    "benefits": [
+      "A defined, protected boundary",
+      "Options that suit terrain and purpose",
+      "Scope and materials agreed before work starts"
+    ],
+    "whatsIncluded": [
+      "Boundary and site review",
+      "Fencing options such as chain link, solar fencing or compound walls",
+      "Installation by the agreed team",
+      "Optional CCTV discussion where relevant"
+    ],
+    "steps": [
+      {
+        "step": "01",
+        "title": "Review the boundary",
+        "description": "We walk the perimeter and note terrain and access."
+      },
+      {
+        "step": "02",
+        "title": "Choose the approach",
+        "description": "We explain options and what each involves."
+      },
+      {
+        "step": "03",
+        "title": "Install",
+        "description": "Work is completed to the agreed scope."
+      }
+    ],
+    "faqs": [
+      {
+        "question": "Which fencing type is best?",
+        "answer": "It depends on the land and what you want to protect. We explain the trade-offs on site."
+      },
+      {
+        "question": "Is CCTV included?",
+        "answer": "Only where agreed in the scope."
+      }
+    ],
+    "related": [
+      {
+        "slug": "land-cleaning-levelling",
+        "title": "Land cleaning &amp; levelling",
+        "description": "A clean, even starting point for planting, fencing or building."
+      },
+      {
+        "slug": "farm-electrical-work",
+        "title": "Farm electrical work",
+        "description": "Electrical works for farms and sites."
+      },
+      {
+        "slug": "vacant-land-upkeep",
+        "title": "Vacant-land upkeep",
+        "description": "Keep an unused plot clean, visible and cared for."
+      }
+    ]
+  },
+  "p-harvest-assistance": {
+    "id": "p-harvest-assistance",
+    "h1": "Harvest assistance",
+    "eyebrow": "Managed care",
+    "lead": "Support through each harvest, including surplus.",
+    "tag": "",
+    "challenge": "Surplus produce can go unused when small growers cannot sell or store it.",
+    "benefits": [
+      "Harvest handled with care",
+      "Guidance on storage and handling",
+      "Help connecting surplus with local buyers"
+    ],
+    "whatsIncluded": [
+      "Harvest support",
+      "Handling guidance",
+      "Local buyer introductions subject to demand"
+    ],
+    "steps": [
+      {
+        "step": "01",
+        "title": "Plan",
+        "description": "We agree timing."
+      },
+      {
+        "step": "02",
+        "title": "Harvest",
+        "description": "Produce is harvested and sorted."
+      },
+      {
+        "step": "03",
+        "title": "Share",
+        "description": "Surplus is offered to suitable local buyers."
+      }
+    ],
+    "faqs": [
+      {
+        "question": "Is there a guaranteed price?",
+        "answer": "No. Sales depend on quality, quantity and local demand."
+      },
+      {
+        "question": "Can I keep everything?",
+        "answer": "Of course. Sharing surplus is optional."
+      }
+    ],
+    "related": [
+      {
+        "slug": "one-time-harvest-support",
+        "title": "One-time harvest support",
+        "description": "Extra hands and guidance when harvest arrives."
+      },
+      {
+        "slug": "managed-farms-orchards",
+        "title": "Managed farms &amp; orchards",
+        "description": "Ongoing care for productive land."
+      },
+      {
+        "slug": "seasonal-planting-upkeep",
+        "title": "Seasonal planting &amp; upkeep",
+        "description": "Plan and grow what suits your space and the season."
+      }
+    ]
+  },
+  "p-kitchen-gardens-landscaping": {
+    "id": "p-kitchen-gardens-landscaping",
+    "h1": "Kitchen gardens &amp; landscaping",
+    "eyebrow": "One-time services",
+    "lead": "Gardens and landscaped spaces designed for your home.",
+    "tag": "",
+    "challenge": "A garden that is not planned for your space and routine is hard to keep up and rarely looks or produces as hoped.",
+    "benefits": [
+      "A layout that suits your space",
+      "Plants chosen for your conditions",
+      "Upkeep you can manage or hand over"
+    ],
+    "whatsIncluded": [
+      "Layout of beds, paths and planting",
+      "Soil and bed preparation",
+      "Planting",
+      "Care notes, with managed care as an option"
+    ],
+    "steps": [
+      {
+        "step": "01",
+        "title": "Share your space",
+        "description": "Tell us about the area and what you want."
+      },
+      {
+        "step": "02",
+        "title": "Assess",
+        "description": "We review light, drainage and access."
+      },
+      {
+        "step": "03",
+        "title": "Create",
+        "description": "The garden is built and planted."
+      }
+    ],
+    "faqs": [
+      {
+        "question": "Do you build terrace gardens?",
+        "answer": "Yes, after assessing space, drainage and structural suitability."
+      },
+      {
+        "question": "Can you maintain it afterwards?",
+        "answer": "Yes. See Terrace garden care."
+      }
+    ],
+    "related": [
+      {
+        "slug": "terrace-garden-maintenance",
+        "title": "Terrace garden maintenance",
+        "description": "Scheduled care so your terrace stays green."
+      },
+      {
+        "slug": "farmhouse-garden-care",
+        "title": "Farmhouse garden care",
+        "description": "Landscape and lawn care for farmhouses and weekend homes."
+      },
+      {
+        "slug": "driirrigation-sprinklers",
+        "title": "Drip irrigation &amp; sprinklers",
+        "description": "Efficient watering systems designed for your space."
+      }
+    ]
+  },
+  "p-land-cleaning-levelling": {
+    "id": "p-land-cleaning-levelling",
+    "h1": "Land cleaning &amp; levelling",
+    "eyebrow": "One-time services",
+    "lead": "A clean, even starting point for planting, fencing or building.",
+    "tag": "",
+    "challenge": "Overgrown, uneven or debris-filled land is hard to plan around. Any work that follows is slower and costs more when the ground is not ready.",
+    "benefits": [
+      "A clear picture of what the land can support",
+      "Even ground for the next stage of work",
+      "Fewer surprises once planting or construction begins"
+    ],
+    "whatsIncluded": [
+      "Site walk-through and scope agreement",
+      "Clearing of vegetation and surface debris",
+      "Levelling to the agreed finish",
+      "Basic review of water flow across the site"
+    ],
+    "steps": [
+      {
+        "step": "01",
+        "title": "Walk the site",
+        "description": "We visit, note the condition of the land and agree what needs clearing."
+      },
+      {
+        "step": "02",
+        "title": "Agree the scope",
+        "description": "You receive the scope of work before anything starts."
+      },
+      {
+        "step": "03",
+        "title": "Clear and level",
+        "description": "Work is carried out and the site is left tidy."
+      }
+    ],
+    "faqs": [
+      {
+        "question": "Can you clear land that has trees on it?",
+        "answer": "Tree removal depends on the site and on any local permissions. We discuss this during the site visit."
+      },
+      {
+        "question": "Is levelling always needed?",
+        "answer": "Not always. We recommend it only where the next stage of work needs it."
+      }
+    ],
+    "related": [
+      {
+        "slug": "farm-land-planning",
+        "title": "Farm &amp; land planning",
+        "description": "Crop, farm and plot layouts planned around your goals."
+      },
+      {
+        "slug": "land-preparation",
+        "title": "Land preparation",
+        "description": "Ground made ready for planting or development."
+      },
+      {
+        "slug": "fencing-boundary-protection",
+        "title": "Fencing &amp; boundary protection",
+        "description": "Boundaries, fencing and security matched to your land."
+      }
+    ]
+  },
+  "p-land-preparation": {
+    "id": "p-land-preparation",
+    "h1": "Land preparation",
+    "eyebrow": "One-time services",
+    "lead": "Ground made ready for planting or development.",
+    "tag": "",
+    "challenge": "Planting into unprepared soil leads to poor establishment. Preparation sets the conditions for everything that grows afterwards.",
+    "benefits": [
+      "Soil ready for the planned crop or garden",
+      "Beds and rows set out correctly",
+      "A smoother start to planting"
+    ],
+    "whatsIncluded": [
+      "Review of soil and site condition",
+      "Ploughing, tilling or bed preparation as needed",
+      "Marking of rows, beds or planting zones",
+      "Handover with notes on next steps"
+    ],
+    "steps": [
+      {
+        "step": "01",
+        "title": "Check the ground",
+        "description": "We look at soil, slope and previous use."
+      },
+      {
+        "step": "02",
+        "title": "Prepare",
+        "description": "Work is carried out to suit the planned crop or garden."
+      },
+      {
+        "step": "03",
+        "title": "Hand over",
+        "description": "We confirm the site is ready and explain what comes next."
+      }
+    ],
+    "faqs": [
+      {
+        "question": "Do you prepare land for any crop?",
+        "answer": "We discuss the intended use first and prepare accordingly."
+      },
+      {
+        "question": "Does preparation include soil testing?",
+        "answer": "Testing can be coordinated as a separate service."
+      }
+    ],
+    "related": [
+      {
+        "slug": "land-cleaning-levelling",
+        "title": "Land cleaning &amp; levelling",
+        "description": "A clean, even starting point for planting, fencing or building."
+      },
+      {
+        "slug": "soil-water-testing",
+        "title": "Soil &amp; water testing coordination",
+        "description": "Testing support for informed farm and garden planning."
+      },
+      {
+        "slug": "planting-orchard-setup",
+        "title": "Planting &amp; orchard setup",
+        "description": "Trees and crops planted properly, with early care guidance."
+      }
+    ]
+  },
+  "p-landowner-enquiries": {
+    "id": "p-landowner-enquiries",
+    "h1": "Agricultural landowner enquiries",
+    "eyebrow": "Landowners & projects",
+    "lead": "Tell us about your land and what you are considering.",
+    "tag": "",
+    "challenge": "Landowners often have several options in mind and no clear first step. A conversation helps sort them.",
+    "benefits": [
+      "A single place to start",
+      "An initial assessment of your land",
+      "Clear next steps"
+    ],
+    "whatsIncluded": [
+      "Discussion of your land and goals",
+      "Initial site assessment",
+      "Guidance on suitable options"
+    ],
+    "steps": [
+      {
+        "step": "01",
+        "title": "Share details",
+        "description": "Tell us about the land."
+      },
+      {
+        "step": "02",
+        "title": "Assess",
+        "description": "We review it with you."
+      },
+      {
+        "step": "03",
+        "title": "Discuss options",
+        "description": "We outline suitable next steps."
+      }
+    ],
+    "faqs": [
+      {
+        "question": "Does an enquiry commit me?",
+        "answer": "No."
+      },
+      {
+        "question": "Which areas do you cover?",
+        "answer": "Service areas are confirmed at enquiry."
+      }
+    ],
+    "related": [
+      {
+        "slug": "farm-leasing-operator-partnerships",
+        "title": "Farm leasing &amp; operator partnerships",
+        "description": "Direct leasing or an introduction to a suitable operator, where offered."
+      },
+      {
+        "slug": "agricultural-project-enquiries",
+        "title": "Agricultural project enquiries",
+        "description": "Discuss an agricultural project involving your land."
+      },
+      {
+        "slug": "farm-land-planning",
+        "title": "Farm &amp; land planning",
+        "description": "Crop, farm and plot layouts planned around your goals."
+      }
+    ]
+  },
+  "p-managed-farms-orchards": {
+    "id": "p-managed-farms-orchards",
+    "h1": "Managed farms &amp; orchards",
+    "eyebrow": "Managed care",
+    "lead": "Ongoing care for productive land.",
+    "tag": "",
+    "challenge": "Owners who live elsewhere or have limited time find it hard to keep farms productive and watched over.",
+    "benefits": [
+      "Regular care on a schedule",
+      "Someone on site who reports back",
+      "Planning for each season"
+    ],
+    "whatsIncluded": [
+      "Visit schedule agreed with you",
+      "Crop and tree care",
+      "Seasonal planning",
+      "Updates on work done"
+    ],
+    "steps": [
+      {
+        "step": "01",
+        "title": "Assess",
+        "description": "We review the farm and agree what care it needs."
+      },
+      {
+        "step": "02",
+        "title": "Agree a plan",
+        "description": "Frequency and scope are set with you."
+      },
+      {
+        "step": "03",
+        "title": "Care and report",
+        "description": "Work is done on schedule, with updates."
+      }
+    ],
+    "faqs": [
+      {
+        "question": "How often do you visit?",
+        "answer": "Frequency and scope are agreed per customer."
+      },
+      {
+        "question": "Do I pay per visit?",
+        "answer": "Pricing is quoted for your agreed scope."
+      }
+    ],
+    "related": [
+      {
+        "slug": "one-time-harvest-support",
+        "title": "One-time harvest support",
+        "description": "Extra hands and guidance when harvest arrives."
+      },
+      {
+        "slug": "seasonal-planting-upkeep",
+        "title": "Seasonal planting &amp; upkeep",
+        "description": "Plan and grow what suits your space and the season."
+      },
+      {
+        "slug": "pruning-tree-care",
+        "title": "Pruning &amp; tree care",
+        "description": "Shaping and caring for trees for health and yield."
+      }
+    ]
+  },
+  "p-one-time-harvest-support": {
+    "id": "p-one-time-harvest-support",
+    "h1": "One-time harvest support",
+    "eyebrow": "One-time services",
+    "lead": "Extra hands and guidance when harvest arrives.",
+    "tag": "",
+    "challenge": "Harvest windows are short. Without enough hands or planning, produce is lost or damaged.",
+    "benefits": [
+      "Harvest done at the right time",
+      "Careful handling of produce",
+      "Help finding local buyers for surplus"
+    ],
+    "whatsIncluded": [
+      "Harvest planning",
+      "Labour support as agreed",
+      "Handling and packing guidance",
+      "Introductions to local buyers for surplus, subject to demand"
+    ],
+    "steps": [
+      {
+        "step": "01",
+        "title": "Plan",
+        "description": "We agree timing and labour needs."
+      },
+      {
+        "step": "02",
+        "title": "Harvest",
+        "description": "The team carries out the harvest."
+      },
+      {
+        "step": "03",
+        "title": "Sort and sell",
+        "description": "We help with handling and local buyer introductions."
+      }
+    ],
+    "faqs": [
+      {
+        "question": "Do you guarantee a buyer?",
+        "answer": "No. Sales depend on quality, quantity and local demand."
+      },
+      {
+        "question": "Can this become regular?",
+        "answer": "Yes, as part of managed care."
+      }
+    ],
+    "related": [
+      {
+        "slug": "pruning-tree-care",
+        "title": "Pruning &amp; tree care",
+        "description": "Shaping and caring for trees for health and yield."
+      },
+      {
+        "slug": "managed-farms-orchards",
+        "title": "Managed farms &amp; orchards",
+        "description": "Ongoing care for productive land."
+      },
+      {
+        "slug": "kitchen-gardens-landscaping",
+        "title": "Kitchen gardens &amp; landscaping",
+        "description": "Gardens and landscaped spaces designed for your home."
+      }
+    ]
+  },
+  "p-planting-orchard-setup": {
+    "id": "p-planting-orchard-setup",
+    "h1": "Planting &amp; orchard setup",
+    "eyebrow": "One-time services",
+    "lead": "Trees and crops planted properly, with early care guidance.",
+    "tag": "",
+    "challenge": "Trees planted with the wrong spacing or in the wrong place cost years of growth. A careful start matters.",
+    "benefits": [
+      "Species suited to soil and climate",
+      "Correct spacing and planting",
+      "Guidance for the first months"
+    ],
+    "whatsIncluded": [
+      "Selection discussion",
+      "Pit or bed preparation",
+      "Planting and initial watering",
+      "Early-care notes"
+    ],
+    "steps": [
+      {
+        "step": "01",
+        "title": "Choose",
+        "description": "We discuss what suits your land and goals."
+      },
+      {
+        "step": "02",
+        "title": "Plant",
+        "description": "Planting is carried out to the agreed layout."
+      },
+      {
+        "step": "03",
+        "title": "Guide",
+        "description": "You receive early-care guidance."
+      }
+    ],
+    "faqs": [
+      {
+        "question": "Do you supply the plants?",
+        "answer": "Supply can be included in the scope. We confirm this in the proposal."
+      },
+      {
+        "question": "Can you manage the orchard afterwards?",
+        "answer": "Yes, through managed care."
+      }
+    ],
+    "related": [
+      {
+        "slug": "land-preparation",
+        "title": "Land preparation",
+        "description": "Ground made ready for planting or development."
+      },
+      {
+        "slug": "pruning-tree-care",
+        "title": "Pruning &amp; tree care",
+        "description": "Shaping and caring for trees for health and yield."
+      },
+      {
+        "slug": "managed-farms-orchards",
+        "title": "Managed farms &amp; orchards",
+        "description": "Ongoing care for productive land."
+      }
+    ]
+  },
+  "p-pruning-tree-care": {
+    "id": "p-pruning-tree-care",
+    "h1": "Pruning &amp; tree care",
+    "eyebrow": "One-time services",
+    "lead": "Shaping and caring for trees for health and yield.",
+    "tag": "",
+    "challenge": "Unpruned trees become crowded and less productive. Poorly timed cuts can harm them.",
+    "benefits": [
+      "Healthier, better-shaped trees",
+      "Better light and air through the canopy",
+      "Problems spotted early"
+    ],
+    "whatsIncluded": [
+      "Tree health review",
+      "Pruning at the suitable time of year",
+      "Clean-up of cuttings"
+    ],
+    "steps": [
+      {
+        "step": "01",
+        "title": "Review",
+        "description": "We look at each tree group and its condition."
+      },
+      {
+        "step": "02",
+        "title": "Prune",
+        "description": "Cuts are made for health and structure."
+      },
+      {
+        "step": "03",
+        "title": "Clean up",
+        "description": "Cuttings are cleared from the site."
+      }
+    ],
+    "faqs": [
+      {
+        "question": "When should I prune?",
+        "answer": "It depends on the species. We advise during the visit."
+      },
+      {
+        "question": "Do you treat diseased trees?",
+        "answer": "We note issues and discuss options, including nutrition and pest care."
+      }
+    ],
+    "related": [
+      {
+        "slug": "planting-orchard-setup",
+        "title": "Planting &amp; orchard setup",
+        "description": "Trees and crops planted properly, with early care guidance."
+      },
+      {
+        "slug": "managed-farms-orchards",
+        "title": "Managed farms &amp; orchards",
+        "description": "Ongoing care for productive land."
+      },
+      {
+        "slug": "one-time-harvest-support",
+        "title": "One-time harvest support",
+        "description": "Extra hands and guidance when harvest arrives."
+      }
+    ]
+  },
+  "p-seasonal-planting-upkeep": {
+    "id": "p-seasonal-planting-upkeep",
+    "h1": "Seasonal planting &amp; upkeep",
+    "eyebrow": "Managed care",
+    "lead": "Plan and grow what suits your space and the season.",
+    "tag": "",
+    "challenge": "Knowing what to plant, and when, is half the challenge. Seasonal plans keep small plots productive.",
+    "benefits": [
+      "Crops suited to each season",
+      "Regular weeding and watering",
+      "A steady supply from your own plot"
+    ],
+    "whatsIncluded": [
+      "Seasonal crop plan",
+      "Planting",
+      "Weeding, watering and pruning",
+      "Harvest guidance"
+    ],
+    "steps": [
+      {
+        "step": "01",
+        "title": "Plan the season",
+        "description": "We choose crops for your space."
+      },
+      {
+        "step": "02",
+        "title": "Plant and tend",
+        "description": "We plant and look after the plot."
+      },
+      {
+        "step": "03",
+        "title": "Harvest",
+        "description": "We guide you through harvest."
+      }
+    ],
+    "faqs": [
+      {
+        "question": "Can I choose the crops?",
+        "answer": "Yes. We advise and you decide."
+      },
+      {
+        "question": "What if the season fails?",
+        "answer": "We review what happened and adjust the next plan."
+      }
+    ],
+    "related": [
+      {
+        "slug": "vacant-land-upkeep",
+        "title": "Vacant-land upkeep",
+        "description": "Keep an unused plot clean, visible and cared for."
+      },
+      {
+        "slug": "harvest-assistance",
+        "title": "Harvest assistance",
+        "description": "Support through each harvest, including surplus."
+      },
+      {
+        "slug": "terrace-garden-maintenance",
+        "title": "Terrace garden maintenance",
+        "description": "Scheduled care so your terrace stays green."
+      }
+    ]
+  },
+  "p-soil-water-testing": {
+    "id": "p-soil-water-testing",
+    "h1": "Soil &amp; water testing coordination",
+    "eyebrow": "One-time services",
+    "lead": "Testing support for informed farm and garden planning.",
+    "tag": "",
+    "challenge": "Planting without knowing soil and water quality is guesswork. Test results help you choose crops and inputs.",
+    "benefits": [
+      "Decisions based on test results",
+      "Better matching of crops to conditions",
+      "Records to refer back to"
+    ],
+    "whatsIncluded": [
+      "Sample collection guidance or collection",
+      "Submission to a testing laboratory",
+      "Explanation of the results in plain language"
+    ],
+    "steps": [
+      {
+        "step": "01",
+        "title": "Collect samples",
+        "description": "Soil and water samples are taken correctly."
+      },
+      {
+        "step": "02",
+        "title": "Test",
+        "description": "Samples go to a laboratory."
+      },
+      {
+        "step": "03",
+        "title": "Explain",
+        "description": "We go through the results and what they mean for you."
+      }
+    ],
+    "faqs": [
+      {
+        "question": "Do you run the tests yourselves?",
+        "answer": "We coordinate testing through laboratories. Details are confirmed at enquiry."
+      },
+      {
+        "question": "How long do results take?",
+        "answer": "That depends on the laboratory. We share the expected time when we submit."
+      }
+    ],
+    "related": [
+      {
+        "slug": "land-preparation",
+        "title": "Land preparation",
+        "description": "Ground made ready for planting or development."
+      },
+      {
+        "slug": "planting-orchard-setup",
+        "title": "Planting &amp; orchard setup",
+        "description": "Trees and crops planted properly, with early care guidance."
+      },
+      {
+        "slug": "managed-farms-orchards",
+        "title": "Managed farms &amp; orchards",
+        "description": "Ongoing care for productive land."
+      }
+    ]
+  },
+  "p-terrace-garden-maintenance": {
+    "id": "p-terrace-garden-maintenance",
+    "h1": "Terrace garden maintenance",
+    "eyebrow": "Managed care",
+    "lead": "Scheduled care so your terrace stays green.",
+    "tag": "",
+    "challenge": "Terrace gardens need steady watering, feeding and trimming. Without it, plants decline and drainage problems can appear.",
+    "benefits": [
+      "Healthy plants through the year",
+      "Watering and drainage kept working",
+      "Minimal effort from you"
+    ],
+    "whatsIncluded": [
+      "Scheduled visits",
+      "Pruning and feeding",
+      "Watering system checks",
+      "Replacement planting by arrangement"
+    ],
+    "steps": [
+      {
+        "step": "01",
+        "title": "Assess",
+        "description": "We review the terrace and plants."
+      },
+      {
+        "step": "02",
+        "title": "Plan",
+        "description": "Visit frequency and tasks are agreed."
+      },
+      {
+        "step": "03",
+        "title": "Maintain",
+        "description": "We care for the garden as agreed."
+      }
+    ],
+    "faqs": [
+      {
+        "question": "Do you set up terrace gardens too?",
+        "answer": "Yes, through Kitchen gardens &amp; landscaping."
+      },
+      {
+        "question": "Is structure a concern?",
+        "answer": "Load and drainage are reviewed before installation."
+      }
+    ],
+    "related": [
+      {
+        "slug": "kitchen-gardens-landscaping",
+        "title": "Kitchen gardens &amp; landscaping",
+        "description": "Gardens and landscaped spaces designed for your home."
+      },
+      {
+        "slug": "farmhouse-garden-care",
+        "title": "Farmhouse garden care",
+        "description": "Landscape and lawn care for farmhouses and weekend homes."
+      },
+      {
+        "slug": "seasonal-planting-upkeep",
+        "title": "Seasonal planting &amp; upkeep",
+        "description": "Plan and grow what suits your space and the season."
+      }
+    ]
+  },
+  "p-vacant-land-upkeep": {
+    "id": "p-vacant-land-upkeep",
+    "h1": "Vacant-land upkeep",
+    "eyebrow": "Managed care",
+    "lead": "Keep an unused plot clean, visible and cared for.",
+    "tag": "",
+    "challenge": "Vacant plots become overgrown and attract dumping or encroachment when nobody is looking after them.",
+    "benefits": [
+      "A plot that stays clean",
+      "Regular eyes on the site",
+      "Option to start growing later"
+    ],
+    "whatsIncluded": [
+      "Periodic clearing and weeding",
+      "Site checks",
+      "Update notes after visits",
+      "Option to convert part of the plot to a kitchen garden"
+    ],
+    "steps": [
+      {
+        "step": "01",
+        "title": "Visit",
+        "description": "We assess the plot."
+      },
+      {
+        "step": "02",
+        "title": "Set a routine",
+        "description": "We agree visits and tasks."
+      },
+      {
+        "step": "03",
+        "title": "Maintain",
+        "description": "We keep the plot in the agreed state."
+      }
+    ],
+    "faqs": [
+      {
+        "question": "Can I turn it into a garden later?",
+        "answer": "Yes. Many plots move from upkeep to growing."
+      },
+      {
+        "question": "Do you handle legal matters?",
+        "answer": "No. Legal and boundary matters are outside this service."
+      }
+    ],
+    "related": [
+      {
+        "slug": "land-cleaning-levelling",
+        "title": "Land cleaning &amp; levelling",
+        "description": "A clean, even starting point for planting, fencing or building."
+      },
+      {
+        "slug": "kitchen-gardens-landscaping",
+        "title": "Kitchen gardens &amp; landscaping",
+        "description": "Gardens and landscaped spaces designed for your home."
+      },
+      {
+        "slug": "fencing-boundary-protection",
+        "title": "Fencing &amp; boundary protection",
+        "description": "Boundaries, fencing and security matched to your land."
+      }
+    ]
+  }
+}
