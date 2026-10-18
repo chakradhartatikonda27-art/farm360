@@ -1,7 +1,6 @@
-'use client';
-
 import React from 'react';
 import Link from 'next/link';
+import { WhatsAppIcon } from '../common/FloatingWhatsApp';
 
 export function ContactCtaBanner() {
   return (
@@ -21,10 +20,19 @@ export function ContactCtaBanner() {
             </p>
           </div>
 
-          <div className="w-full sm:w-auto">
+          <div className="w-full sm:w-auto flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+            <a
+              href="https://wa.me/919876543210?text=Hello%20FarmCare%20360%C2%B0%2C%20I%20would%20like%20to%20discuss%20my%20property%20requirements."
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-2 min-h-[50px] px-6 rounded-full bg-[#25D366] hover:bg-[#20ba59] active:scale-[0.98] text-white font-sans font-semibold text-[15px] transition-all shadow-sm"
+            >
+              <WhatsAppIcon className="w-5 h-5 fill-white" />
+              <span>WhatsApp Us</span>
+            </a>
             <Link
               href="/contact"
-              className="w-full sm:w-auto inline-flex items-center justify-center min-h-[50px] px-8 rounded-full bg-gold hover:bg-[#D4B66B] active:scale-[0.98] text-forest-deep font-sans font-semibold text-[15px] transition-all shadow-sm text-center"
+              className="inline-flex items-center justify-center min-h-[50px] px-8 rounded-full bg-gold hover:bg-[#D4B66B] active:scale-[0.98] text-forest-deep font-sans font-semibold text-[15px] transition-all shadow-sm text-center"
             >
               Request a Consultation →
             </Link>

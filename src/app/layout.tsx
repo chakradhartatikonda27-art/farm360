@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { SiteHeader } from '@/components/layout/SiteHeader';
 import { SiteFooter } from '@/components/layout/SiteFooter';
+import { FloatingWhatsApp } from '@/components/common/FloatingWhatsApp';
 import { companyConfig } from '@/data/companyConfig';
 
 export const viewport: Viewport = {
@@ -92,6 +93,7 @@ export default function RootLayout({
       addressRegion: 'Karnataka & Telangana',
     },
     areaServed: companyConfig.contact.serviceRegions,
+    sameAs: companyConfig.socialLinks.map((s) => s.url),
     knowsAbout: [
       'Agricultural Land Planning',
       'Orchard Establishment',
@@ -113,6 +115,7 @@ export default function RootLayout({
         <SiteHeader />
         <main className="flex-1 w-full">{children}</main>
         <SiteFooter />
+        <FloatingWhatsApp />
       </body>
     </html>
   );

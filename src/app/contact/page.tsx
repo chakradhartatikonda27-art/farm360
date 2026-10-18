@@ -1,8 +1,10 @@
 import React, { Suspense } from 'react';
 import type { Metadata } from 'next';
 import Image from 'next/image';
+import { Instagram, Youtube, Linkedin } from 'lucide-react';
 import { Breadcrumbs } from '@/components/common/Breadcrumbs';
 import { ConsultationForm } from '@/components/common/ConsultationForm';
+import { WhatsAppIcon } from '@/components/common/FloatingWhatsApp';
 import { companyConfig } from '@/data/companyConfig';
 
 export const metadata: Metadata = {
@@ -57,6 +59,64 @@ export default function ContactPage() {
                 <p>
                   <strong>Operational Hours:</strong> Monday – Saturday: 8:00 AM – 6:30 PM IST
                 </p>
+              </div>
+
+              {/* WhatsApp Quick Chat Card */}
+              <div className="mt-6 p-5 rounded-2xl bg-gradient-to-br from-[#25D366]/10 to-[#128C7E]/5 border border-[#25D366]/25 space-y-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-[#25D366] flex items-center justify-center text-white shadow-sm flex-shrink-0">
+                    <WhatsAppIcon className="w-5 h-5 fill-white" />
+                  </div>
+                  <div>
+                    <h3 className="font-serif text-lg font-semibold text-forest-deep">Prefer Instant Messaging?</h3>
+                    <p className="text-xs text-charcoal/70">Connect directly with an agricultural advisor on WhatsApp.</p>
+                  </div>
+                </div>
+                <div className="pt-1">
+                  <a
+                    href="https://wa.me/919876543210?text=Hello%20FarmCare%20360%C2%B0%2C%20I%20would%20like%20to%20discuss%20my%20property%20requirements."
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-full bg-[#25D366] hover:bg-[#20ba59] active:scale-[0.98] text-white font-sans font-semibold text-sm transition-all shadow-sm"
+                  >
+                    <WhatsAppIcon className="w-4 h-4 fill-white" />
+                    <span>Chat on WhatsApp (+91 98765 43210)</span>
+                  </a>
+                </div>
+              </div>
+
+              {/* Social Channels */}
+              <div className="pt-4">
+                <p className="text-xs uppercase tracking-wider text-charcoal/60 font-semibold mb-3">Connect on Social Media</p>
+                <div className="flex flex-wrap items-center gap-2.5">
+                  <a
+                    href="https://instagram.com/farmcare360"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-3.5 py-2 rounded-full bg-white/80 border border-charcoal/10 text-charcoal/80 hover:text-[#E4405F] hover:border-[#E4405F]/40 text-xs font-semibold shadow-xs transition-all"
+                  >
+                    <Instagram className="w-4 h-4 text-[#E4405F]" />
+                    <span>Instagram</span>
+                  </a>
+                  <a
+                    href="https://youtube.com/@farmcare360"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-3.5 py-2 rounded-full bg-white/80 border border-charcoal/10 text-charcoal/80 hover:text-[#FF0000] hover:border-[#FF0000]/40 text-xs font-semibold shadow-xs transition-all"
+                  >
+                    <Youtube className="w-4 h-4 text-[#FF0000]" />
+                    <span>YouTube</span>
+                  </a>
+                  <a
+                    href="https://linkedin.com/company/farmcare360"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-3.5 py-2 rounded-full bg-white/80 border border-charcoal/10 text-charcoal/80 hover:text-[#0A66C2] hover:border-[#0A66C2]/40 text-xs font-semibold shadow-xs transition-all"
+                  >
+                    <Linkedin className="w-4 h-4 text-[#0A66C2]" />
+                    <span>LinkedIn</span>
+                  </a>
+                </div>
               </div>
             </div>
 

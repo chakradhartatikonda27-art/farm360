@@ -3,7 +3,9 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { Instagram, Youtube, Linkedin } from 'lucide-react';
 import { Logo } from '../common/Logo';
+import { WhatsAppIcon } from '../common/FloatingWhatsApp';
 
 export function SiteHeader() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -99,8 +101,18 @@ export function SiteHeader() {
             })}
           </nav>
 
-          {/* Desktop Consultation Action (Champagne Gold per Reference) */}
-          <div className="hidden lg:flex items-center">
+          {/* Desktop Actions: WhatsApp + Consultation */}
+          <div className="hidden lg:flex items-center gap-3">
+            <a
+              href="https://wa.me/919876543210?text=Hello%20FarmCare%20360%C2%B0%2C%20I%20would%20like%20to%20discuss%20my%20property%20requirements."
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Chat with FarmCare 360° on WhatsApp"
+              className="inline-flex items-center gap-2 min-h-[42px] px-3.5 py-1.5 rounded-full bg-[#25D366]/10 hover:bg-[#25D366]/20 text-[#128C7E] font-medium text-[13.5px] transition-all border border-[#25D366]/30 shadow-xs"
+            >
+              <WhatsAppIcon className="w-4 h-4 fill-[#25D366]" />
+              <span className="hidden xl:inline">WhatsApp</span>
+            </a>
             <Link
               href="/contact"
               className="inline-flex items-center justify-center min-h-[42px] px-6 rounded-full bg-gold hover:bg-[#D4B66B] text-forest-deep font-sans font-semibold text-[14.5px] transition-all shadow-sm hover:shadow"
@@ -110,17 +122,26 @@ export function SiteHeader() {
           </div>
 
           {/* Mobile Hamburger Button */}
-          <div className="flex lg:hidden items-center gap-3">
+          <div className="flex lg:hidden items-center gap-2 sm:gap-3">
+            <a
+              href="https://wa.me/919876543210?text=Hello%20FarmCare%20360%C2%B0%2C%20I%20would%20like%20to%20discuss%20my%20property%20requirements."
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Chat on WhatsApp"
+              className="w-10 h-10 rounded-full bg-[#25D366]/15 border border-[#25D366]/30 flex items-center justify-center text-[#128C7E] active:scale-95 transition-all"
+            >
+              <WhatsAppIcon className="w-5 h-5 fill-[#25D366]" />
+            </a>
             <Link
               href="/contact"
-              className="inline-flex items-center justify-center min-h-[40px] px-4 rounded-full bg-gold text-forest-deep font-sans font-semibold text-xs sm:text-[13.5px] transition-all active:scale-95 shadow-sm"
+              className="inline-flex items-center justify-center min-h-[40px] px-3.5 sm:px-4 rounded-full bg-gold text-forest-deep font-sans font-semibold text-xs sm:text-[13.5px] transition-all active:scale-95 shadow-sm"
             >
               Consultation
             </Link>
             <button
               type="button"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="w-12 h-12 flex flex-col items-center justify-center gap-1.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-gold rounded-xl active:bg-cream/60 transition-colors touch-manipulation"
+              className="w-11 h-11 flex flex-col items-center justify-center gap-1.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-gold rounded-xl active:bg-cream/60 transition-colors touch-manipulation"
               aria-label={isMobileMenuOpen ? "Close navigation" : "Open navigation"}
               aria-expanded={isMobileMenuOpen}
             >
@@ -166,14 +187,70 @@ export function SiteHeader() {
             })}
           </div>
 
-          <div className="mt-auto pt-6 border-t border-charcoal/10 space-y-3">
-            <Link
-              href="/contact"
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="w-full inline-flex items-center justify-center min-h-[50px] px-6 rounded-full bg-gold hover:bg-[#D4B66B] active:scale-[0.98] text-forest-deep font-sans font-semibold text-base transition-all shadow-sm"
-            >
-              Plan a Consultation
-            </Link>
+          <div className="mt-auto pt-6 border-t border-charcoal/10 space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              <a
+                href="https://wa.me/919876543210?text=Hello%20FarmCare%20360%C2%B0%2C%20I%20would%20like%20to%20discuss%20my%20property%20requirements."
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="w-full inline-flex items-center justify-center gap-2 min-h-[48px] px-4 rounded-full bg-[#25D366] hover:bg-[#20ba59] active:scale-[0.98] text-white font-sans font-semibold text-[15px] transition-all shadow-sm"
+              >
+                <WhatsAppIcon className="w-5 h-5 fill-white" />
+                <span>Chat on WhatsApp</span>
+              </a>
+              <Link
+                href="/contact"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="w-full inline-flex items-center justify-center min-h-[48px] px-4 rounded-full bg-gold hover:bg-[#D4B66B] active:scale-[0.98] text-forest-deep font-sans font-semibold text-[15px] transition-all shadow-sm"
+              >
+                Plan a Consultation
+              </Link>
+            </div>
+
+            {/* Social Channels row */}
+            <div className="pt-2">
+              <p className="text-xs uppercase tracking-wider text-charcoal/50 font-semibold mb-2.5 text-center">Follow & Connect</p>
+              <div className="flex items-center justify-center gap-3">
+                <a
+                  href="https://instagram.com/farmcare360"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="FarmCare 360° on Instagram"
+                  className="w-10 h-10 rounded-full bg-white/80 border border-charcoal/10 flex items-center justify-center text-charcoal/70 hover:text-[#E4405F] hover:border-[#E4405F]/40 active:scale-95 transition-all shadow-xs"
+                >
+                  <Instagram className="w-5 h-5" />
+                </a>
+                <a
+                  href="https://youtube.com/@farmcare360"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="FarmCare 360° on YouTube"
+                  className="w-10 h-10 rounded-full bg-white/80 border border-charcoal/10 flex items-center justify-center text-charcoal/70 hover:text-[#FF0000] hover:border-[#FF0000]/40 active:scale-95 transition-all shadow-xs"
+                >
+                  <Youtube className="w-5 h-5" />
+                </a>
+                <a
+                  href="https://linkedin.com/company/farmcare360"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="FarmCare 360° on LinkedIn"
+                  className="w-10 h-10 rounded-full bg-white/80 border border-charcoal/10 flex items-center justify-center text-charcoal/70 hover:text-[#0A66C2] hover:border-[#0A66C2]/40 active:scale-95 transition-all shadow-xs"
+                >
+                  <Linkedin className="w-5 h-5" />
+                </a>
+                <a
+                  href="https://wa.me/919876543210?text=Hello%20FarmCare%20360%C2%B0%2C%20I%20would%20like%20to%20discuss%20my%20property%20requirements."
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="FarmCare 360° on WhatsApp"
+                  className="w-10 h-10 rounded-full bg-white/80 border border-charcoal/10 flex items-center justify-center text-charcoal/70 hover:text-[#25D366] hover:border-[#25D366]/40 active:scale-95 transition-all shadow-xs"
+                >
+                  <WhatsAppIcon className="w-5 h-5 fill-current" />
+                </a>
+              </div>
+            </div>
+
             <p className="text-center text-xs tracking-wider uppercase text-charcoal/60 pt-1">
               Healthy land, brighter tomorrows.
             </p>

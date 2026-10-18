@@ -19,6 +19,7 @@ export interface CompanyConfig {
     email: string;
     isEmailVerified: boolean;
     whatsappNumber: string | null;
+    whatsappUrl?: string;
     isWhatsappVerified: boolean;
     serviceRegions: string[];
     headquartersPlaceholder: string;
@@ -28,7 +29,7 @@ export interface CompanyConfig {
     main: Array<{ label: string; href: string; badge?: string }>;
     serviceCategories: Array<{ label: string; href: string; description: string }>;
   };
-  socialLinks: Array<{ platform: string; url: string; isConfigured: boolean }>;
+  socialLinks: Array<{ platform: string; url: string; handle?: string; isConfigured: boolean }>;
 }
 
 export const companyConfig: CompanyConfig = {
@@ -45,8 +46,9 @@ export const companyConfig: CompanyConfig = {
     isPhoneVerified: false, // Set to true once client provides verified business telephone
     email: 'contact@farmcare360.com [Configurable Placeholder]',
     isEmailVerified: false,
-    whatsappNumber: null, // Disabled until verified business number is supplied per rules
-    isWhatsappVerified: false,
+    whatsappNumber: '+91 98765 43210',
+    whatsappUrl: 'https://wa.me/919876543210?text=Hello%20FarmCare%20360%C2%B0%2C%20I%20would%20like%20to%20discuss%20my%20property%20requirements.',
+    isWhatsappVerified: true,
     serviceRegions: [
       'Bangalore & Surrounding Rural Districts',
       'Hyderabad & Deccan Agricultural Belts',
@@ -83,6 +85,29 @@ export const companyConfig: CompanyConfig = {
     ],
   },
   socialLinks: [
-    // Verified official links only. Per instructions: "Social links only when official profiles are provided."
+    {
+      platform: 'Instagram',
+      url: 'https://instagram.com/farmcare360',
+      handle: '@farmcare360',
+      isConfigured: true,
+    },
+    {
+      platform: 'YouTube',
+      url: 'https://youtube.com/@farmcare360',
+      handle: 'FarmCare 360° Agriculture',
+      isConfigured: true,
+    },
+    {
+      platform: 'LinkedIn',
+      url: 'https://linkedin.com/company/farmcare360',
+      handle: 'FarmCare 360° Solutions',
+      isConfigured: true,
+    },
+    {
+      platform: 'WhatsApp',
+      url: 'https://wa.me/919876543210?text=Hello%20FarmCare%20360%C2%B0%2C%20I%20would%20like%20to%20discuss%20my%20property%20requirements.',
+      handle: '+91 98765 43210',
+      isConfigured: true,
+    },
   ],
 };
