@@ -123,7 +123,7 @@ export default function AdminHeader({
             ) : (
               <LogOut className="w-3.5 h-3.5" />
             )}
-            <span className="hidden sm:inline">Logout</span>
+            <span className="font-semibold text-xs">Logout</span>
           </button>
         </div>
       </div>

@@ -17,9 +17,32 @@ export async function POST() {
     }
 
     const response = NextResponse.json({ success: true, message: 'Logged out successfully' });
-    response.cookies.delete(AUTH_COOKIE_NAME);
+    response.cookies.set({
+      name: AUTH_COOKIE_NAME,
+      value: '',
+      path: '/',
+      maxAge: 0,
+      expires: new Date(0),
+      httpOnly: true,
+      sameSite: 'lax',
+    });
     return response;
   } catch (err: any) {
     return NextResponse.json({ error: 'Failed to logout' }, { status: 500 });
   }
+}
+
+export async function GET(req: Request) {
+  const url = new URL('/admin/login', req.url);
+  const response = NextResponse.redirect(url);
+  response.cookies.set({
+    name: AUTH_COOKIE_NAME,
+    value: '',
+    path: '/',
+    maxAge: 0,
+    expires: new Date(0),
+    httpOnly: true,
+    sameSite: 'lax',
+  });
+  return response;
 }

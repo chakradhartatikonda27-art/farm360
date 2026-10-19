@@ -86,6 +86,7 @@ export default function AdminRootLayout({
         isOpen={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
         userRole={currentUser?.role}
+        currentUser={currentUser}
       />
 
       {/* Main content area */}
