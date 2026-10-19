@@ -399,6 +399,11 @@ export interface StageProspectingData {
 export interface StageQualificationData {
   qualificationStatus?: 'qualified' | 'needs_more_info' | 'disqualified' | 'pending';
   requirementSummary?: string;
+  customerNeed?: string;
+  howWeCanHelp?: string;
+  projectScale?: 'small' | 'medium' | 'large' | string;
+  landArea?: string;
+  constraints?: string;
   businessCategory?: string;
   estimatedBudget?: number | string;
   expectedStartDate?: string;
@@ -443,6 +448,16 @@ export interface StageNeedAnalysisData {
   currentOperatingProcess?: string;
   customerExpectations?: string;
 
+  // Challenges Identified & Specific Inputs (from screenshot)
+  challengesIdentified?: string[];
+  pestChallengesText?: string;
+  soilChallengesText?: string;
+  irrigationChallengesText?: string;
+  yieldChallengesText?: string;
+  clientGoals?: string;
+  currentPractices?: string;
+  otherChallengesText?: string;
+
   // Challenges
   pestChallenges?: boolean;
   pestTypes?: string[];
@@ -485,6 +500,9 @@ export interface ProposalRevision {
 }
 
 export interface StageValuePropositionData {
+  valuePropositionText?: string;
+  expectedBenefitsText?: string;
+  roiStatement?: string;
   proposedSolution?: string;
   recommendedServices?: string[];
   scopeOfWork?: string;

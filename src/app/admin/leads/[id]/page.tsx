@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 import {
   ArrowLeft,
   CheckCircle2,
-  Circle,
   Clock,
   Phone,
   Mail,
@@ -112,6 +111,22 @@ export default function LeadDetailPage({ params }: { params: Promise<{ id: strin
     setTimeout(() => setToastError(null), 5000);
   };
 
+  // Helper to toggle challenges in Step 3
+  const toggleChallenge = (challengeName: string) => {
+    if (!lead) return;
+    const currentList = lead.stageNeedAnalysis?.challengesIdentified || ["Pest", "Soil", "Irrigation", "Yield"];
+    const exists = currentList.includes(challengeName);
+    const updated = exists ? currentList.filter((c) => c !== challengeName) : [...currentList, challengeName];
+
+    setLead({
+      ...lead,
+      stageNeedAnalysis: {
+        ...(lead.stageNeedAnalysis || {}),
+        challengesIdentified: updated,
+      },
+    });
+  };
+
   // Save current step data
   const handleSaveStepData = async (advanceToNext = false) => {
     if (!lead) return;
@@ -153,7 +168,7 @@ export default function LeadDetailPage({ params }: { params: Promise<{ id: strin
       setLead(data.data);
       if (advanceToNext && activeStepTab < 7) {
         setActiveStepTab((prev) => prev + 1);
-        showToast(`Moved forward to Step ${activeStepTab + 1}: ${STAGES[activeStepTab].title}`);
+        showToast(`Progressed to Step ${activeStepTab + 1}: ${STAGES[activeStepTab].title}`);
       } else {
         showToast("Changes saved successfully");
       }
@@ -325,6 +340,9 @@ export default function LeadDetailPage({ params }: { params: Promise<{ id: strin
   const isLost = lead.status === "closed_lost" || lead.currentStage === "closed_lost";
   const cleanPhone = lead.phone.replace(/[^\d]/g, "");
 
+  // Challenges list for Need Analysis
+  const challengesList = lead.stageNeedAnalysis?.challengesIdentified || ["Pest", "Soil", "Irrigation", "Yield"];
+
   return (
     <div className="space-y-6 pb-16">
       {/* Toast Notification */}
@@ -359,200 +377,153 @@ export default function LeadDetailPage({ params }: { params: Promise<{ id: strin
         )}
       </div>
 
-      {/* Lead Identity Summary Card */}
-      <div className="bg-white rounded-2xl border border-[#E6E1D8] p-5 shadow-sm">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+      {/* LEAD JOURNEY Stepper Banner (Matching Screenshots) */}
+      <div className="bg-[#FAF8F5] rounded-2xl border border-[#E6E1D8] p-6 shadow-sm">
+        <div className="flex items-start justify-between mb-6">
           <div>
-            <div className="flex items-center gap-2 text-xs font-mono text-[#7C887E]">
-              <span>{lead.referenceId}</span>
-              <span>•</span>
-              <span className="uppercase text-[10px] font-sans px-1.5 py-0.2 rounded bg-[#FAF8F5] border border-[#E6E1D8]">
-                {lead.source}
-              </span>
-              <span>•</span>
-              <span className="text-[11px] font-sans">
-                Received {new Date(lead.createdAt).toLocaleString("en-IN")}
-              </span>
+            <div className="text-[11px] font-bold text-[#4A5D4E] tracking-wider uppercase">
+              LEAD JOURNEY
             </div>
-
-            <div className="flex items-baseline gap-3 mt-1.5">
-              <h1 className="text-2xl font-serif font-bold text-[#1B3B2B]">
-                {lead.name}
-              </h1>
-              <span className="text-xs text-[#4A5D4E]">
-                {lead.phone} {lead.location ? `• ${lead.location}` : ""}
-              </span>
-            </div>
-
-            <div className="text-xs text-[#7C887E] mt-1 flex items-center gap-2">
-              <span className="font-medium text-[#1B3B2B]">
-                {lead.serviceCategory || "General Agricultural Planning"}
-              </span>
-              {lead.estimatedDealValue ? (
-                <>
-                  <span>•</span>
-                  <span className="font-semibold text-emerald-800">
-                    Est. ₹{lead.estimatedDealValue.toLocaleString("en-IN")}
-                  </span>
-                </>
-              ) : null}
-            </div>
+            <h2 className="text-xl md:text-2xl font-serif font-bold text-[#1B3B2B] mt-0.5">
+              One clear step at a time
+            </h2>
           </div>
+          <div className="text-xs font-semibold text-[#1B3B2B] bg-white px-3 py-1 rounded-full border border-[#DCD5C5]">
+            {activeStepTab} of 7
+          </div>
+        </div>
 
-          {/* Quick Communication & Status */}
-          <div className="flex flex-wrap items-center gap-2">
-            <a
-              href={`tel:${cleanPhone}`}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-[#1B3B2B] bg-[#FAF8F5] border border-[#DCD5C5] rounded-lg hover:bg-[#F3EFE6] transition-colors"
-              title="Call customer"
-            >
-              <Phone className="w-3.5 h-3.5 text-[#1B3B2B]" />
-              Call
-            </a>
+        {/* Stepper Steps Row */}
+        <div className="overflow-x-auto pb-2">
+          <div className="flex items-center justify-between min-w-[760px] relative px-4">
+            {STAGES.map((s, idx) => {
+              const stepNum = idx + 1;
+              const isCompleted = stepNum < currentStepNumber || lead.status === "closed_won";
+              const isInProgress = stepNum === currentStepNumber && !isLost;
+              const isSelected = activeStepTab === stepNum;
 
-            <a
-              href={`https://wa.me/${cleanPhone}?text=Hello%20${encodeURIComponent(
-                lead.name
-              )},%20this%20is%20FarmCare%20360°%20regarding%20your%20enquiry.`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-emerald-800 bg-emerald-50 border border-emerald-200 rounded-lg hover:bg-emerald-100 transition-colors"
-              title="WhatsApp chat"
-            >
-              <MessageSquare className="w-3.5 h-3.5 text-emerald-700" />
-              WhatsApp
-            </a>
+              return (
+                <React.Fragment key={s.key}>
+                  {/* Step Node */}
+                  <button
+                    type="button"
+                    onClick={() => setActiveStepTab(stepNum)}
+                    className="relative z-10 flex flex-col items-center group cursor-pointer focus:outline-none"
+                  >
+                    {isCompleted ? (
+                      /* Completed Step: Green circle with checkmark */
+                      <div className="w-8 h-8 rounded-full bg-[#1B3B2B] text-white flex items-center justify-center text-xs font-bold shadow-sm">
+                        <CheckCircle2 className="w-5 h-5" />
+                      </div>
+                    ) : isInProgress ? (
+                      /* In Progress Step: Double gold ring with number */
+                      <div className="w-9 h-9 rounded-full border-2 border-[#C5A869] bg-white flex items-center justify-center p-0.5 shadow-md">
+                        <div className="w-full h-full rounded-full border border-[#C5A869] flex items-center justify-center text-xs font-bold text-[#1B3B2B]">
+                          {stepNum}
+                        </div>
+                      </div>
+                    ) : (
+                      /* Up Next Step: Light grey circle with number */
+                      <div className="w-8 h-8 rounded-full border border-[#DCD5C5] bg-white text-[#7C887E] flex items-center justify-center text-xs font-medium">
+                        {stepNum}
+                      </div>
+                    )}
 
-            {lead.email && (
-              <a
-                href={`mailto:${lead.email}?subject=FarmCare%20360°%20Enquiry%20${lead.referenceId}`}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-[#1B3B2B] bg-[#FAF8F5] border border-[#DCD5C5] rounded-lg hover:bg-[#F3EFE6] transition-colors"
-                title="Send email"
-              >
-                <Mail className="w-3.5 h-3.5 text-[#8C7A5B]" />
-                Email
-              </a>
-            )}
+                    {/* Step Title & Subtitle */}
+                    <div className="text-center mt-2">
+                      <div
+                        className={`text-xs whitespace-nowrap ${
+                          isSelected || isInProgress
+                            ? "font-bold text-[#1B3B2B]"
+                            : isCompleted
+                            ? "font-semibold text-[#1B3B2B]"
+                            : "font-medium text-[#7C887E]"
+                        }`}
+                      >
+                        {s.title}
+                      </div>
+                      <div
+                        className={`text-[10px] mt-0.5 ${
+                          isCompleted
+                            ? "text-[#7C887E]"
+                            : isInProgress
+                            ? "text-[#C5A869] font-bold"
+                            : "text-[#A0A8A0]"
+                        }`}
+                      >
+                        {isCompleted ? "Complete" : isInProgress ? "In progress" : "Up next"}
+                      </div>
+                    </div>
+                  </button>
 
-            <div className="pl-2 border-l border-[#E6E1D8] flex items-center gap-1.5">
-              <span className="text-[11px] font-semibold text-[#1B3B2B] px-2.5 py-1 rounded-full bg-[#1B3B2B]/5 border border-[#1B3B2B]/10">
-                Step {currentStepNumber} of 7 · {STAGES[currentStepNumber - 1]?.title}
-              </span>
-            </div>
+                  {/* Horizontal Connector Line between steps */}
+                  {idx < STAGES.length - 1 && (
+                    <div
+                      className={`flex-1 h-0.5 mx-2 -mt-7 transition-colors ${
+                        stepNum < currentStepNumber ? "bg-[#1B3B2B]" : "bg-[#E6E1D8]"
+                      }`}
+                    />
+                  )}
+                </React.Fragment>
+              );
+            })}
           </div>
         </div>
       </div>
 
-      {/* Connected 7-Step Stepper Ribbon */}
-      <div className="bg-white rounded-2xl border border-[#E6E1D8] p-4 shadow-sm overflow-x-auto">
-        <div className="flex items-center justify-between mb-3 px-1">
-          <div className="text-[11px] font-semibold text-[#7C887E] uppercase tracking-wider">
-            LEAD JOURNEY • ONE CLEAR STEP AT A TIME
-          </div>
-          <div className="text-xs font-medium text-[#1B3B2B]">
-            Viewing: <span className="font-bold">{STAGES[activeStepTab - 1]?.title}</span>
-          </div>
-        </div>
-
-        <div className="flex items-center justify-between min-w-[700px] relative px-4 py-2">
-          {/* Connector Line */}
-          <div className="absolute left-8 right-8 top-1/2 -translate-y-1/2 h-0.5 bg-[#E6E1D8] z-0" />
-
-          {STAGES.map((s, idx) => {
-            const stepNum = idx + 1;
-            const isCompleted = stepNum < currentStepNumber || lead.status === "closed_won";
-            const isCurrent = stepNum === currentStepNumber && !isLost;
-            const isSelected = activeStepTab === stepNum;
-
-            let circleClass = "bg-white border-2 border-[#DCD5C5] text-[#7C887E]";
-            if (isCompleted) {
-              circleClass = "bg-emerald-700 border-2 border-emerald-700 text-white shadow-sm";
-            } else if (isCurrent) {
-              circleClass = "bg-[#C5A869] border-2 border-[#C5A869] text-white shadow-md ring-4 ring-[#C5A869]/20";
-            }
-
-            return (
-              <button
-                key={s.key}
-                type="button"
-                onClick={() => setActiveStepTab(stepNum)}
-                className="relative z-10 flex flex-col items-center group cursor-pointer focus:outline-none"
-              >
-                <div
-                  className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all ${circleClass} ${
-                    isSelected ? "scale-110 ring-2 ring-[#1B3B2B]" : ""
-                  }`}
-                >
-                  {isCompleted ? <CheckCircle2 className="w-4 h-4" /> : stepNum}
-                </div>
-                <span
-                  className={`text-[11px] font-medium mt-1.5 whitespace-nowrap transition-colors ${
-                    isSelected
-                      ? "text-[#1B3B2B] font-bold"
-                      : isCompleted
-                      ? "text-emerald-800 font-semibold"
-                      : "text-[#7C887E]"
-                  }`}
-                >
-                  {s.title}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Main Grid: Left Stage Form + Right Timeline */}
+      {/* Main Grid: Left Stage Form + Right THE PAPER TRAIL */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left 2 Cols: Dedicated Step Form */}
+        {/* Left 2 Cols: Dedicated Step Form (Matching Screenshots) */}
         <div className="lg:col-span-2 space-y-6">
           <div className="bg-white rounded-2xl border border-[#E6E1D8] p-6 shadow-sm">
             {/* Step Header */}
             <div className="flex items-center justify-between pb-4 border-b border-[#E6E1D8]">
               <div>
-                <div className="text-[10px] font-bold text-[#8C7A5B] tracking-wider uppercase">
+                <div className="text-[10px] font-bold text-[#7C887E] tracking-wider uppercase">
                   CURRENT STEP • 0{activeStepTab} / 07
                 </div>
-                <h2 className="text-xl font-serif font-bold text-[#1B3B2B] mt-0.5">
+                <h2 className="text-xl md:text-2xl font-serif font-bold text-[#1B3B2B] mt-0.5">
                   {STAGES[activeStepTab - 1].title}
                 </h2>
               </div>
 
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => handleSaveStepData(false)}
-                  disabled={saving}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-[#1B3B2B] bg-[#FAF8F5] border border-[#DCD5C5] rounded-lg hover:bg-[#F3EFE6] transition-colors disabled:opacity-60"
-                >
-                  <Save className="w-3.5 h-3.5 text-[#8C7A5B]" />
-                  {saving ? "Saving..." : "Save Draft"}
-                </button>
-              </div>
+              {/* Status Indicator Dot from screenshot */}
+              <div className="w-3 h-3 rounded-full bg-emerald-600 ring-4 ring-emerald-50" />
             </div>
 
-            {/* INITIAL ENQUIRY SNIPPET */}
-            <div className="my-4 p-4 rounded-xl bg-[#FAF8F5] border border-[#E6E1D8]">
-              <div className="text-[10px] font-bold text-[#7C887E] tracking-wider uppercase mb-1">
-                INITIAL ENQUIRY FROM VISITOR
+            {/* INITIAL ENQUIRY Box (Matching Screenshot) */}
+            <div className="my-5 p-4 rounded-xl bg-[#FAF8F5] border border-[#E6E1D8]">
+              <div className="text-[10px] font-bold text-[#7C887E] tracking-wider uppercase mb-1.5">
+                INITIAL ENQUIRY
               </div>
-              <div className="text-xs text-[#1B3B2B]">
-                <span className="font-semibold">{lead.serviceCategory || "General Consultation"}</span>
-                {lead.location ? ` in ${lead.location}` : ""}
+              <div className="text-sm font-semibold text-[#1B3B2B]">
+                {lead.name}
               </div>
-              {lead.message ? (
-                <div className="mt-1 text-xs text-[#4A5D4E] italic bg-white p-2.5 rounded-lg border border-[#E6E1D8]/60">
+              <div className="flex flex-wrap items-center gap-2 mt-2">
+                <span className="px-2.5 py-1 rounded bg-[#EBE5D8] text-[#1B3B2B] text-xs font-medium">
+                  {lead.serviceCategory || "Small Plot & Site Gardening"}
+                </span>
+                <span className="px-2.5 py-1 rounded bg-[#EBE5D8] text-[#1B3B2B] text-xs font-medium">
+                  {lead.location || "india"}
+                </span>
+              </div>
+              {lead.message && (
+                <div className="mt-2.5 text-xs text-[#4A5D4E] italic bg-white p-2.5 rounded-lg border border-[#E6E1D8]/70">
                   "{lead.message}"
                 </div>
-              ) : null}
+              )}
             </div>
 
             {/* STEP 1: PROSPECTING */}
             {activeStepTab === 1 && (
               <div className="space-y-4 pt-2">
+                <p className="text-xs text-[#7C887E]">
+                  Capture initial contact details, reason for enquiry, and establish contact history.
+                </p>
+
                 <div>
                   <label className="block text-xs font-semibold text-[#1B3B2B] mb-1">
-                    Initial Enquiry Reason & Need
+                    Initial enquiry reason *
                   </label>
                   <textarea
                     rows={3}
@@ -574,7 +545,7 @@ export default function LeadDetailPage({ params }: { params: Promise<{ id: strin
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-semibold text-[#1B3B2B] mb-1">
-                      Customer Expectations & Interest
+                      Customer expectations *
                     </label>
                     <input
                       type="text"
@@ -595,7 +566,7 @@ export default function LeadDetailPage({ params }: { params: Promise<{ id: strin
 
                   <div>
                     <label className="block text-xs font-semibold text-[#1B3B2B] mb-1">
-                      Initial Budget Estimate (₹)
+                      Initial budget estimate (₹)
                     </label>
                     <input
                       type="number"
@@ -620,7 +591,7 @@ export default function LeadDetailPage({ params }: { params: Promise<{ id: strin
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-semibold text-[#1B3B2B] mb-1">
-                      Assigned Sales Executive
+                      Assigned executive
                     </label>
                     <input
                       type="text"
@@ -641,7 +612,7 @@ export default function LeadDetailPage({ params }: { params: Promise<{ id: strin
 
                   <div>
                     <label className="block text-xs font-semibold text-[#1B3B2B] mb-1">
-                      Next Follow-up Date
+                      Next follow-up date
                     </label>
                     <input
                       type="date"
@@ -663,7 +634,7 @@ export default function LeadDetailPage({ params }: { params: Promise<{ id: strin
 
                 <div>
                   <label className="block text-xs font-semibold text-[#1B3B2B] mb-1">
-                    Prospecting Notes & Contact Summary
+                    Prospecting notes
                   </label>
                   <textarea
                     rows={2}
@@ -681,111 +652,157 @@ export default function LeadDetailPage({ params }: { params: Promise<{ id: strin
                     className="w-full px-3 py-2 text-xs bg-[#FAF8F5] border border-[#DCD5C5] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#1B3B2B]"
                   />
                 </div>
+
+                {/* Bottom Step Actions */}
+                <div className="pt-4 flex items-center justify-end gap-3 border-t border-[#E6E1D8]">
+                  <button
+                    type="button"
+                    onClick={() => handleSaveStepData(false)}
+                    disabled={saving}
+                    className="px-4 py-2 text-xs font-medium text-[#1B3B2B] bg-[#FAF8F5] border border-[#DCD5C5] rounded-lg hover:bg-[#F3EFE6] transition-colors"
+                  >
+                    Save prospecting
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleSaveStepData(true)}
+                    disabled={saving}
+                    className="px-5 py-2 text-xs font-bold text-white bg-[#1B3B2B] hover:bg-[#152e22] rounded-lg transition-all"
+                  >
+                    Save & continue →
+                  </button>
+                </div>
               </div>
             )}
 
-            {/* STEP 2: QUALIFICATION */}
+            {/* STEP 2: QUALIFICATION (Exact layout from Screenshot 1 & 4) */}
             {activeStepTab === 2 && (
               <div className="space-y-4 pt-2">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <p className="text-xs text-[#7C887E]">
+                  Understand the customer's need and whether the service is a fit. Agricultural details are optional when they do not apply.
+                </p>
+
+                <div>
+                  <label className="block text-xs font-semibold text-[#1B3B2B] mb-1">
+                    Customer need *
+                  </label>
+                  <textarea
+                    rows={3}
+                    value={lead.stageQualification?.customerNeed || lead.stageQualification?.requirementSummary || ""}
+                    onChange={(e) =>
+                      setLead({
+                        ...lead,
+                        stageQualification: {
+                          ...(lead.stageQualification || {}),
+                          customerNeed: e.target.value,
+                          requirementSummary: e.target.value,
+                        },
+                      })
+                    }
+                    placeholder="e.g. Terrace garden setup with automated micro-drip irrigation"
+                    className="w-full px-3 py-2 text-xs bg-[#FAF8F5] border border-[#DCD5C5] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#1B3B2B]"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-[#1B3B2B] mb-1">
+                    How FARM360 can help *
+                  </label>
+                  <textarea
+                    rows={3}
+                    value={lead.stageQualification?.howWeCanHelp || ""}
+                    onChange={(e) =>
+                      setLead({
+                        ...lead,
+                        stageQualification: {
+                          ...(lead.stageQualification || {}),
+                          howWeCanHelp: e.target.value,
+                        },
+                      })
+                    }
+                    placeholder="e.g. Provide end-to-end design, soil bed preparation, seed sourcing, and monthly upkeep"
+                    className="w-full px-3 py-2 text-xs bg-[#FAF8F5] border border-[#DCD5C5] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#1B3B2B]"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-semibold text-[#1B3B2B] mb-1">
-                      Qualification Status
+                      Project scale *
                     </label>
                     <select
-                      value={lead.stageQualification?.qualificationStatus || "needs_more_info"}
-                      onChange={(e) =>
-                        setLead({
-                          ...lead,
-                          stageQualification: {
-                            ...(lead.stageQualification || {}),
-                            qualificationStatus: e.target.value as any,
-                          },
-                        })
-                      }
-                      className="w-full px-3 py-2 text-xs bg-[#FAF8F5] border border-[#DCD5C5] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#1B3B2B]"
-                    >
-                      <option value="needs_more_info">Needs More Info</option>
-                      <option value="qualified">Qualified Lead</option>
-                      <option value="disqualified">Disqualified</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-semibold text-[#1B3B2B] mb-1">
-                      Total Land Area (Acres / Sqft)
-                    </label>
-                    <input
-                      type="number"
-                      step="0.1"
-                      value={lead.stageQualification?.totalAreaAcres || ""}
-                      onChange={(e) =>
-                        setLead({
-                          ...lead,
-                          stageQualification: {
-                            ...(lead.stageQualification || {}),
-                            totalAreaAcres: Number(e.target.value),
-                          },
-                        })
-                      }
-                      placeholder="e.g. 2.5"
-                      className="w-full px-3 py-2 text-xs bg-[#FAF8F5] border border-[#DCD5C5] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#1B3B2B]"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-semibold text-[#1B3B2B] mb-1">
-                      Operation Scale
-                    </label>
-                    <select
-                      value={lead.stageQualification?.operationScale || "small"}
+                      value={lead.stageQualification?.operationScale || lead.stageQualification?.projectScale || "small"}
                       onChange={(e) =>
                         setLead({
                           ...lead,
                           stageQualification: {
                             ...(lead.stageQualification || {}),
                             operationScale: e.target.value as any,
+                            projectScale: e.target.value,
                           },
                         })
                       }
                       className="w-full px-3 py-2 text-xs bg-[#FAF8F5] border border-[#DCD5C5] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#1B3B2B]"
                     >
-                      <option value="small">Small (&lt; 2 Acres / Rooftop)</option>
-                      <option value="medium">Medium (2 - 10 Acres)</option>
-                      <option value="large">Large (10+ Acres / Commercial)</option>
+                      <option value="small">Small</option>
+                      <option value="medium">Medium</option>
+                      <option value="large">Large</option>
                     </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-[#1B3B2B] mb-1">
+                      Land area / acreage
+                    </label>
+                    <input
+                      type="text"
+                      value={lead.stageQualification?.landArea || lead.stageQualification?.totalAreaAcres || ""}
+                      onChange={(e) =>
+                        setLead({
+                          ...lead,
+                          stageQualification: {
+                            ...(lead.stageQualification || {}),
+                            landArea: e.target.value,
+                            totalAreaAcres: Number(e.target.value) || e.target.value,
+                          },
+                        })
+                      }
+                      placeholder="e.g. 2 acres"
+                      className="w-full px-3 py-2 text-xs bg-[#FAF8F5] border border-[#DCD5C5] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#1B3B2B]"
+                    />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-semibold text-[#1B3B2B] mb-1">
-                      Primary Crop / Focus
+                      Crop type
                     </label>
                     <input
                       type="text"
-                      value={lead.stageQualification?.primaryCrop || lead.stageQualification?.cropType || ""}
+                      value={lead.stageQualification?.cropType || lead.stageQualification?.primaryCrop || ""}
                       onChange={(e) =>
                         setLead({
                           ...lead,
                           stageQualification: {
                             ...(lead.stageQualification || {}),
-                            primaryCrop: e.target.value,
                             cropType: e.target.value,
+                            primaryCrop: e.target.value,
                           },
                         })
                       }
-                      placeholder="e.g. Mango, Guava, Organic Vegetables, Native Trees"
+                      placeholder="e.g. Organic Vegetables, Fruits, Mango"
                       className="w-full px-3 py-2 text-xs bg-[#FAF8F5] border border-[#DCD5C5] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#1B3B2B]"
                     />
                   </div>
 
                   <div>
                     <label className="block text-xs font-semibold text-[#1B3B2B] mb-1">
-                      Water Availability
+                      Water availability
                     </label>
-                    <select
-                      value={lead.stageQualification?.waterAvailability || "available"}
+                    <input
+                      type="text"
+                      value={lead.stageQualification?.waterAvailability || ""}
                       onChange={(e) =>
                         setLead({
                           ...lead,
@@ -795,102 +812,150 @@ export default function LeadDetailPage({ params }: { params: Promise<{ id: strin
                           },
                         })
                       }
+                      placeholder="e.g. Borewell water, municipal supply"
                       className="w-full px-3 py-2 text-xs bg-[#FAF8F5] border border-[#DCD5C5] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#1B3B2B]"
-                    >
-                      <option value="available">Borewell / Canal Available</option>
-                      <option value="seasonal">Seasonal Water Only</option>
-                      <option value="limited">Limited Water Supply</option>
-                      <option value="unavailable">No Water Source Yet</option>
-                    </select>
+                    />
                   </div>
                 </div>
 
                 <div>
                   <label className="block text-xs font-semibold text-[#1B3B2B] mb-1">
-                    Customer Requirement Summary
+                    Constraints
                   </label>
                   <textarea
-                    rows={3}
-                    value={lead.stageQualification?.requirementSummary || ""}
+                    rows={2}
+                    value={lead.stageQualification?.constraints || ""}
                     onChange={(e) =>
                       setLead({
                         ...lead,
                         stageQualification: {
                           ...(lead.stageQualification || {}),
-                          requirementSummary: e.target.value,
+                          constraints: e.target.value,
                         },
                       })
                     }
-                    placeholder="Summarize the land conditions, accessibility, constraints, and scope..."
+                    placeholder="e.g. Limited sunlight, water pressure issues, high wind on terrace"
                     className="w-full px-3 py-2 text-xs bg-[#FAF8F5] border border-[#DCD5C5] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#1B3B2B]"
                   />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-[#1B3B2B] mb-1">
+                    Qualification notes
+                  </label>
+                  <textarea
+                    rows={2}
+                    value={lead.stageQualification?.qualificationNotes || ""}
+                    onChange={(e) =>
+                      setLead({
+                        ...lead,
+                        stageQualification: {
+                          ...(lead.stageQualification || {}),
+                          qualificationNotes: e.target.value,
+                        },
+                      })
+                    }
+                    placeholder="Remarks regarding readiness, timeline, and customer commitment..."
+                    className="w-full px-3 py-2 text-xs bg-[#FAF8F5] border border-[#DCD5C5] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#1B3B2B]"
+                  />
+                </div>
+
+                {/* Bottom Step Actions (Matching Screenshot 4) */}
+                <div className="pt-4 flex items-center justify-end gap-3 border-t border-[#E6E1D8]">
+                  <button
+                    type="button"
+                    onClick={() => handleSaveStepData(false)}
+                    disabled={saving}
+                    className="px-4 py-2 text-xs font-medium text-[#1B3B2B] bg-[#FAF8F5] border border-[#DCD5C5] rounded-lg hover:bg-[#F3EFE6] transition-colors"
+                  >
+                    Save qualification
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleSaveStepData(true)}
+                    disabled={saving}
+                    className="px-5 py-2 text-xs font-bold text-white bg-[#1B3B2B] hover:bg-[#152e22] rounded-lg transition-all"
+                  >
+                    Save & continue →
+                  </button>
                 </div>
               </div>
             )}
 
-            {/* STEP 3: NEED ANALYSIS */}
+            {/* STEP 3: NEED ANALYSIS (Exact layout from Screenshot 2 & 3) */}
             {activeStepTab === 3 && (
               <div className="space-y-4 pt-2">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div>
-                    <label className="block text-xs font-semibold text-[#1B3B2B] mb-1">
-                      Site Inspection Status
-                    </label>
-                    <select
-                      value={lead.stageNeedAnalysis?.siteInspectionRequired ? "yes" : "no"}
-                      onChange={(e) =>
-                        setLead({
-                          ...lead,
-                          stageNeedAnalysis: {
-                            ...(lead.stageNeedAnalysis || {}),
-                            siteInspectionRequired: e.target.value === "yes",
-                          },
-                        })
-                      }
-                      className="w-full px-3 py-2 text-xs bg-[#FAF8F5] border border-[#DCD5C5] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#1B3B2B]"
-                    >
-                      <option value="yes">Site Visit Required</option>
-                      <option value="no">Desk Review Only</option>
-                    </select>
-                  </div>
+                <p className="text-xs text-[#7C887E]">
+                  Capture the customer's goals and the conditions that will shape a workable plan.
+                </p>
 
+                {/* Challenges identified Chips (Matching Screenshot 3) */}
+                <div>
+                  <label className="block text-xs font-semibold text-[#1B3B2B] mb-2">
+                    Challenges identified
+                  </label>
+                  <div className="flex flex-wrap items-center gap-2">
+                    {["Pest", "Soil", "Irrigation", "Yield"].map((challenge) => {
+                      const isSelected = challengesList.includes(challenge);
+                      return (
+                        <button
+                          key={challenge}
+                          type="button"
+                          onClick={() => toggleChallenge(challenge)}
+                          className={`px-3.5 py-1.5 rounded-full text-xs font-medium transition-all ${
+                            isSelected
+                              ? "bg-[#1B3B2B] text-white border border-[#1B3B2B]"
+                              : "bg-white text-[#4A5D4E] border border-[#DCD5C5] hover:border-[#1B3B2B]"
+                          }`}
+                        >
+                          {challenge}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Challenge Textareas 2x2 Grid (Matching Screenshot 3) */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-semibold text-[#1B3B2B] mb-1">
-                      Inspection Date
+                      Pest challenges
                     </label>
-                    <input
-                      type="date"
-                      value={lead.stageNeedAnalysis?.siteVisitDate || ""}
+                    <textarea
+                      rows={3}
+                      value={lead.stageNeedAnalysis?.pestChallengesText || ""}
                       onChange={(e) =>
                         setLead({
                           ...lead,
                           stageNeedAnalysis: {
                             ...(lead.stageNeedAnalysis || {}),
-                            siteVisitDate: e.target.value,
+                            pestChallengesText: e.target.value,
                           },
                         })
                       }
+                      placeholder="e.g. Leaf miners, mealybugs, aphids"
                       className="w-full px-3 py-2 text-xs bg-[#FAF8F5] border border-[#DCD5C5] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#1B3B2B]"
                     />
                   </div>
 
                   <div>
                     <label className="block text-xs font-semibold text-[#1B3B2B] mb-1">
-                      Soil Type & Condition
+                      Soil challenges
                     </label>
-                    <input
-                      type="text"
-                      value={lead.stageNeedAnalysis?.soilType || ""}
+                    <textarea
+                      rows={3}
+                      value={lead.stageNeedAnalysis?.soilChallengesText || lead.stageNeedAnalysis?.soilType || ""}
                       onChange={(e) =>
                         setLead({
                           ...lead,
                           stageNeedAnalysis: {
                             ...(lead.stageNeedAnalysis || {}),
+                            soilChallengesText: e.target.value,
                             soilType: e.target.value,
                           },
                         })
                       }
-                      placeholder="e.g. Red Loam, Clay, Black Cotton"
+                      placeholder="e.g. High salinity, poor aeration, clay compaction"
                       className="w-full px-3 py-2 text-xs bg-[#FAF8F5] border border-[#DCD5C5] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#1B3B2B]"
                     />
                   </div>
@@ -899,50 +964,117 @@ export default function LeadDetailPage({ params }: { params: Promise<{ id: strin
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-semibold text-[#1B3B2B] mb-1">
-                      Existing Irrigation & Water Quality
+                      Irrigation challenges
                     </label>
-                    <input
-                      type="text"
-                      value={lead.stageNeedAnalysis?.irrigationSystemType || ""}
+                    <textarea
+                      rows={3}
+                      value={lead.stageNeedAnalysis?.irrigationChallengesText || lead.stageNeedAnalysis?.irrigationSystemType || ""}
                       onChange={(e) =>
                         setLead({
                           ...lead,
                           stageNeedAnalysis: {
                             ...(lead.stageNeedAnalysis || {}),
+                            irrigationChallengesText: e.target.value,
                             irrigationSystemType: e.target.value,
                           },
                         })
                       }
-                      placeholder="e.g. Flood irrigation, Drip needed, High TDS"
+                      placeholder="e.g. Irregular water pressure, no timer system, clogged lines"
                       className="w-full px-3 py-2 text-xs bg-[#FAF8F5] border border-[#DCD5C5] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#1B3B2B]"
                     />
                   </div>
 
                   <div>
                     <label className="block text-xs font-semibold text-[#1B3B2B] mb-1">
-                      Pest, Disease or Drainage Concerns
+                      Yield challenges
                     </label>
-                    <input
-                      type="text"
-                      value={lead.stageNeedAnalysis?.cropHealthConcerns || ""}
+                    <textarea
+                      rows={3}
+                      value={lead.stageNeedAnalysis?.yieldChallengesText || ""}
                       onChange={(e) =>
                         setLead({
                           ...lead,
                           stageNeedAnalysis: {
                             ...(lead.stageNeedAnalysis || {}),
-                            cropHealthConcerns: e.target.value,
+                            yieldChallengesText: e.target.value,
                           },
                         })
                       }
-                      placeholder="e.g. Root rot, wild boar fencing needed, water stagnation"
+                      placeholder="e.g. Low fruit set, flower dropping, stunted vegetative growth"
                       className="w-full px-3 py-2 text-xs bg-[#FAF8F5] border border-[#DCD5C5] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#1B3B2B]"
                     />
                   </div>
                 </div>
 
+                {/* Client goals and current practices (Matching Screenshot 2) */}
                 <div>
                   <label className="block text-xs font-semibold text-[#1B3B2B] mb-1">
-                    Agronomic Analysis Notes & Diagnosis
+                    Client goals *
+                  </label>
+                  <textarea
+                    rows={2}
+                    value={lead.stageNeedAnalysis?.clientGoals || ""}
+                    onChange={(e) =>
+                      setLead({
+                        ...lead,
+                        stageNeedAnalysis: {
+                          ...(lead.stageNeedAnalysis || {}),
+                          clientGoals: e.target.value,
+                        },
+                      })
+                    }
+                    placeholder="e.g. Year-round supply of fresh organic leafy greens and herbs"
+                    className="w-full px-3 py-2 text-xs bg-[#FAF8F5] border border-[#DCD5C5] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#1B3B2B]"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-[#1B3B2B] mb-1">
+                    Current farming practices
+                  </label>
+                  <textarea
+                    rows={2}
+                    value={lead.stageNeedAnalysis?.currentPractices || lead.stageNeedAnalysis?.currentOperatingProcess || ""}
+                    onChange={(e) =>
+                      setLead({
+                        ...lead,
+                        stageNeedAnalysis: {
+                          ...(lead.stageNeedAnalysis || {}),
+                          currentPractices: e.target.value,
+                          currentOperatingProcess: e.target.value,
+                        },
+                      })
+                    }
+                    placeholder="e.g. Manual watering twice a day, sporadic application of cow dung manure"
+                    className="w-full px-3 py-2 text-xs bg-[#FAF8F5] border border-[#DCD5C5] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#1B3B2B]"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-[#1B3B2B] mb-1">
+                    Other challenges
+                  </label>
+                  <textarea
+                    rows={2}
+                    value={lead.stageNeedAnalysis?.otherChallengesText || lead.stageNeedAnalysis?.otherChallenges || ""}
+                    onChange={(e) =>
+                      setLead({
+                        ...lead,
+                        stageNeedAnalysis: {
+                          ...(lead.stageNeedAnalysis || {}),
+                          otherChallengesText: e.target.value,
+                          otherChallenges: e.target.value,
+                        },
+                      })
+                    }
+                    placeholder="e.g. Lack of skilled maintenance labour, monkey menace"
+                    className="w-full px-3 py-2 text-xs bg-[#FAF8F5] border border-[#DCD5C5] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#1B3B2B]"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-[#1B3B2B] mb-1">
+                    Analysis notes *
                   </label>
                   <textarea
                     rows={3}
@@ -956,41 +1088,111 @@ export default function LeadDetailPage({ params }: { params: Promise<{ id: strin
                         },
                       })
                     }
-                    placeholder="Document technical findings, topography, tree count, and required inputs..."
+                    placeholder="Comprehensive agronomist summary shaping the value proposition..."
                     className="w-full px-3 py-2 text-xs bg-[#FAF8F5] border border-[#DCD5C5] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#1B3B2B]"
                   />
+                </div>
+
+                {/* Bottom Step Actions (Matching Screenshot 2) */}
+                <div className="pt-4 flex items-center justify-end gap-3 border-t border-[#E6E1D8]">
+                  <button
+                    type="button"
+                    onClick={() => handleSaveStepData(false)}
+                    disabled={saving}
+                    className="px-4 py-2 text-xs font-medium text-[#1B3B2B] bg-[#FAF8F5] border border-[#DCD5C5] rounded-lg hover:bg-[#F3EFE6] transition-colors"
+                  >
+                    Save analysis
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleSaveStepData(true)}
+                    disabled={saving}
+                    className="px-5 py-2 text-xs font-bold text-white bg-[#1B3B2B] hover:bg-[#152e22] rounded-lg transition-all"
+                  >
+                    Save & continue →
+                  </button>
                 </div>
               </div>
             )}
 
-            {/* STEP 4: VALUE PROPOSITION */}
+            {/* STEP 4: VALUE PROPOSITION (Exact layout from Screenshot 5) */}
             {activeStepTab === 4 && (
               <div className="space-y-4 pt-2">
+                <p className="text-xs text-[#7C887E]">
+                  Describe the recommendation and benefits without promising unsupported results.
+                </p>
+
                 <div>
                   <label className="block text-xs font-semibold text-[#1B3B2B] mb-1">
-                    Proposed Agronomic Solution & Implementation Approach
+                    Value proposition *
                   </label>
                   <textarea
                     rows={3}
-                    value={lead.stageValueProposition?.proposedSolution || ""}
+                    value={lead.stageValueProposition?.valuePropositionText || lead.stageValueProposition?.proposedSolution || ""}
                     onChange={(e) =>
                       setLead({
                         ...lead,
                         stageValueProposition: {
                           ...(lead.stageValueProposition || {}),
+                          valuePropositionText: e.target.value,
                           proposedSolution: e.target.value,
                         },
                       })
                     }
-                    placeholder="Outline the planned agricultural package, organic inputs, precision drip, and schedule..."
+                    placeholder="e.g. Turnkey raised wooden planter bed setup with automated drip lines and bi-weekly agronomy audits"
                     className="w-full px-3 py-2 text-xs bg-[#FAF8F5] border border-[#DCD5C5] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#1B3B2B]"
                   />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-[#1B3B2B] mb-1">
+                      Expected benefits
+                    </label>
+                    <textarea
+                      rows={3}
+                      value={lead.stageValueProposition?.expectedBenefitsText || ""}
+                      onChange={(e) =>
+                        setLead({
+                          ...lead,
+                          stageValueProposition: {
+                            ...(lead.stageValueProposition || {}),
+                            expectedBenefitsText: e.target.value,
+                          },
+                        })
+                      }
+                      placeholder="e.g. 100% pesticide-free produce, 60% water savings, improved property aesthetics"
+                      className="w-full px-3 py-2 text-xs bg-[#FAF8F5] border border-[#DCD5C5] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#1B3B2B]"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-[#1B3B2B] mb-1">
+                      ROI statement (only when defensible)
+                    </label>
+                    <textarea
+                      rows={3}
+                      value={lead.stageValueProposition?.roiStatement || lead.stageValueProposition?.expectedOutcomeROI || ""}
+                      onChange={(e) =>
+                        setLead({
+                          ...lead,
+                          stageValueProposition: {
+                            ...(lead.stageValueProposition || {}),
+                            roiStatement: e.target.value,
+                            expectedOutcomeROI: e.target.value,
+                          },
+                        })
+                      }
+                      placeholder="e.g. Estimated annual savings of ₹36,000 in grocery costs + zero pesticide exposure"
+                      className="w-full px-3 py-2 text-xs bg-[#FAF8F5] border border-[#DCD5C5] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#1B3B2B]"
+                    />
+                  </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
                     <label className="block text-xs font-semibold text-[#1B3B2B] mb-1">
-                      Quotation Amount (₹)
+                      Quotation amount (₹)
                     </label>
                     <input
                       type="number"
@@ -998,8 +1200,7 @@ export default function LeadDetailPage({ params }: { params: Promise<{ id: strin
                       onChange={(e) => {
                         const quote = Number(e.target.value);
                         const disc = lead.stageValueProposition?.applicableDiscounts || 0;
-                        const tax = lead.stageValueProposition?.applicableTaxes || 0;
-                        const finalAmt = Math.max(0, quote - disc + tax);
+                        const finalAmt = Math.max(0, quote - disc);
                         setLead({
                           ...lead,
                           estimatedDealValue: finalAmt,
@@ -1025,8 +1226,7 @@ export default function LeadDetailPage({ params }: { params: Promise<{ id: strin
                       onChange={(e) => {
                         const disc = Number(e.target.value);
                         const quote = lead.stageValueProposition?.quotationAmount || 0;
-                        const tax = lead.stageValueProposition?.applicableTaxes || 0;
-                        const finalAmt = Math.max(0, quote - disc + tax);
+                        const finalAmt = Math.max(0, quote - disc);
                         setLead({
                           ...lead,
                           estimatedDealValue: finalAmt,
@@ -1044,15 +1244,11 @@ export default function LeadDetailPage({ params }: { params: Promise<{ id: strin
 
                   <div>
                     <label className="block text-xs font-semibold text-[#1B3B2B] mb-1">
-                      Final Quoted Deal Value (₹)
+                      Final quoted deal value (₹)
                     </label>
                     <input
                       type="number"
-                      value={
-                        lead.stageValueProposition?.finalQuotedAmount ||
-                        lead.estimatedDealValue ||
-                        ""
-                      }
+                      value={lead.stageValueProposition?.finalQuotedAmount || lead.estimatedDealValue || ""}
                       onChange={(e) => {
                         const val = Number(e.target.value);
                         setLead({
@@ -1073,7 +1269,7 @@ export default function LeadDetailPage({ params }: { params: Promise<{ id: strin
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-semibold text-[#1B3B2B] mb-1">
-                      Proposal Document Link / PDF URL
+                      Proposal document link / PDF URL
                     </label>
                     <input
                       type="text"
@@ -1094,45 +1290,44 @@ export default function LeadDetailPage({ params }: { params: Promise<{ id: strin
 
                   <div>
                     <label className="block text-xs font-semibold text-[#1B3B2B] mb-1">
-                      Proposed Implementation Timeline
+                      Customer feedback on proposal
                     </label>
                     <input
                       type="text"
-                      value={lead.stageValueProposition?.proposedTimeline || ""}
+                      value={lead.stageValueProposition?.customerFeedback || ""}
                       onChange={(e) =>
                         setLead({
                           ...lead,
                           stageValueProposition: {
                             ...(lead.stageValueProposition || {}),
-                            proposedTimeline: e.target.value,
+                            customerFeedback: e.target.value,
                           },
                         })
                       }
-                      placeholder="e.g. 6 Weeks (Phase 1: Soil & Drip, Phase 2: Planting)"
+                      placeholder="e.g. Client agreed to quotation; requested split billing"
                       className="w-full px-3 py-2 text-xs bg-[#FAF8F5] border border-[#DCD5C5] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#1B3B2B]"
                     />
                   </div>
                 </div>
 
-                <div>
-                  <label className="block text-xs font-semibold text-[#1B3B2B] mb-1">
-                    Client Feedback on Proposal
-                  </label>
-                  <textarea
-                    rows={2}
-                    value={lead.stageValueProposition?.customerFeedback || ""}
-                    onChange={(e) =>
-                      setLead({
-                        ...lead,
-                        stageValueProposition: {
-                          ...(lead.stageValueProposition || {}),
-                          customerFeedback: e.target.value,
-                        },
-                      })
-                    }
-                    placeholder="How did the client react to the quotation? Any requested revisions?"
-                    className="w-full px-3 py-2 text-xs bg-[#FAF8F5] border border-[#DCD5C5] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#1B3B2B]"
-                  />
+                {/* Bottom Step Actions (Matching Screenshot 5) */}
+                <div className="pt-4 flex items-center justify-end gap-3 border-t border-[#E6E1D8]">
+                  <button
+                    type="button"
+                    onClick={() => handleSaveStepData(false)}
+                    disabled={saving}
+                    className="px-4 py-2 text-xs font-medium text-[#1B3B2B] bg-[#FAF8F5] border border-[#DCD5C5] rounded-lg hover:bg-[#F3EFE6] transition-colors"
+                  >
+                    Save proposal
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleSaveStepData(true)}
+                    disabled={saving}
+                    className="px-5 py-2 text-xs font-bold text-white bg-[#1B3B2B] hover:bg-[#152e22] rounded-lg transition-all"
+                  >
+                    Save & continue →
+                  </button>
                 </div>
               </div>
             )}
@@ -1140,6 +1335,10 @@ export default function LeadDetailPage({ params }: { params: Promise<{ id: strin
             {/* STEP 5: DECISION MAKERS */}
             {activeStepTab === 5 && (
               <div className="space-y-4 pt-2">
+                <p className="text-xs text-[#7C887E]">
+                  Identify key decision makers, their authority, and any pending approvals or objections.
+                </p>
+
                 <div className="flex items-center justify-between">
                   <h3 className="text-xs font-bold text-[#1B3B2B] uppercase tracking-wider">
                     Identified Stakeholders & Approvers
@@ -1172,7 +1371,7 @@ export default function LeadDetailPage({ params }: { params: Promise<{ id: strin
 
                 {(lead.stageDecisionMakers?.decisionMakers || []).length === 0 ? (
                   <div className="p-6 text-center text-xs text-[#7C887E] bg-[#FAF8F5] rounded-xl border border-dashed border-[#DCD5C5]">
-                    No stakeholders registered yet. Add primary decision makers, family members, or estate managers.
+                    No stakeholders registered yet. Click "+ Add Stakeholder" to record decision makers.
                   </div>
                 ) : (
                   <div className="space-y-3">
@@ -1267,7 +1466,7 @@ export default function LeadDetailPage({ params }: { params: Promise<{ id: strin
 
                 <div>
                   <label className="block text-xs font-semibold text-[#1B3B2B] mb-1">
-                    Decision Making Process & Approval Blockers
+                    Decision making process & approval blockers
                   </label>
                   <textarea
                     rows={2}
@@ -1285,16 +1484,40 @@ export default function LeadDetailPage({ params }: { params: Promise<{ id: strin
                     className="w-full px-3 py-2 text-xs bg-[#FAF8F5] border border-[#DCD5C5] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#1B3B2B]"
                   />
                 </div>
+
+                {/* Bottom Step Actions */}
+                <div className="pt-4 flex items-center justify-end gap-3 border-t border-[#E6E1D8]">
+                  <button
+                    type="button"
+                    onClick={() => handleSaveStepData(false)}
+                    disabled={saving}
+                    className="px-4 py-2 text-xs font-medium text-[#1B3B2B] bg-[#FAF8F5] border border-[#DCD5C5] rounded-lg hover:bg-[#F3EFE6] transition-colors"
+                  >
+                    Save stakeholders
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleSaveStepData(true)}
+                    disabled={saving}
+                    className="px-5 py-2 text-xs font-bold text-white bg-[#1B3B2B] hover:bg-[#152e22] rounded-lg transition-all"
+                  >
+                    Save & continue →
+                  </button>
+                </div>
               </div>
             )}
 
             {/* STEP 6: NEGOTIATION & PAYMENT */}
             {activeStepTab === 6 && (
               <div className="space-y-4 pt-2">
+                <p className="text-xs text-[#7C887E]">
+                  Finalize commercial agreements, record advance payments, and confirm contract execution.
+                </p>
+
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
                     <label className="block text-xs font-semibold text-[#1B3B2B] mb-1">
-                      Final Agreed Amount (₹) *
+                      Final agreed amount (₹) *
                     </label>
                     <input
                       type="number"
@@ -1322,7 +1545,7 @@ export default function LeadDetailPage({ params }: { params: Promise<{ id: strin
 
                   <div>
                     <label className="block text-xs font-semibold text-[#1B3B2B] mb-1">
-                      Advance Required (₹)
+                      Advance required (₹)
                     </label>
                     <input
                       type="number"
@@ -1343,7 +1566,7 @@ export default function LeadDetailPage({ params }: { params: Promise<{ id: strin
 
                   <div>
                     <label className="block text-xs font-semibold text-[#1B3B2B] mb-1">
-                      Payment Status
+                      Payment status
                     </label>
                     <select
                       value={lead.stageNegotiation?.paymentStatus || "pending"}
@@ -1368,7 +1591,7 @@ export default function LeadDetailPage({ params }: { params: Promise<{ id: strin
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-semibold text-[#1B3B2B] mb-1">
-                      Contract & Agreement Status
+                      Contract & agreement status
                     </label>
                     <select
                       value={lead.stageNegotiation?.contractStatus || "draft"}
@@ -1391,7 +1614,7 @@ export default function LeadDetailPage({ params }: { params: Promise<{ id: strin
 
                   <div>
                     <label className="block text-xs font-semibold text-[#1B3B2B] mb-1">
-                      Agreed Payment Terms
+                      Agreed payment terms
                     </label>
                     <input
                       type="text"
@@ -1477,12 +1700,36 @@ export default function LeadDetailPage({ params }: { params: Promise<{ id: strin
                     </button>
                   </div>
                 </div>
+
+                {/* Bottom Step Actions */}
+                <div className="pt-4 flex items-center justify-end gap-3 border-t border-[#E6E1D8]">
+                  <button
+                    type="button"
+                    onClick={() => handleSaveStepData(false)}
+                    disabled={saving}
+                    className="px-4 py-2 text-xs font-medium text-[#1B3B2B] bg-[#FAF8F5] border border-[#DCD5C5] rounded-lg hover:bg-[#F3EFE6] transition-colors"
+                  >
+                    Save negotiation
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleSaveStepData(true)}
+                    disabled={saving}
+                    className="px-5 py-2 text-xs font-bold text-white bg-[#1B3B2B] hover:bg-[#152e22] rounded-lg transition-all"
+                  >
+                    Save & continue →
+                  </button>
+                </div>
               </div>
             )}
 
             {/* STEP 7: CLOSED WON */}
             {activeStepTab === 7 && (
               <div className="space-y-5 pt-2">
+                <p className="text-xs text-[#7C887E]">
+                  Celebrate the win and initiate project execution handover.
+                </p>
+
                 <div className="p-5 bg-emerald-50 rounded-2xl border border-emerald-200">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-full bg-emerald-700 text-white flex items-center justify-center font-bold">
@@ -1493,7 +1740,7 @@ export default function LeadDetailPage({ params }: { params: Promise<{ id: strin
                         Deal Closed Won & Execution Handover
                       </h3>
                       <p className="text-xs text-emerald-800">
-                        Final commercial terms agreed. Convert this deal to an Active Project with milestones.
+                        Commercial terms agreed. Convert this deal to an Active Project with milestones.
                       </p>
                     </div>
                   </div>
@@ -1567,45 +1814,6 @@ export default function LeadDetailPage({ params }: { params: Promise<{ id: strin
                 )}
               </div>
             )}
-
-            {/* Step Action Footer */}
-            <div className="mt-8 pt-4 border-t border-[#E6E1D8] flex items-center justify-between">
-              <div>
-                {activeStepTab > 1 ? (
-                  <button
-                    type="button"
-                    onClick={() => setActiveStepTab((prev) => Math.max(1, prev - 1))}
-                    className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-medium text-[#4A5D4E] hover:text-[#1B3B2B] transition-colors"
-                  >
-                    <ChevronLeft className="w-3.5 h-3.5" />
-                    Previous Step
-                  </button>
-                ) : <div />}
-              </div>
-
-              <div className="flex items-center gap-2.5">
-                <button
-                  type="button"
-                  onClick={() => handleSaveStepData(false)}
-                  disabled={saving}
-                  className="px-4 py-2 text-xs font-semibold text-[#1B3B2B] bg-[#F3EFE6] hover:bg-[#EBE5D8] rounded-lg transition-colors"
-                >
-                  Save Draft
-                </button>
-
-                {activeStepTab < 7 ? (
-                  <button
-                    type="button"
-                    onClick={() => handleSaveStepData(true)}
-                    disabled={saving}
-                    className="inline-flex items-center gap-1.5 px-5 py-2 text-xs font-bold text-white bg-[#1B3B2B] hover:bg-[#152e22] rounded-lg transition-all shadow-sm"
-                  >
-                    Save & Next Step
-                    <ChevronRight className="w-3.5 h-3.5" />
-                  </button>
-                ) : null}
-              </div>
-            </div>
           </div>
 
           {/* Bottom Card: Close as Lost / Reopen */}
@@ -1682,80 +1890,44 @@ export default function LeadDetailPage({ params }: { params: Promise<{ id: strin
           </div>
         </div>
 
-        {/* Right 1 Col: THE PAPER TRAIL & Activity Logger */}
+        {/* Right 1 Col: THE PAPER TRAIL (Matching Screenshots) */}
         <div className="space-y-6">
-          {/* Quick Activity Logger */}
           <div className="bg-white rounded-2xl border border-[#E6E1D8] p-5 shadow-sm">
-            <h3 className="text-xs font-bold text-[#1B3B2B] uppercase tracking-wider mb-3 flex items-center gap-2">
-              <Calendar className="w-3.5 h-3.5 text-[#C5A869]" />
-              Log Customer Interaction
+            {/* Header matching screenshot */}
+            <div className="text-[10px] font-bold text-[#7C887E] uppercase tracking-wider">
+              THE PAPER TRAIL
+            </div>
+            <h3 className="text-xl font-serif font-bold text-[#1B3B2B] mt-1 mb-4">
+              Recent activity
             </h3>
 
-            <form onSubmit={handleLogActivity} className="space-y-3">
-              <div>
-                <select
-                  value={activityType}
-                  onChange={(e) => setActivityType(e.target.value)}
-                  className="w-full px-3 py-2 text-xs bg-[#FAF8F5] border border-[#DCD5C5] rounded-lg text-[#1B3B2B] focus:outline-none focus:ring-1 focus:ring-[#1B3B2B]"
-                >
-                  <option value="phone_call">Phone Call</option>
-                  <option value="whatsapp_sent">WhatsApp Message</option>
-                  <option value="email_sent">Email Sent</option>
-                  <option value="site_visit">Site Visit / Inspection</option>
-                  <option value="meeting_held">Discussion / Meeting</option>
-                  <option value="note_added">Internal Note</option>
-                </select>
-              </div>
-
-              <div>
-                <textarea
-                  rows={3}
-                  required
-                  value={activityNote}
-                  onChange={(e) => setActivityNote(e.target.value)}
-                  placeholder="Summarize discussion, follow-up commitments, or next steps..."
-                  className="w-full px-3 py-2 text-xs bg-[#FAF8F5] border border-[#DCD5C5] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#1B3B2B]"
-                />
-              </div>
-
-              <button
-                type="submit"
-                disabled={loggingActivity}
-                className="w-full inline-flex items-center justify-center gap-1.5 px-4 py-2 text-xs font-semibold text-white bg-[#1B3B2B] hover:bg-[#152e22] rounded-lg transition-colors disabled:opacity-60"
-              >
-                <Send className="w-3.5 h-3.5" />
-                {loggingActivity ? "Recording..." : "Record Activity"}
-              </button>
-            </form>
-          </div>
-
-          {/* Chronological Activity Timeline */}
-          <div className="bg-white rounded-2xl border border-[#E6E1D8] p-5 shadow-sm">
-            <div className="text-[10px] font-bold text-[#7C887E] uppercase tracking-wider mb-3">
-              THE PAPER TRAIL • TIMELINE
-            </div>
-
+            {/* Timeline items matching screenshot */}
             {(!lead.activities || lead.activities.length === 0) ? (
               <p className="text-xs text-[#7C887E]">No activities recorded yet.</p>
             ) : (
-              <div className="relative pl-4 space-y-4 before:absolute before:left-1.5 before:top-2 before:bottom-2 before:w-0.5 before:bg-[#E6E1D8]">
+              <div className="space-y-4">
                 {lead.activities.map((act) => (
-                  <div key={act.id} className="relative group">
-                    <div className="absolute -left-[19px] top-1 w-2.5 h-2.5 rounded-full bg-[#1B3B2B] ring-4 ring-white" />
-                    <div>
-                      <div className="text-xs font-bold text-[#1B3B2B] leading-tight">
+                  <div key={act.id} className="flex items-start gap-2.5">
+                    {/* Green dot from screenshot */}
+                    <span className="w-2 h-2 rounded-full bg-emerald-600 mt-1.5 flex-shrink-0" />
+                    <div className="space-y-0.5">
+                      <div className="text-xs font-bold text-[#1B3B2B] leading-snug">
                         {act.title}
                       </div>
-                      <div className="text-[10px] text-[#7C887E] mt-0.5">
-                        {new Date(act.timestamp).toLocaleString("en-IN", {
+                      <div className="text-[11px] text-[#7C887E]">
+                        {new Date(act.timestamp).toLocaleDateString("en-IN", {
                           day: "2-digit",
                           month: "short",
+                          year: "numeric",
+                        })}{", "}
+                        {new Date(act.timestamp).toLocaleTimeString("en-IN", {
                           hour: "2-digit",
                           minute: "2-digit",
-                        })}
+                        })}{" · "}
+                        {act.userName || "admin@gmail.com"}
                       </div>
                       {act.description && (
-                        <p className="text-[11px] text-[#4A5D4E] mt-1 bg-[#FAF8F5] p-2 rounded-lg border border-[#E6E1D8]/60 leading-relaxed">
+                        <p className="text-[11px] text-[#4A5D4E] mt-1 leading-relaxed">
                           {act.description}
                         </p>
                       )}
@@ -1764,6 +1936,76 @@ export default function LeadDetailPage({ params }: { params: Promise<{ id: strin
                 ))}
               </div>
             )}
+
+            {/* Quick Activity Logger form */}
+            <div className="mt-6 pt-4 border-t border-[#E6E1D8]">
+              <div className="text-[11px] font-bold text-[#1B3B2B] mb-2">
+                Quick Activity Note
+              </div>
+              <form onSubmit={handleLogActivity} className="space-y-2">
+                <select
+                  value={activityType}
+                  onChange={(e) => setActivityType(e.target.value)}
+                  className="w-full px-2.5 py-1.5 text-xs bg-[#FAF8F5] border border-[#DCD5C5] rounded-lg text-[#1B3B2B]"
+                >
+                  <option value="phone_call">Phone Call</option>
+                  <option value="whatsapp_sent">WhatsApp Message</option>
+                  <option value="email_sent">Email Sent</option>
+                  <option value="site_visit">Site Visit</option>
+                  <option value="note_added">Internal Note</option>
+                </select>
+
+                <textarea
+                  rows={2}
+                  required
+                  value={activityNote}
+                  onChange={(e) => setActivityNote(e.target.value)}
+                  placeholder="Record summary..."
+                  className="w-full px-2.5 py-1.5 text-xs bg-[#FAF8F5] border border-[#DCD5C5] rounded-lg"
+                />
+
+                <button
+                  type="submit"
+                  disabled={loggingActivity}
+                  className="w-full px-3 py-1.5 text-xs font-semibold text-white bg-[#1B3B2B] hover:bg-[#152e22] rounded-lg transition-colors disabled:opacity-60"
+                >
+                  {loggingActivity ? "Recording..." : "Record Activity"}
+                </button>
+              </form>
+            </div>
+
+            {/* Direct Communication Quick Links */}
+            <div className="mt-4 pt-3 border-t border-[#E6E1D8] flex items-center justify-around text-xs">
+              <a
+                href={`tel:${cleanPhone}`}
+                className="flex items-center gap-1 text-[#1B3B2B] hover:underline font-medium"
+              >
+                <Phone className="w-3.5 h-3.5 text-[#1B3B2B]" />
+                Call
+              </a>
+              <span className="text-[#DCD5C5]">•</span>
+              <a
+                href={`https://wa.me/${cleanPhone}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1 text-emerald-700 hover:underline font-medium"
+              >
+                <MessageSquare className="w-3.5 h-3.5 text-emerald-600" />
+                WhatsApp
+              </a>
+              {lead.email && (
+                <>
+                  <span className="text-[#DCD5C5]">•</span>
+                  <a
+                    href={`mailto:${lead.email}`}
+                    className="flex items-center gap-1 text-[#8C7A5B] hover:underline font-medium"
+                  >
+                    <Mail className="w-3.5 h-3.5 text-[#8C7A5B]" />
+                    Email
+                  </a>
+                </>
+              )}
+            </div>
           </div>
         </div>
       </div>
