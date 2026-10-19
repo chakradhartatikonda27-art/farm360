@@ -41,15 +41,25 @@ interface DatabaseSchema {
   revisions: ContentRevision[];
 }
 
-const DB_DIR = path.join(process.cwd(), 'data', 'cms-store');
+const IS_VERCEL = !!process.env.VERCEL;
+const BUNDLED_DB_DIR = path.join(process.cwd(), 'data', 'cms-store');
+const BUNDLED_DB_FILE = path.join(BUNDLED_DB_DIR, 'database.json');
+
+const DB_DIR = IS_VERCEL
+  ? path.join('/tmp', 'cms-store')
+  : BUNDLED_DB_DIR;
 const DB_FILE = path.join(DB_DIR, 'database.json');
 
 // In-memory cache for fast read access
 let memoryDb: DatabaseSchema | null = null;
 
 function ensureDbDirectory() {
-  if (!fs.existsSync(DB_DIR)) {
-    fs.mkdirSync(DB_DIR, { recursive: true });
+  try {
+    if (!fs.existsSync(DB_DIR)) {
+      fs.mkdirSync(DB_DIR, { recursive: true });
+    }
+  } catch (err) {
+    // Read-only filesystem warning
   }
 }
 
@@ -60,43 +70,61 @@ export function loadDatabase(): DatabaseSchema {
 
   ensureDbDirectory();
 
-  if (!fs.existsSync(DB_FILE)) {
-    const seed = getInitialSeedData();
-    const initialDb: DatabaseSchema = {
-      version: 2,
-      lastUpdated: new Date().toISOString(),
-      ...seed,
-    };
-    saveDatabase(initialDb);
-    memoryDb = initialDb;
-    return memoryDb;
+  // Try reading from writable location first (/tmp/cms-store/database.json on Vercel)
+  try {
+    if (fs.existsSync(DB_FILE)) {
+      const fileContent = fs.readFileSync(DB_FILE, 'utf8');
+      memoryDb = JSON.parse(fileContent);
+      return memoryDb!;
+    }
+  } catch (e) {
+    // Ignore and proceed to bundled
   }
 
+  // Next, try reading from bundled file (data/cms-store/database.json)
   try {
-    const fileContent = fs.readFileSync(DB_FILE, 'utf8');
-    memoryDb = JSON.parse(fileContent);
-    return memoryDb!;
-  } catch (err) {
-    console.error('Error loading CMS database. Falling back to seed data:', err);
-    const seed = getInitialSeedData();
-    memoryDb = {
-      version: 2,
-      lastUpdated: new Date().toISOString(),
-      ...seed,
-    };
-    return memoryDb!;
+    if (fs.existsSync(BUNDLED_DB_FILE)) {
+      const fileContent = fs.readFileSync(BUNDLED_DB_FILE, 'utf8');
+      memoryDb = JSON.parse(fileContent);
+
+      // On Vercel, copy bundled to writable /tmp for future updates
+      if (IS_VERCEL) {
+        try {
+          fs.writeFileSync(DB_FILE, fileContent, 'utf8');
+        } catch {}
+      }
+
+      return memoryDb!;
+    }
+  } catch (e) {
+    // Ignore and proceed to seedData
   }
+
+  // Fallback to code seed data
+  const seed = getInitialSeedData();
+  const initialDb: DatabaseSchema = {
+    version: 2,
+    lastUpdated: new Date().toISOString(),
+    ...seed,
+  };
+  saveDatabase(initialDb);
+  memoryDb = initialDb;
+  return memoryDb;
 }
 
 export function saveDatabase(db: DatabaseSchema) {
-  ensureDbDirectory();
-  db.lastUpdated = new Date().toISOString();
   memoryDb = db;
+  db.lastUpdated = new Date().toISOString();
 
-  // Atomic write via temp file
-  const tempFile = `${DB_FILE}.tmp.${Date.now()}`;
-  fs.writeFileSync(tempFile, JSON.stringify(db, null, 2), 'utf8');
-  fs.renameSync(tempFile, DB_FILE);
+  try {
+    ensureDbDirectory();
+    const tempFile = `${DB_FILE}.tmp.${Date.now()}`;
+    fs.writeFileSync(tempFile, JSON.stringify(db, null, 2), 'utf8');
+    fs.renameSync(tempFile, DB_FILE);
+  } catch (err) {
+    // In read-only serverless environments, in-memory state is preserved for the instance lifetime
+    console.warn('Persistent disk write skipped/failed:', err);
+  }
 }
 
 /* ==================== AUDIT LOGS ==================== */

@@ -55,8 +55,6 @@ export async function POST(req: Request) {
         return NextResponse.json({ error: 'File size exceeds maximum 25MB limit' }, { status: 400 });
       }
 
-      ensureUploadDir();
-
       const bytes = await file.arrayBuffer();
       const buffer = Buffer.from(bytes);
 
@@ -66,9 +64,14 @@ export async function POST(req: Request) {
       const uniqueFilename = `${baseName}_${Date.now()}${ext}`;
       const filePath = path.join(UPLOAD_DIR, uniqueFilename);
 
-      fs.writeFileSync(filePath, buffer);
-
-      const publicUrl = `/uploads/${uniqueFilename}`;
+      let publicUrl = `/uploads/${uniqueFilename}`;
+      try {
+        ensureUploadDir();
+        fs.writeFileSync(filePath, buffer);
+      } catch (writeErr) {
+        // Fallback for read-only serverless platforms like Vercel
+        publicUrl = `data:${file.type};base64,${buffer.toString('base64')}`;
+      }
 
       const saved = saveMediaAsset({
         filename: uniqueFilename,
