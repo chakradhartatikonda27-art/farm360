@@ -435,11 +435,9 @@ export default function LeadDetailPage() {
             {lead.name}
           </h1>
           <div className="text-xs text-[#4A5D4E] mt-1.5 flex flex-wrap items-center gap-1.5">
-            <span>{lead.phone || "—"}</span>
+            <span>{lead.phone || lead.email || "—"}</span>
             <span>·</span>
-            <span>{lead.email || "chakradhartatikonda27@gmail.com"}</span>
-            <span>·</span>
-            <span>{lead.location || "india"}</span>
+            <span>{lead.location || "rjy"}</span>
           </div>
           <div className="text-xs text-[#7C887E] mt-1">
             {lead.serviceCategory || "Small Plot & Site Gardening"}
@@ -451,13 +449,19 @@ export default function LeadDetailPage() {
           <span className="px-3.5 py-1 text-xs font-semibold rounded-full bg-[#EBE5D8] text-[#1B3B2B] border border-[#DCD5C5]">
             {STAGES[currentStepNumber - 1]?.title || "Decision Makers"}
           </span>
-          <span className="px-3.5 py-1 text-xs font-semibold rounded-full bg-amber-50 text-amber-800 border border-amber-200">
-            {lead.status === "closed_won"
-              ? "Closed Won"
-              : lead.status === "closed_lost"
-              ? "Closed Lost"
-              : "Open"}
-          </span>
+          {lead.status === "closed_won" || lead.currentStage === "closed_won" ? (
+            <span className="px-3.5 py-1 text-xs font-semibold rounded-full bg-[#E6F4EA] text-[#137333]">
+              Closed Won
+            </span>
+          ) : lead.status === "closed_lost" || lead.currentStage === "closed_lost" ? (
+            <span className="px-3.5 py-1 text-xs font-semibold rounded-full bg-[#FCE8E6] text-[#C5221F]">
+              Closed Lost
+            </span>
+          ) : (
+            <span className="px-3.5 py-1 text-xs font-semibold rounded-full bg-[#F5EFE6] text-[#8C6D3F]">
+              Open
+            </span>
+          )}
         </div>
       </div>
 
@@ -598,162 +602,31 @@ export default function LeadDetailPage() {
               )}
             </div>
 
-            {/* STEP 1: PROSPECTING */}
+            {/* STEP 1: PROSPECTING (Matching Screenshot 2) */}
             {activeStepTab === 1 && (
-              <div className="space-y-4 pt-2">
-                <p className="text-xs text-[#7C887E]">
-                  Capture initial contact details, reason for enquiry, and establish contact history.
-                </p>
-
-                <div>
-                  <label className="block text-xs font-semibold text-[#1B3B2B] mb-1">
-                    Initial enquiry reason *
-                  </label>
-                  <textarea
-                    rows={3}
-                    value={lead.stageProspecting?.enquiryReason || lead.message || ""}
-                    onChange={(e) =>
-                      setLead({
-                        ...lead,
-                        stageProspecting: {
-                          ...(lead.stageProspecting || {}),
-                          enquiryReason: e.target.value,
-                        },
-                      })
-                    }
-                    placeholder="Why did the customer reach out? What are their core goals?"
-                    className="w-full px-3 py-2 text-xs bg-[#FAF8F5] border border-[#DCD5C5] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#1B3B2B]"
-                  />
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-semibold text-[#1B3B2B] mb-1">
-                      Customer expectations *
-                    </label>
-                    <input
-                      type="text"
-                      value={lead.stageProspecting?.customerExpectations || ""}
-                      onChange={(e) =>
-                        setLead({
-                          ...lead,
-                          stageProspecting: {
-                            ...(lead.stageProspecting || {}),
-                            customerExpectations: e.target.value,
-                          },
-                        })
-                      }
-                      placeholder="e.g. Turnkey farm management, organic vegetables"
-                      className="w-full px-3 py-2 text-xs bg-[#FAF8F5] border border-[#DCD5C5] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#1B3B2B]"
-                    />
+              <div className="space-y-6 pt-2">
+                <div className="flex items-start gap-4">
+                  <div className="w-8 h-8 rounded-full bg-white border border-[#DCD5C5] text-[#1B3B2B] flex items-center justify-center text-xs font-bold shrink-0">
+                    01
                   </div>
-
                   <div>
-                    <label className="block text-xs font-semibold text-[#1B3B2B] mb-1">
-                      Initial budget estimate (₹)
-                    </label>
-                    <input
-                      type="number"
-                      value={lead.stageProspecting?.initialBudgetEstimate || lead.estimatedDealValue || ""}
-                      onChange={(e) => {
-                        const val = e.target.value ? Number(e.target.value) : undefined;
-                        setLead({
-                          ...lead,
-                          estimatedDealValue: val,
-                          stageProspecting: {
-                            ...(lead.stageProspecting || {}),
-                            initialBudgetEstimate: val,
-                          },
-                        });
-                      }}
-                      placeholder="e.g. 250000"
-                      className="w-full px-3 py-2 text-xs bg-[#FAF8F5] border border-[#DCD5C5] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#1B3B2B]"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-semibold text-[#1B3B2B] mb-1">
-                      Assigned executive
-                    </label>
-                    <input
-                      type="text"
-                      value={lead.assignedExecutive || "Suresh Varma"}
-                      onChange={(e) =>
-                        setLead({
-                          ...lead,
-                          assignedExecutive: e.target.value,
-                          stageProspecting: {
-                            ...(lead.stageProspecting || {}),
-                            assignedSalesExecutive: e.target.value,
-                          },
-                        })
-                      }
-                      className="w-full px-3 py-2 text-xs bg-[#FAF8F5] border border-[#DCD5C5] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#1B3B2B]"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-semibold text-[#1B3B2B] mb-1">
-                      Next follow-up date
-                    </label>
-                    <input
-                      type="date"
-                      value={lead.nextFollowUpDate || lead.stageProspecting?.nextFollowUpDate || ""}
-                      onChange={(e) =>
-                        setLead({
-                          ...lead,
-                          nextFollowUpDate: e.target.value,
-                          stageProspecting: {
-                            ...(lead.stageProspecting || {}),
-                            nextFollowUpDate: e.target.value,
-                          },
-                        })
-                      }
-                      className="w-full px-3 py-2 text-xs bg-[#FAF8F5] border border-[#DCD5C5] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#1B3B2B]"
-                    />
+                    <h3 className="text-sm font-bold text-[#1B3B2B]">
+                      Review the enquiry
+                    </h3>
+                    <p className="text-xs text-[#7C887E] mt-0.5">
+                      Initial contact details and message are recorded above.
+                    </p>
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-[#1B3B2B] mb-1">
-                    Prospecting notes
-                  </label>
-                  <textarea
-                    rows={2}
-                    value={lead.stageProspecting?.prospectingNotes || ""}
-                    onChange={(e) =>
-                      setLead({
-                        ...lead,
-                        stageProspecting: {
-                          ...(lead.stageProspecting || {}),
-                          prospectingNotes: e.target.value,
-                        },
-                      })
-                    }
-                    placeholder="Log details from first conversation or WhatsApp exchange..."
-                    className="w-full px-3 py-2 text-xs bg-[#FAF8F5] border border-[#DCD5C5] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#1B3B2B]"
-                  />
-                </div>
-
-                {/* Bottom Step Actions */}
-                <div className="pt-4 flex items-center justify-end gap-3 border-t border-[#E6E1D8]">
-                  <button
-                    type="button"
-                    onClick={() => handleSaveStepData(false)}
-                    disabled={saving}
-                    className="px-4 py-2 text-xs font-medium text-[#1B3B2B] bg-[#FAF8F5] border border-[#DCD5C5] rounded-lg hover:bg-[#F3EFE6] transition-colors"
-                  >
-                    Save prospecting
-                  </button>
                   <button
                     type="button"
                     onClick={() => handleSaveStepData(true)}
                     disabled={saving}
-                    className="px-5 py-2 text-xs font-bold text-white bg-[#1B3B2B] hover:bg-[#152e22] rounded-lg transition-all"
+                    className="px-5 py-2.5 text-xs font-bold text-white bg-[#1B3B2B] hover:bg-[#152e22] rounded-lg transition-all inline-flex items-center gap-1.5"
                   >
-                    Save & continue →
+                    {saving ? "Progressing..." : "Begin qualification →"}
                   </button>
                 </div>
               </div>
@@ -1974,14 +1847,12 @@ export default function LeadDetailPage() {
                     aria-label="Choose reason"
                     className="px-3 py-1.5 text-xs bg-[#FAF8F5] border border-[#DCD5C5] rounded-lg text-[#1B3B2B] focus:outline-none focus:ring-1 focus:ring-[#1B3B2B]"
                   >
-                    <option value="budget_limitations">Choose reason</option>
-                    <option value="budget_limitations">Budget Limitations</option>
-                    <option value="chose_competitor">Chose Competitor</option>
-                    <option value="project_postponed">Project Postponed</option>
-                    <option value="requirements_not_suitable">Requirements Not Suitable</option>
-                    <option value="no_response">Client Not Responding</option>
-                    <option value="infeasible">Agronomically Infeasible</option>
-                    <option value="other">Other Reason</option>
+                    <option value="Choose reason">Choose reason</option>
+                    <option value="Budget">Budget</option>
+                    <option value="Competitor">Competitor</option>
+                    <option value="Unresponsive">Unresponsive</option>
+                    <option value="Infeasible">Infeasible</option>
+                    <option value="Other">Other</option>
                   </select>
 
                   <button
@@ -2025,8 +1896,7 @@ export default function LeadDetailPage() {
                       <div className="text-[11px] text-[#7C887E]">
                         {formatDate(act.timestamp)}
                         {formatTime(act.timestamp) ? `, ${formatTime(act.timestamp)}` : ""}
-                        {" · "}
-                        {act.userName || "admin@gmail.com"}
+                        {act.userName ? ` · ${act.userName}` : ""}
                       </div>
                       {act.description && (
                         <p className="text-[11px] text-[#4A5D4E] mt-1 leading-relaxed">

@@ -1763,7 +1763,12 @@ export function getLeadById(idOrRef: string): LeadItem | undefined {
   const leads = db.leads || [];
   const target = String(idOrRef).toLowerCase();
   return leads.find(
-    (l) => l.id === idOrRef || (Boolean(l.referenceId) && l.referenceId.toLowerCase() === target)
+    (l) =>
+      l.id === idOrRef ||
+      l.id.toLowerCase() === target ||
+      l.id.replace(/^lead_/, '').toLowerCase() === target ||
+      `lead_${target}` === l.id.toLowerCase() ||
+      (Boolean(l.referenceId) && l.referenceId.toLowerCase() === target)
   );
 }
 
@@ -1773,7 +1778,12 @@ export async function getLeadByIdAsync(idOrRef: string): Promise<LeadItem | unde
   const leads = db.leads || [];
   const target = String(idOrRef).toLowerCase();
   return leads.find(
-    (l) => l.id === idOrRef || (Boolean(l.referenceId) && l.referenceId.toLowerCase() === target)
+    (l) =>
+      l.id === idOrRef ||
+      l.id.toLowerCase() === target ||
+      l.id.replace(/^lead_/, '').toLowerCase() === target ||
+      `lead_${target}` === l.id.toLowerCase() ||
+      (Boolean(l.referenceId) && l.referenceId.toLowerCase() === target)
   );
 }
 

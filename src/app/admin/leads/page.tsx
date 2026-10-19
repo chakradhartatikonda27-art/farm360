@@ -160,158 +160,137 @@ export default function LeadsDeskPage() {
     return { total, open, won, lost, pipelineVal };
   }, [leads]);
 
+  const formatDate = (val?: string) => {
+    if (!val) return "";
+    try {
+      const d = new Date(val);
+      if (isNaN(d.getTime())) return "";
+      return d.toLocaleDateString("en-IN", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+      });
+    } catch {
+      return "";
+    }
+  };
+
+  const STAGE_NAME_MAP: Record<string, string> = {
+    prospecting: "Prospecting",
+    qualification: "Qualification",
+    need_analysis: "Need Analysis",
+    value_proposition: "Value Proposition",
+    decision_makers: "Decision Makers",
+    negotiation: "Negotiation & Payment",
+    closed_won: "Closed Won",
+    closed_lost: "Closed Lost",
+  };
+
   return (
     <div className="space-y-6">
-      {/* Top Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-2 border-b border-[#E6E1D8]">
+      {/* Top Header matching Screenshot 1 */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-3">
-            <h1 className="text-2xl md:text-3xl font-serif text-[#1B3B2B] font-bold">
-              Lead desk
-            </h1>
-            <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#1B3B2B]/10 text-[#1B3B2B] border border-[#1B3B2B]/20">
-              {stats.total} total leads
-            </span>
-          </div>
-          <p className="text-xs md:text-sm text-[#4A5D4E] mt-1">
-            Incoming customer enquiries, qualification journey, and sales pipeline.
+          <h1 className="text-4xl md:text-5xl font-serif font-bold text-[#1B3B2B] tracking-tight">
+            Lead desk
+          </h1>
+          <p className="text-xs md:text-sm text-[#7C887E] mt-1.5">
+            Search, sort and open an enquiry to continue its journey.
           </p>
         </div>
 
-        <div className="flex items-center gap-2.5">
-          <Link
-            href="/api/admin/leads?format=csv"
-            target="_blank"
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-medium text-[#1B3B2B] bg-white border border-[#DCD5C5] rounded-lg hover:bg-[#F3EFE6] transition-colors shadow-sm"
-          >
-            <Download className="w-3.5 h-3.5 text-[#8C7A5B]" />
-            Export CSV
-          </Link>
+        <div className="border border-[#DCD5C5] rounded-xl px-5 py-2.5 text-right bg-white shadow-sm self-start sm:self-auto min-w-[120px]">
+          <div className="text-3xl font-serif font-bold text-[#1B3B2B] leading-none">
+            {leads.length}
+          </div>
+          <div className="text-[11px] text-[#7C887E] mt-1">
+            leads found
+          </div>
+        </div>
+      </div>
 
-          <Link
-            href="/admin/leads/dashboard"
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-medium text-[#1B3B2B] bg-white border border-[#DCD5C5] rounded-lg hover:bg-[#F3EFE6] transition-colors shadow-sm"
+      {/* Filter and Search Bar matching Screenshot 1 */}
+      <div className="flex flex-col lg:flex-row items-stretch lg:items-center gap-3">
+        <div className="relative flex-1">
+          <Search className="w-4 h-4 text-[#8C7A5B] absolute left-3 top-1/2 -translate-y-1/2" />
+          <input
+            type="text"
+            placeholder="Search name, reference or phone"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && fetchLeads()}
+            className="w-full pl-9 pr-3 py-2 text-xs bg-white border border-[#DCD5C5] rounded-lg text-[#1B3B2B] focus:outline-none focus:ring-1 focus:ring-[#1B3B2B]"
+          />
+        </div>
+
+        <div className="flex flex-wrap sm:flex-nowrap items-center gap-2">
+          <select
+            value={stageFilter}
+            onChange={(e) => setStageFilter(e.target.value)}
+            aria-label="Every stage"
+            className="px-3 py-2 text-xs bg-white border border-[#DCD5C5] rounded-lg text-[#1B3B2B] focus:outline-none focus:ring-1 focus:ring-[#1B3B2B]"
           >
-            <Sparkles className="w-3.5 h-3.5 text-[#C5A869]" />
-            CRM Analytics
-          </Link>
+            <option value="all">Every stage</option>
+            <option value="prospecting">Prospecting</option>
+            <option value="qualification">Qualification</option>
+            <option value="need_analysis">Need Analysis</option>
+            <option value="value_proposition">Value Proposition</option>
+            <option value="decision_makers">Decision Makers</option>
+            <option value="negotiation">Negotiation & Payment</option>
+            <option value="closed_won">Closed Won</option>
+            <option value="closed_lost">Closed Lost</option>
+          </select>
+
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            aria-label="Every status"
+            className="px-3 py-2 text-xs bg-white border border-[#DCD5C5] rounded-lg text-[#1B3B2B] focus:outline-none focus:ring-1 focus:ring-[#1B3B2B]"
+          >
+            <option value="all">Every status</option>
+            <option value="open">Open</option>
+            <option value="closed_won">Closed Won</option>
+            <option value="closed_lost">Closed Lost</option>
+          </select>
+
+          <select
+            value={sourceFilter}
+            onChange={(e) => setSourceFilter(e.target.value)}
+            aria-label="Every source"
+            className="px-3 py-2 text-xs bg-white border border-[#DCD5C5] rounded-lg text-[#1B3B2B] focus:outline-none focus:ring-1 focus:ring-[#1B3B2B]"
+          >
+            <option value="all">Every source</option>
+            <option value="web">Web</option>
+            <option value="admin">Admin</option>
+            <option value="api">API</option>
+          </select>
 
           <button
-            onClick={() => setIsModalOpen(true)}
-            className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-white bg-[#1B3B2B] hover:bg-[#152e22] rounded-lg shadow-sm transition-all"
+            type="button"
+            onClick={() => fetchLeads()}
+            className="px-4 py-2 bg-[#1B3B2B] text-white text-xs font-semibold rounded-lg hover:bg-[#152e22] transition-colors whitespace-nowrap inline-flex items-center gap-1.5"
           >
-            <Plus className="w-4 h-4" />
-            + New Lead
+            Apply filters →
           </button>
         </div>
       </div>
 
-      {/* Quick Stats Ribbon */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <div className="bg-white p-3.5 rounded-xl border border-[#E6E1D8] shadow-sm">
-          <div className="text-[11px] font-medium text-[#7C887E] uppercase tracking-wider">Active Pipeline</div>
-          <div className="text-xl font-bold text-[#1B3B2B] mt-1">{stats.open}</div>
-          <div className="text-[11px] text-[#4A5D4E] mt-0.5">In qualification & proposal</div>
-        </div>
-        <div className="bg-white p-3.5 rounded-xl border border-[#E6E1D8] shadow-sm">
-          <div className="text-[11px] font-medium text-[#7C887E] uppercase tracking-wider">Pipeline Value</div>
-          <div className="text-xl font-bold text-[#1B3B2B] mt-1">
-            ₹{stats.pipelineVal.toLocaleString("en-IN")}
+      {/* Leads Table Card matching Screenshot 1 */}
+      <div className="bg-white rounded-2xl border border-[#E6E1D8] p-6 shadow-sm">
+        <div className="flex items-center justify-between pb-4 border-b border-[#E6E1D8]/60">
+          <div>
+            <div className="text-[10px] font-bold text-[#7C887E] tracking-wider uppercase">
+              ENQUIRY REGISTER
+            </div>
+            <h2 className="text-xl md:text-2xl font-serif font-bold text-[#1B3B2B] mt-0.5">
+              Showing 1-{leads.length} of {leads.length}
+            </h2>
           </div>
-          <div className="text-[11px] text-[#4A5D4E] mt-0.5">Estimated open deals</div>
-        </div>
-        <div className="bg-white p-3.5 rounded-xl border border-[#E6E1D8] shadow-sm">
-          <div className="text-[11px] font-medium text-[#7C887E] uppercase tracking-wider">Closed Won</div>
-          <div className="text-xl font-bold text-emerald-700 mt-1">{stats.won}</div>
-          <div className="text-[11px] text-emerald-600 mt-0.5">Converted to projects</div>
-        </div>
-        <div className="bg-white p-3.5 rounded-xl border border-[#E6E1D8] shadow-sm">
-          <div className="text-[11px] font-medium text-[#7C887E] uppercase tracking-wider">Closed Lost</div>
-          <div className="text-xl font-bold text-slate-600 mt-1">{stats.lost}</div>
-          <div className="text-[11px] text-slate-500 mt-0.5">Unqualified or lost</div>
-        </div>
-      </div>
-
-      {/* Filter and Search Bar */}
-      <div className="bg-white p-4 rounded-xl border border-[#E6E1D8] shadow-sm">
-        <form onSubmit={handleSearchSubmit} className="flex flex-col lg:flex-row items-stretch lg:items-center gap-3">
-          <div className="relative flex-1">
-            <Search className="w-4 h-4 text-[#8C7A5B] absolute left-3 top-1/2 -translate-y-1/2" />
-            <input
-              type="text"
-              placeholder="Search by name, phone, email, location..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-9 pr-3 py-2 text-xs md:text-sm bg-[#FAF8F5] border border-[#DCD5C5] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#1B3B2B] text-[#1B3B2B]"
-            />
+          <div className="text-xs text-[#7C887E]">
+            Newest first
           </div>
+        </div>
 
-          <div className="grid grid-cols-3 gap-2">
-            <select
-              value={stageFilter}
-              onChange={(e) => setStageFilter(e.target.value)}
-              aria-label="Filter by stage"
-              className="px-3 py-2 text-xs bg-[#FAF8F5] border border-[#DCD5C5] rounded-lg text-[#1B3B2B] focus:outline-none focus:ring-1 focus:ring-[#1B3B2B]"
-            >
-              <option value="all">Every stage</option>
-              <option value="prospecting">1 · Prospecting</option>
-              <option value="qualification">2 · Qualification</option>
-              <option value="need_analysis">3 · Need Analysis</option>
-              <option value="value_proposition">4 · Value Proposition</option>
-              <option value="decision_makers">5 · Decision Makers</option>
-              <option value="negotiation">6 · Negotiation & Payment</option>
-              <option value="closed_won">7 · Closed Won</option>
-              <option value="closed_lost">Closed Lost</option>
-            </select>
-
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              aria-label="Filter by status"
-              className="px-3 py-2 text-xs bg-[#FAF8F5] border border-[#DCD5C5] rounded-lg text-[#1B3B2B] focus:outline-none focus:ring-1 focus:ring-[#1B3B2B]"
-            >
-              <option value="all">Every status</option>
-              <option value="open">Open</option>
-              <option value="closed_won">Closed Won</option>
-              <option value="closed_lost">Closed Lost</option>
-              <option value="disqualified">Disqualified</option>
-            </select>
-
-            <select
-              value={sourceFilter}
-              onChange={(e) => setSourceFilter(e.target.value)}
-              aria-label="Filter by source"
-              className="px-3 py-2 text-xs bg-[#FAF8F5] border border-[#DCD5C5] rounded-lg text-[#1B3B2B] focus:outline-none focus:ring-1 focus:ring-[#1B3B2B]"
-            >
-              <option value="all">Every source</option>
-              <option value="website">Web Enquiry</option>
-              <option value="phone">Phone</option>
-              <option value="referral">Referral</option>
-              <option value="campaign">Campaign</option>
-              <option value="manual">Manual Entry</option>
-            </select>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <button
-              type="submit"
-              className="px-4 py-2 bg-[#1B3B2B] text-white text-xs font-medium rounded-lg hover:bg-[#152e22] transition-colors whitespace-nowrap"
-            >
-              Apply filters →
-            </button>
-            <button
-              type="button"
-              onClick={handleResetFilters}
-              className="px-3 py-2 bg-[#F3EFE6] text-[#4A5D4E] text-xs font-medium rounded-lg hover:bg-[#EBE5D8] transition-colors"
-            >
-              Reset
-            </button>
-          </div>
-        </form>
-      </div>
-
-      {/* Leads Table */}
-      <div className="bg-white rounded-xl border border-[#E6E1D8] shadow-sm overflow-hidden">
         {loading ? (
           <div className="p-12 text-center text-[#7C887E]">
             <RefreshCw className="w-6 h-6 animate-spin mx-auto text-[#1B3B2B] mb-2" />
@@ -324,36 +303,23 @@ export default function LeadsDeskPage() {
             <p className="text-xs text-[#7C887E] mt-1 max-w-sm mx-auto">
               There are no customer enquiries matching your current search or filter criteria.
             </p>
-            <button
-              onClick={() => setIsModalOpen(true)}
-              className="mt-4 inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-medium text-white bg-[#1B3B2B] rounded-lg hover:bg-[#152e22]"
-            >
-              <Plus className="w-3.5 h-3.5" />
-              Register New Lead
-            </button>
           </div>
         ) : (
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto mt-2">
             <table className="w-full text-left text-xs">
-              <thead className="bg-[#FAF8F5] text-[#7C887E] uppercase text-[10px] tracking-wider font-semibold border-b border-[#E6E1D8]">
+              <thead className="text-[#7C887E] uppercase text-[10px] tracking-wider font-semibold border-b border-[#E6E1D8]">
                 <tr>
-                  <th className="py-3 px-4">Enquiry</th>
-                  <th className="py-3 px-4">Customer</th>
-                  <th className="py-3 px-4">Service & Location</th>
-                  <th className="py-3 px-4">Stage</th>
-                  <th className="py-3 px-4">Status</th>
-                  <th className="py-3 px-4">Received</th>
-                  <th className="py-3 px-4 text-right">Action</th>
+                  <th className="py-3.5 px-3">ENQUIRY</th>
+                  <th className="py-3.5 px-3">CUSTOMER</th>
+                  <th className="py-3.5 px-3">SERVICE & LOCATION</th>
+                  <th className="py-3.5 px-3">STAGE</th>
+                  <th className="py-3.5 px-3">STATUS</th>
+                  <th className="py-3.5 px-3">RECEIVED</th>
+                  <th className="py-3.5 px-3 text-right"></th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#E6E1D8]">
+              <tbody className="divide-y divide-[#E6E1D8]/60">
                 {leads.map((lead) => {
-                  const stageInfo = STAGE_LABELS[lead.currentStage] || {
-                    name: lead.currentStage,
-                    step: 0,
-                    color: "bg-gray-100 text-gray-700 border-gray-200",
-                  };
-
                   return (
                     <tr
                       key={lead.id}
@@ -361,100 +327,64 @@ export default function LeadsDeskPage() {
                       onClick={() => (window.location.href = `/admin/leads/${lead.id}`)}
                     >
                       {/* ENQUIRY */}
-                      <td className="py-3.5 px-4 font-mono">
-                        <div className="font-bold text-[#1B3B2B] text-xs flex items-center gap-2">
-                          {lead.referenceId}
-                        </div>
-                        <div className="flex items-center gap-1.5 mt-0.5">
-                          <span className="text-[10px] font-sans px-1.5 py-0.2 rounded bg-[#FAF8F5] text-[#7C887E] border border-[#E6E1D8] uppercase">
-                            {lead.source}
-                          </span>
-                          {lead.priority === "high" || lead.priority === "critical" ? (
-                            <span className="text-[10px] font-sans px-1.5 py-0.2 rounded bg-amber-50 text-amber-700 border border-amber-200 uppercase font-semibold">
-                              {lead.priority}
-                            </span>
-                          ) : null}
-                        </div>
+                      <td className="py-4 px-3 font-mono font-bold text-[#1B3B2B] text-xs">
+                        {lead.referenceId || lead.id}
                       </td>
 
                       {/* CUSTOMER */}
-                      <td className="py-3.5 px-4">
-                        <div className="font-semibold text-[#1B3B2B] text-xs">
+                      <td className="py-4 px-3">
+                        <div className="font-bold text-[#1B3B2B] text-xs">
                           {lead.name}
                         </div>
-                        <div className="text-[11px] text-[#4A5D4E] flex items-center gap-2 mt-0.5">
-                          <span>{lead.phone}</span>
-                          {lead.location && (
-                            <>
-                              <span>•</span>
-                              <span>{lead.location}</span>
-                            </>
-                          )}
+                        <div className="text-[11px] text-[#7C887E] mt-0.5">
+                          {lead.phone}
+                          {lead.email && lead.phone ? ` · ${lead.email}` : lead.email || ""}
                         </div>
                       </td>
 
                       {/* SERVICE & LOCATION */}
-                      <td className="py-3.5 px-4">
-                        <div className="text-[#1B3B2B] font-medium line-clamp-1">
+                      <td className="py-4 px-3">
+                        <div className="font-bold text-[#1B3B2B] text-xs">
                           {lead.serviceCategory || "Agricultural Planning"}
                         </div>
                         <div className="text-[11px] text-[#7C887E] mt-0.5">
-                          {lead.estimatedDealValue
-                            ? `Est. ₹${lead.estimatedDealValue.toLocaleString("en-IN")}`
-                            : lead.location || "Location pending"}
+                          {lead.location || "rjy"}
                         </div>
                       </td>
 
                       {/* STAGE */}
-                      <td className="py-3.5 px-4">
-                        <span
-                          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium border ${stageInfo.color}`}
-                        >
-                          {stageInfo.step > 0 && (
-                            <span className="w-3.5 h-3.5 rounded-full bg-current/15 flex items-center justify-center text-[9px] font-bold">
-                              {stageInfo.step}
-                            </span>
-                          )}
-                          {stageInfo.name}
-                        </span>
+                      <td className="py-4 px-3 text-xs text-[#4A5D4E] font-medium">
+                        {STAGE_NAME_MAP[lead.currentStage] || lead.currentStage}
                       </td>
 
                       {/* STATUS */}
-                      <td className="py-3.5 px-4">
-                        {lead.status === "closed_won" ? (
-                          <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-                            <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                      <td className="py-4 px-3">
+                        {lead.status === "closed_won" || lead.currentStage === "closed_won" ? (
+                          <span className="px-3 py-1 rounded-full text-xs font-semibold bg-[#E6F4EA] text-[#137333] inline-block">
                             Closed Won
                           </span>
-                        ) : lead.status === "closed_lost" ? (
-                          <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-rose-700 bg-rose-50 px-2 py-0.5 rounded border border-rose-200">
-                            <XCircle className="w-3 h-3 text-rose-500" />
+                        ) : lead.status === "closed_lost" || lead.currentStage === "closed_lost" ? (
+                          <span className="px-3 py-1 rounded-full text-xs font-semibold bg-[#FCE8E6] text-[#C5221F] inline-block">
                             Closed Lost
                           </span>
                         ) : (
-                          <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#1B3B2B] bg-[#1B3B2B]/5 px-2 py-0.5 rounded border border-[#1B3B2B]/10">
-                            <Clock className="w-3 h-3 text-[#1B3B2B]" />
+                          <span className="px-3 py-1 rounded-full text-xs font-semibold bg-[#F5EFE6] text-[#8C6D3F] inline-block">
                             Open
                           </span>
                         )}
                       </td>
 
                       {/* RECEIVED */}
-                      <td className="py-3.5 px-4 text-[#7C887E] whitespace-nowrap text-[11px]">
-                        {new Date(lead.createdAt).toLocaleDateString("en-IN", {
-                          day: "2-digit",
-                          month: "short",
-                          year: "numeric",
-                        })}
+                      <td className="py-4 px-3 text-xs text-[#7C887E] whitespace-nowrap">
+                        {formatDate(lead.createdAt)}
                       </td>
 
                       {/* ACTION */}
-                      <td className="py-3.5 px-4 text-right">
+                      <td className="py-4 px-3 text-right">
                         <Link
                           href={`/admin/leads/${lead.id}`}
                           onClick={(e) => e.stopPropagation()}
-                          className="inline-flex items-center justify-center w-7 h-7 rounded-lg text-[#1B3B2B] bg-[#FAF8F5] border border-[#DCD5C5] hover:bg-[#1B3B2B] hover:text-white transition-all shadow-sm"
-                          title="Open Lead Journey"
+                          className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-[#FAF8F5] border border-[#DCD5C5] text-[#7C887E] group-hover:text-[#1B3B2B] group-hover:border-[#1B3B2B] transition-colors"
                         >
                           <ArrowUpRight className="w-3.5 h-3.5" />
                         </Link>
