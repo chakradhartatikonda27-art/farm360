@@ -30,11 +30,13 @@ export function SiteHeader() {
 
   const navLinks = [
     { label: 'Home', href: '/' },
-    { label: 'Our Services', href: '/services' },
+    { label: 'Services', href: '/services' },
+    { label: 'Spaces We Serve', href: '/for-your-space' },
     { label: 'Managed Care', href: '/managed-care' },
+    { label: 'Transparency', href: '/transparency' },
+    { label: 'For Landowners', href: '/landowners' },
     { label: 'Gallery', href: '/gallery' },
     { label: 'Testimonials', href: '/testimonials' },
-    { label: 'For Landowners', href: '/landowners' },
     { label: 'About Us', href: '/about' },
     { label: 'Contact', href: '/contact' },
   ];
@@ -80,7 +82,7 @@ export function SiteHeader() {
           </Link>
 
           {/* Desktop Navigation Links */}
-          <nav className="hidden lg:flex items-center gap-4 xl:gap-6 text-[14px] xl:text-[15px]" aria-label="Main navigation">
+          <nav className="hidden lg:flex items-center gap-2.5 xl:gap-4 text-[13px] xl:text-[14px]" aria-label="Main navigation">
             {navLinks.map((link) => {
               const currentPath = pathname || '/';
               const isActive = link.href === '/' 

@@ -4,6 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Breadcrumbs } from '@/components/common/Breadcrumbs';
+import { specializedServiceClusters } from '@/data/visionData';
 
 interface ServiceCard {
   title: string;
@@ -299,6 +300,50 @@ export default function ServicesPage() {
           <p className="mt-8 text-[14px] text-charcoal/65 font-sans">
             Services marked &quot;where offered&quot; depend on location and availability. Scope and pricing are agreed after assessment.
           </p>
+        </div>
+      </section>
+
+      {/* Section 4: Specialized Agricultural & Land Services */}
+      <section className="py-14 sm:py-20 bg-cream/30 border-t border-charcoal/10">
+        <div className="max-w-[1280px] mx-auto px-5">
+          <div className="max-w-[42em] space-y-3 mb-10 sm:mb-12">
+            <span className="text-xs font-bold uppercase tracking-widest text-gold block">
+              Additional Agricultural & Land Services
+            </span>
+            <h2 className="font-serif text-forest-deep text-[clamp(2rem,4vw,3.2rem)] font-normal leading-tight">
+              Specialized services tailored to your exact land requirement.
+            </h2>
+            <p className="text-[16px] sm:text-[17px] text-charcoal/80 font-sans font-light">
+              Beyond our core business models, these specialized technical services can be engaged individually as standalone projects or integrated into larger farm development agreements.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-7">
+            {specializedServiceClusters.map((cluster) => (
+              <div key={cluster.id} className="p-6 sm:p-7 rounded-2xl bg-white border border-charcoal/10 shadow-xs flex flex-col justify-between">
+                <div>
+                  <h3 className="font-serif text-2xl text-forest-deep font-medium mb-1">{cluster.title}</h3>
+                  <p className="text-xs text-charcoal/60 mb-5 font-sans">{cluster.tagline}</p>
+                  <ul className="space-y-3.5 text-xs sm:text-[13px] text-charcoal/80 font-sans">
+                    {cluster.services.map((s, sIdx) => (
+                      <li key={sIdx} className="border-t border-charcoal/10 pt-2.5">
+                        <strong className="text-forest-deep block text-sm font-semibold mb-0.5">{s.title}</strong>
+                        <span className="text-charcoal/70 leading-relaxed block">{s.description}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="pt-6 mt-6 border-t border-charcoal/10">
+                  <Link
+                    href="/contact"
+                    className="w-full inline-flex items-center justify-center py-2.5 px-4 rounded-full bg-forest text-ivory hover:bg-forest-dark text-xs font-semibold transition-all shadow-xs"
+                  >
+                    Inquire About This Service →
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 

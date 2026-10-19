@@ -4,14 +4,24 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Breadcrumbs } from '@/components/common/Breadcrumbs';
+import { fiveCorePrinciples, coreVision } from '@/data/visionData';
+import { ShieldCheck, Eye, Cpu, Award, HeartHandshake } from 'lucide-react';
 
 export default function AboutPage() {
   const stages = [
-    { number: '01', title: 'Plan' },
-    { number: '02', title: 'Develop' },
-    { number: '03', title: 'Protect' },
-    { number: '04', title: 'Grow' },
-    { number: '05', title: 'Harvest' },
+    { number: '01', title: 'Plan', desc: 'Soil testing, topographical mapping, and custom agronomic blueprints.' },
+    { number: '02', title: 'Develop', desc: 'Laser levelling, drip irrigation networks, and high-density planting.' },
+    { number: '03', title: 'Protect', desc: 'Secure boundary fencing, GPS monitoring, and organic bio-pest scouting.' },
+    { number: '04', title: 'Grow', desc: 'Balanced nutrition, tree canopy management, and seasonal cultivation.' },
+    { number: '05', title: 'Harvest', desc: 'Sorting, post-harvest produce handling, and wholesale market linkages.' },
+  ];
+
+  const principleIcons = [
+    <ShieldCheck key="p1" className="w-5 h-5 text-gold" />,
+    <Eye key="p2" className="w-5 h-5 text-gold" />,
+    <Cpu key="p3" className="w-5 h-5 text-gold" />,
+    <Award key="p4" className="w-5 h-5 text-gold" />,
+    <HeartHandshake key="p5" className="w-5 h-5 text-gold" />,
   ];
 
   return (
@@ -23,30 +33,31 @@ export default function AboutPage() {
         </div>
       </div>
 
-      {/* Main Split Section */}
+      {/* Main Split Section: The Core Vision */}
       <section className="py-16 sm:py-24">
         <div className="max-w-[1280px] mx-auto px-5">
           <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_1fr] gap-8 sm:gap-12 lg:gap-16 items-center">
-            <div className="space-y-4">
+            <div className="space-y-5">
               <div className="flex items-center gap-3 text-gold text-[11.5px] font-bold tracking-[0.22em] uppercase">
-                <span>About us</span>
+                <span>Our Vision for Agriculture & Land</span>
                 <span className="w-10 h-[1px] bg-gold inline-block" />
               </div>
               <h1 className="font-serif text-forest-deep text-[clamp(2.4rem,5.5vw,4.5rem)] font-normal leading-[1.05] tracking-tight">
-                Healthy land, brighter tomorrows.
+                Owning land is a privilege. <br />
+                We make it productive.
               </h1>
-              <p className="text-[18px] sm:text-[20px] text-charcoal/90 leading-relaxed font-sans font-light">
-                FarmCare 360° offers comprehensive care for land, farms, gardens and agricultural projects. Your land, our care, every step. We work through five stages with every space: plan, develop, protect, grow and harvest.
+              <p className="text-[17px] sm:text-[19px] text-charcoal/90 leading-relaxed font-sans font-light">
+                Owning land does not automatically make it productive. Across India, countless agricultural parcels, vacant sites, and residential terraces remain underutilized because owners live far away, work demanding careers, or lack agricultural knowledge and reliable labour.
               </p>
-              <p className="text-[14px] text-charcoal/60 font-sans italic pt-2">
-                Company history, team and credentials will be added once supplied.
+              <p className="text-[15px] sm:text-[16px] text-charcoal/80 leading-relaxed font-sans font-light">
+                At the same time, many people dream of farming, growing their own food, or owning a countryside retreat—yet hesitate because farming without guidance can be complex and risky. <strong>FarmCare360 exists to bridge that gap</strong> through an end-to-end management ecosystem.
               </p>
             </div>
 
-            <div className="relative aspect-[4/3] rounded-[14px] overflow-hidden bg-forest shadow-soft">
+            <div className="relative aspect-[4/3] rounded-3xl overflow-hidden bg-forest-dark shadow-soft">
               <Image
                 src="/images/hero/hero-terrace-farm.jpg"
-                alt="Farmhouse garden"
+                alt="Farmhouse terrace garden overlooking productive land"
                 fill
                 priority
                 className="object-cover"
@@ -57,110 +68,98 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* 5 Stages Section */}
-      <section className="py-16 sm:py-24 bg-cream border-t border-charcoal/10">
+      {/* The 5 Stages of Stewardship */}
+      <section className="py-16 sm:py-20 bg-cream border-t border-charcoal/10">
         <div className="max-w-[1280px] mx-auto px-5">
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6 sm:gap-8">
+          <div className="max-w-[36em] space-y-2 mb-10">
+            <span className="text-xs font-bold uppercase tracking-widest text-gold block">Our Methodology</span>
+            <h2 className="font-serif text-forest-deep text-3xl sm:text-4xl font-normal">
+              Five stages of complete care.
+            </h2>
+            <p className="text-sm sm:text-base text-charcoal/70 font-sans">
+              Every property we steward progresses through five defined phases.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 sm:gap-6">
             {stages.map((stage) => (
-              <div key={stage.number} className="border-t border-gold pt-3.5 space-y-1">
-                <span className="font-serif text-[34px] text-gold font-normal block leading-none">
-                  {stage.number}
-                </span>
-                <h2 className="font-serif text-forest-deep text-[32px] sm:text-[34px] font-normal leading-tight">
-                  {stage.title}
-                </h2>
+              <div key={stage.number} className="p-5 rounded-2xl bg-white border border-charcoal/10 shadow-2xs flex flex-col justify-between">
+                <div>
+                  <span className="font-serif text-3xl text-gold font-normal block mb-1">
+                    {stage.number}
+                  </span>
+                  <h3 className="font-serif text-forest-deep text-2xl font-normal mb-2">
+                    {stage.title}
+                  </h3>
+                  <p className="text-xs text-charcoal/70 leading-relaxed font-sans font-light">
+                    {stage.desc}
+                  </p>
+                </div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Our Founders Section */}
+      {/* How FarmCare360 Will Be Different (The 5 Principles) */}
       <section className="py-16 sm:py-24 border-t border-charcoal/10">
         <div className="max-w-[1280px] mx-auto px-5">
-          <div className="max-w-[36em] space-y-3.5 mb-10">
+          <div className="max-w-[38em] space-y-3.5 mb-12">
             <div className="flex items-center gap-3 text-gold text-[11.5px] font-bold tracking-[0.22em] uppercase">
-              <span>Our founders</span>
+              <span>Operating Principles</span>
               <span className="w-10 h-[1px] bg-gold inline-block" />
             </div>
             <h2 className="font-serif text-forest-deep text-[clamp(2rem,4.6vw,3.5rem)] font-normal leading-[1.05] tracking-tight">
-              The people behind the care.
+              How FarmCare360 is fundamentally different.
             </h2>
             <p className="text-[17px] sm:text-[18px] text-charcoal/80 leading-relaxed font-sans font-light">
-              Dedicated agricultural professionals combining traditional land stewardship with modern agronomic precision.
+              We are building more than a conventional farm services agency. We operate by five strict covenants.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-[1100px]">
-            <article className="tm">
-              <div className="pf">
-                <svg viewBox="0 0 120 120" role="img" aria-label="Founder photo placeholder">
-                  <rect width="120" height="120" fill="#EFE9D9"/>
-                  <circle cx="60" cy="46" r="20" fill="#A8B69A"/>
-                  <path d="M20 120c2-26 20-40 40-40s38 14 40 40z" fill="#A8B69A"/>
-                </svg>
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-5">
+            {fiveCorePrinciples.map((p, idx) => (
+              <div
+                key={p.number}
+                className="p-6 rounded-2xl bg-white border border-charcoal/10 shadow-2xs hover:border-gold transition-all duration-300 flex flex-col justify-between"
+              >
+                <div>
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="font-mono text-xs font-bold text-gold">{p.number}</span>
+                    {principleIcons[idx]}
+                  </div>
+                  <h3 className="font-serif text-xl text-forest-deep font-medium mb-2">{p.title}</h3>
+                  <p className="text-xs text-charcoal/75 leading-relaxed font-sans font-light">{p.description}</p>
+                </div>
+                <div className="mt-4 pt-3 border-t border-charcoal/10 text-[11px] text-forest font-semibold">
+                  {p.practicalApplication}
+                </div>
               </div>
-              <div>
-                <h3>Founder Name</h3>
-                <p className="rl">Founder & Agricultural Director</p>
-                <ul className="chips">
-                  <li>Agricultural Planning</li>
-                  <li>Soil & Water Management</li>
-                  <li>Orchard Operations</li>
-                </ul>
-                <em className="smp">Sample. Replace before launch.</em>
-              </div>
-            </article>
-
-            <article className="tm">
-              <div className="pf">
-                <svg viewBox="0 0 120 120" role="img" aria-label="Co-founder photo placeholder">
-                  <rect width="120" height="120" fill="#EFE9D9"/>
-                  <circle cx="60" cy="46" r="20" fill="#A8B69A"/>
-                  <path d="M20 120c2-26 20-40 40-40s38 14 40 40z" fill="#A8B69A"/>
-                </svg>
-              </div>
-              <div>
-                <h3>Founder Name</h3>
-                <p className="rl">Co-founder & Operations Lead</p>
-                <ul className="chips">
-                  <li>Farm Infrastructure</li>
-                  <li>Terrace & Garden Design</li>
-                  <li>Client Stewardship</li>
-                </ul>
-                <em className="smp">Sample. Replace before launch.</em>
-              </div>
-            </article>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Plan a Consultation CTA Banner */}
-      <section className="bg-forest-dark text-white py-16">
-        <div className="max-w-[1280px] mx-auto px-5">
-          <div className="flex flex-wrap gap-7 items-center justify-between">
-            <div className="max-w-[34em] space-y-3.5">
-              <div className="flex items-center gap-3 text-gold text-[11.5px] font-bold tracking-[0.22em] uppercase">
-                <span>Plan a consultation</span>
-                <span className="w-10 h-[1px] bg-gold inline-block" />
-              </div>
-              <h2 className="font-serif text-white text-[clamp(2rem,4vw,3rem)] font-normal leading-[1.08] tracking-tight">
-                Tell us what your space needs.
-              </h2>
-              <p className="text-[17px] sm:text-[18px] text-white/80 leading-relaxed font-sans">
-                Share your location, your plans, and the kind of support you are looking for. Our team can help you explore the next steps.
-              </p>
-            </div>
-
-            <div>
-              <Link
-                href="/contact"
-                className="inline-flex items-center justify-center min-h-[48px] px-8 rounded-full bg-gold hover:bg-[#D4B66B] text-forest-deep font-sans font-semibold text-[15px] transition-colors shadow-sm"
-              >
-                Request a Consultation →
-              </Link>
-            </div>
+      {/* Transparency Guarantee Callout */}
+      <section className="py-14 bg-forest-dark text-white border-t border-white/10">
+        <div className="max-w-[1280px] mx-auto px-5 flex flex-col sm:flex-row items-center justify-between gap-6 text-center sm:text-left">
+          <div className="space-y-2">
+            <span className="text-xs font-mono font-bold uppercase tracking-widest text-gold block">
+              Customer Transparency Protocol
+            </span>
+            <h2 className="font-serif text-2xl sm:text-3xl text-white font-medium">
+              Zero unexplained bills. Total pre-approval governance.
+            </h2>
+            <p className="text-white/80 text-sm max-w-[34em]">
+              Explore our 7-step defined operational and financial approval protocol that gives you clear reasons to trust us.
+            </p>
           </div>
+          <Link
+            href="/transparency"
+            className="inline-flex items-center justify-center min-h-[48px] px-8 rounded-full bg-gold hover:bg-[#D4B66B] active:scale-[0.98] text-forest-deep font-sans font-semibold text-sm transition-all shadow-sm"
+          >
+            Explore Transparency Model →
+          </Link>
         </div>
       </section>
     </div>

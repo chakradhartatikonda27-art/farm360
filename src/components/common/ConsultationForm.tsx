@@ -312,12 +312,11 @@ export function ConsultationForm({
                   onChange={handleChange}
                   className="w-full px-3.5 py-3 rounded-lg border border-cream text-base sm:text-sm min-h-[46px] bg-white text-charcoal focus:outline-none focus:ring-2 focus:ring-forest touch-manipulation"
                 >
-                  <option value="Farm">Farm / Agricultural Acreage</option>
-                  <option value="Agricultural Plot">Agricultural Plot / Subdivided Farmland</option>
-                  <option value="Vacant Land">Vacant Land / Peri-Urban Site</option>
-                  <option value="Terrace / Kitchen Garden">Terrace / Rooftop Garden</option>
-                  <option value="Farmhouse Grounds">Farmhouse & Landscape Grounds</option>
-                  <option value="Other">Other / Commercial Agro Project</option>
+                  <option value="Agricultural Land (1+ Acre)">1. Agricultural Land (1+ Acre)</option>
+                  <option value="Residential & Open Plot">2. Residential & Open Plot</option>
+                  <option value="Terrace / Rooftop Space">3. Terrace / Rooftop Space</option>
+                  <option value="Space Around Home / Yard">4. Space Around Home / Yard</option>
+                  <option value="Commercial Farm Project">Other / Commercial Agro Project</option>
                 </select>
               </div>
 
@@ -338,7 +337,7 @@ export function ConsultationForm({
 
               <div>
                 <label htmlFor="preferredEngagement" className="block text-xs font-medium text-charcoal/80 mb-1">
-                  Preferred Engagement <span className="text-red-500">*</span>
+                  Preferred Business Model / Engagement <span className="text-red-500">*</span>
                 </label>
                 <select
                   id="preferredEngagement"
@@ -347,9 +346,11 @@ export function ConsultationForm({
                   onChange={handleChange}
                   className="w-full px-3.5 py-3 rounded-lg border border-cream text-base sm:text-sm min-h-[46px] bg-white text-charcoal focus:outline-none focus:ring-2 focus:ring-forest touch-manipulation"
                 >
-                  <option value="One-time Service">One-time Service (Setup, Testing, Fencing)</option>
-                  <option value="Ongoing Managed Care">Ongoing Managed Care (Seasonal Stewardship)</option>
-                  <option value="Landowner Enquiry">Landowner Lease / Partnership Enquiry</option>
+                  <option value="Model 1: End-to-End Farm Management">Model 1: End-to-End Farm Management</option>
+                  <option value="Model 2: Farm Development & Farmhouse Living">Model 2: Farm Development & Farmhouse Living</option>
+                  <option value="Model 3: Land Leasing / Farming Partnership">Model 3: Land Leasing / Farming Partnership</option>
+                  <option value="Model 4: Terrace / Small-Space Food Garden">Model 4: Terrace / Small-Space Food Garden</option>
+                  <option value="Specialized Technical Service">Specialized Technical Service (Soil, Drip, Fence)</option>
                   <option value="General Consultation">General Discussion / Planning Advice</option>
                 </select>
               </div>

@@ -4,249 +4,219 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Breadcrumbs } from '@/components/common/Breadcrumbs';
-import { ArrowRight, ArrowUpRight, CheckCircle2, Home, Trees, Layers, Sprout } from 'lucide-react';
-
-interface SpaceType {
-  id: string;
-  name: string;
-  eyebrow: string;
-  tagline: string;
-  description: string;
-  image: string;
-  setupServices: Array<{ name: string; href: string }>;
-  careRecommendation: string;
-  benefits: string[];
-}
-
-const spaces: SpaceType[] = [
-  {
-    id: 'terraces',
-    name: 'Terrace & Rooftop Gardens',
-    eyebrow: 'RESIDENTIAL BOTANY',
-    tagline: 'A productive green retreat, designed right at home.',
-    description: 'Transform an urban concrete terrace or balcony into a lush organic food forest with lightweight living soil blends, custom raised planters, and automated drip systems that never leak into ceilings.',
-    image: '/images/services/feat-terrace-setup.jpg',
-    setupServices: [
-      { name: 'Kitchen gardens & terrace setup', href: '/services/kitchen-gardens-and-landscaping' },
-      { name: 'Automated micro-drip timers', href: '/services/drip-and-sprinkler-installation' },
-      { name: 'Raised wooden planter fabrication', href: '/services/kitchen-gardens-and-landscaping' },
-    ],
-    careRecommendation: 'Fortnightly or Monthly horticulturist visits for organic bio-nutrition, pest spray, and seedling replenishment.',
-    benefits: [
-      'Engineered drainage mats protect roof waterproofing completely',
-      'Pesticide-free organic greens, herbs, and vegetables on your table daily',
-      'Automated timers keep plants thriving while you travel',
-    ],
-  },
-  {
-    id: 'plots',
-    name: 'Small Plots & Vacant Sites',
-    eyebrow: 'PROPERTY PROTECTION',
-    tagline: 'Idle land. A fresh purpose and active care.',
-    description: 'Turn an unused residential layout plot or peri-urban parcel into a thriving kitchen plot, or keep it clean, clear of wild scrub, securely demarcated, and free from illegal dumping.',
-    image: '/images/managed/plot-after.jpg',
-    setupServices: [
-      { name: 'Land cleaning & brush clearing', href: '/services/land-cleaning-and-levelling' },
-      { name: 'Fencing & concrete post boundary', href: '/services/fencing-and-boundary-protection' },
-      { name: 'Soil testing & organic prep', href: '/services/soil-and-water-testing' },
-    ],
-    careRecommendation: 'Monthly security & boundary audit or quarterly deep clearing with digital photo verification.',
-    benefits: [
-      'Prevents illegal trash dumping and neighbor encroachments',
-      'Eliminates dangerous snake habitats and pest harbors',
-      'Maintains clean property presentation for future construction or sale',
-    ],
-  },
-  {
-    id: 'farms',
-    name: 'Farms & High-Density Orchards',
-    eyebrow: 'AGRICULTURAL PRODUCTION',
-    tagline: 'Productive farmland with scientific agronomy and precision water.',
-    description: 'Establish high-yielding commercial fruit orchards (Mango, Guava, Pomegranate, Avocado, Citrus) or cash crops with genuine grafted saplings, laser-guided levelling, and pressure-compensating drip networks.',
-    image: '/images/services/card-managed-orchard.jpg',
-    setupServices: [
-      { name: 'Farm masterplanning & contour zoning', href: '/services/farm-and-land-planning' },
-      { name: 'Drip & sprinkler irrigation installation', href: '/services/drip-and-sprinkler-installation' },
-      { name: 'High-density planting & pit preparation', href: '/services/planting-and-orchard-setup' },
-      { name: 'Borewell & electrical pump coordination', href: '/services/borewell-coordination' },
-    ],
-    careRecommendation: 'Bi-weekly or monthly agronomist oversight, pruning, bio-fertigation, and harvest coordination.',
-    benefits: [
-      'Gives absentee landowners complete confidence with photographic field updates',
-      'Reduces water usage by up to 60% compared to flood irrigation',
-      'Links harvest surplus with verified regional produce buyers',
-    ],
-  },
-  {
-    id: 'farmhouses',
-    name: 'Farmhouse & Landscape Grounds',
-    eyebrow: 'ESTATE HORTICULTURE',
-    tagline: 'Manicured lawns, blooming pergolas, and fruit groves for your weekend sanctuary.',
-    description: 'Ensure your countryside retreat is fragrant, lush, and pristine every Friday when you arrive. We manage lawn aeration, flowerbed borders, shade trees, and perimeter security with quiet dedication.',
-    image: '/images/managed/cat-farmhouse-landscape.jpg',
-    setupServices: [
-      { name: 'Farmhouse landscape design', href: '/services/kitchen-gardens-and-landscaping' },
-      { name: 'Perimeter fencing & farm gates', href: '/services/fencing-and-boundary-protection' },
-      { name: 'Automated lawn sprinkler systems', href: '/services/drip-and-sprinkler-installation' },
-    ],
-    careRecommendation: 'Weekly or bi-weekly comprehensive estate grounds keeping.',
-    benefits: [
-      'Pristine grounds ready for weekend family enjoyment',
-      'Healthy fruit trees offering fresh seasonal fruit for your table',
-      'Seamless coordination with on-site caretakers and staff',
-    ],
-  },
-];
+import { ArrowRight, ArrowUpRight, CheckCircle2, Trees, Layers, Sprout, Home, Compass } from 'lucide-react';
+import { spacesWeServe } from '@/data/visionData';
 
 export default function ForYourSpacePage() {
-  const [activeTab, setActiveTab] = useState<string>('terraces');
-  const currentSpace = spaces.find((s) => s.id === activeTab) || spaces[0];
+  const [activeTab, setActiveTab] = useState<string>(spacesWeServe[0].id);
+  const currentSpace = spacesWeServe.find((s) => s.id === activeTab) || spacesWeServe[0];
+
+  const feasibilityFactors = [
+    { title: 'Property Size & Topography', desc: 'From 500 sq.ft. rooftops to 50+ acre agricultural holdings.' },
+    { title: "Owner's Objectives", desc: 'Weekend retreat, commercial fruit harvest, or interim land preservation.' },
+    { title: 'Water Availability', desc: 'Groundwater borewells, rainwater storage, municipal lines, or tanker supply.' },
+    { title: 'Sunlight Exposure', desc: 'Full-day solar exposure for crops or filtered shade-tolerant plantings.' },
+    { title: 'Soil & Drainage Profile', desc: 'Depth, pH balance, organic matter content, and natural gradient flow.' },
+    { title: 'Budget & Practical Feasibility', desc: 'Phase-wise capital investment and sustainable operational maintenance.' },
+  ];
 
   return (
     <div className="w-full bg-ivory">
       {/* Breadcrumbs */}
-      <div className="border-b border-cream py-3.5 px-4 sm:px-6 lg:px-8 bg-ivory-surface">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <Breadcrumbs items={[{ label: 'For Your Space' }]} />
+      <div className="border-b border-charcoal/10 py-3.5 px-5 bg-cream/40">
+        <div className="max-w-[1280px] mx-auto flex items-center justify-between">
+          <Breadcrumbs items={[{ label: 'Home', href: '/' }, { label: 'The Spaces We Serve' }]} />
           <span className="text-xs text-charcoal/50 uppercase tracking-widest hidden sm:inline">
-            Solutions Tailored By Property Type
+            Four Core Property Categories
           </span>
         </div>
       </div>
 
       {/* Hero Header */}
-      <section className="pt-12 pb-14 sm:pt-16 sm:pb-20 border-b border-cream">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl space-y-4">
-            <div className="inline-flex items-center gap-2 text-gold text-xs font-semibold tracking-widest uppercase">
-              <span className="w-4 h-[1px] bg-gold"></span>
-              <span>MATCHED TO YOUR PROPERTY</span>
-            </div>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-serif text-charcoal font-normal leading-[1.15]">
-              Tailored solutions <br />
-              <span className="italic font-light text-forest">for your exact space.</span>
-            </h1>
-            <p className="text-base sm:text-lg text-charcoal/75 font-light leading-relaxed max-w-2xl">
-              Whether you are cultivating an urban rooftop, protecting an idle suburban plot, or developing a multi-acre agricultural orchard, discover how FarmCare 360° configures the right balance of setup and ongoing care.
-            </p>
+      <section className="pt-12 sm:pt-16 pb-12 bg-cream/30 border-b border-charcoal/10">
+        <div className="max-w-[1280px] mx-auto px-5 text-center">
+          <div className="inline-flex items-center gap-3 text-gold text-[11.5px] font-bold tracking-[0.22em] uppercase mx-auto mb-3">
+            <span>Tailored Agricultural Stewardship</span>
+            <span className="w-10 h-[1px] bg-gold inline-block" />
           </div>
+          <h1 className="font-serif text-forest-deep text-[clamp(2.4rem,5.2vw,4.5rem)] font-normal leading-[1.05] tracking-tight max-w-[22em] mx-auto">
+            The types of land and spaces we serve.
+          </h1>
+          <p className="mt-4 text-[17px] sm:text-[18px] text-charcoal/80 max-w-[34em] mx-auto font-sans font-light leading-relaxed">
+            FarmCare360 initially focuses on four distinct categories—from commercial acreage to residential rooftops—designed around your objectives and site feasibility.
+          </p>
+        </div>
+      </section>
 
-          {/* Space Type Selector Tabs */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mt-8 sm:mt-10">
-            {spaces.map((s) => {
-              const isSelected = s.id === activeTab;
+      {/* Main Interactive Tabs Section */}
+      <section className="py-14 sm:py-20">
+        <div className="max-w-[1280px] mx-auto px-5">
+          
+          {/* 4 Tabs Selector */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-10" role="tablist">
+            {spacesWeServe.map((space) => {
+              const isSelected = space.id === activeTab;
               return (
                 <button
-                  key={s.id}
-                  type="button"
-                  onClick={() => setActiveTab(s.id)}
-                  className={`p-4 text-left rounded-2xl border transition-all duration-200 touch-manipulation active:scale-[0.98] ${
+                  key={space.id}
+                  role="tab"
+                  aria-selected={isSelected}
+                  onClick={() => setActiveTab(space.id)}
+                  className={`p-4 sm:p-5 rounded-2xl text-left transition-all duration-300 border flex flex-col justify-between focus:outline-none focus-visible:ring-2 focus-visible:ring-gold ${
                     isSelected
-                      ? 'bg-forest text-ivory border-forest shadow-soft font-semibold'
-                      : 'bg-ivory-surface border-cream hover:border-gold/50 text-charcoal'
+                      ? 'bg-forest text-ivory border-forest shadow-md scale-[1.02]'
+                      : 'bg-white hover:bg-cream text-charcoal/80 border-charcoal/10 hover:border-gold/50 shadow-2xs'
                   }`}
                 >
-                  <span className={`text-[10px] uppercase font-bold tracking-wider block mb-1 ${isSelected ? 'text-gold-light' : 'text-gold'}`}>
-                    {s.eyebrow}
-                  </span>
-                  <div className="font-serif text-base sm:text-lg leading-tight">
-                    {s.name}
+                  <div className="flex items-center justify-between w-full mb-3">
+                    <span className={`font-mono text-xs font-bold ${isSelected ? 'text-gold' : 'text-charcoal/40'}`}>
+                      {space.number}
+                    </span>
+                    <span className={`w-2 h-2 rounded-full ${isSelected ? 'bg-gold' : 'bg-charcoal/20'}`} />
                   </div>
+                  <h2 className={`font-serif text-base sm:text-lg font-medium leading-snug ${isSelected ? 'text-white' : 'text-forest-deep'}`}>
+                    {space.title}
+                  </h2>
                 </button>
               );
             })}
           </div>
-        </div>
-      </section>
 
-      {/* Active Space Detail Showcase */}
-      <section className="py-16 sm:py-24 border-b border-cream bg-cream/30">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-ivory-surface rounded-3xl border border-cream overflow-hidden shadow-soft p-6 sm:p-10">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-              {/* Photo */}
-              <div className="lg:col-span-5 relative aspect-[4/3] rounded-2xl overflow-hidden bg-cream border border-cream">
+          {/* Active Space Detail Panel */}
+          <div className="bg-white rounded-3xl border border-charcoal/10 overflow-hidden shadow-soft mb-16">
+            <div className="grid grid-cols-1 lg:grid-cols-12 items-stretch">
+              
+              {/* Image */}
+              <div className="relative lg:col-span-5 min-h-[300px] sm:min-h-[400px] lg:min-h-full bg-forest-dark overflow-hidden">
                 <Image
                   src={currentSpace.image}
-                  alt={currentSpace.name}
+                  alt={currentSpace.title}
                   fill
+                  priority
                   className="object-cover"
-                  sizes="(max-width: 1024px) 100vw, 40vw"
+                  sizes="(max-width: 1024px) 100vw, 42vw"
                 />
-                <div className="absolute top-4 left-4 bg-forest-dark/85 backdrop-blur-md text-ivory text-xs px-3 py-1 rounded-full font-medium">
-                  {currentSpace.eyebrow}
+                <div className="absolute inset-0 bg-gradient-to-t from-forest-dark/85 via-forest-dark/30 to-transparent" />
+                <div className="absolute bottom-6 left-6 right-6 text-white space-y-1">
+                  <span className="text-xs uppercase tracking-widest text-gold font-bold">Category {currentSpace.number}</span>
+                  <h3 className="font-serif text-2xl sm:text-3xl font-medium">{currentSpace.title}</h3>
+                  <p className="text-xs text-white/80">{currentSpace.subtitle}</p>
                 </div>
               </div>
 
-              {/* Space Details */}
-              <div className="lg:col-span-7 space-y-5">
-                <div>
-                  <span className="text-xs font-semibold tracking-widest uppercase text-gold block mb-1">
-                    PROPERTY OVERVIEW
-                  </span>
-                  <h2 className="text-2xl sm:text-4xl font-serif text-charcoal font-bold leading-tight">
-                    {currentSpace.name}
-                  </h2>
-                  <p className="text-base font-serif italic text-forest mt-1">
-                    "{currentSpace.tagline}"
-                  </p>
-                  <p className="text-xs sm:text-sm text-charcoal/75 mt-3 leading-relaxed">
-                    {currentSpace.description}
-                  </p>
-                </div>
+              {/* Text & Delivery Specs */}
+              <div className="lg:col-span-7 p-6 sm:p-9 lg:p-11 flex flex-col justify-between space-y-6">
+                <div className="space-y-4">
+                  <div>
+                    <span className="text-xs font-bold uppercase tracking-wider text-gold block mb-1">
+                      Target Environment & Scope
+                    </span>
+                    <p className="text-[17px] sm:text-[18px] text-charcoal/90 leading-relaxed font-sans font-light">
+                      {currentSpace.summary}
+                    </p>
+                  </div>
 
-                {/* Key Benefits */}
-                <div className="space-y-2 pt-2 border-t border-cream">
-                  <span className="text-xs font-semibold uppercase tracking-wider text-charcoal/60">
-                    Why choose FarmCare for this space:
-                  </span>
-                  <div className="space-y-1.5 text-xs text-charcoal/80">
-                    {currentSpace.benefits.map((b, i) => (
-                      <div key={i} className="flex items-start gap-2">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-botanical shrink-0 mt-0.5" />
-                        <span>{b}</span>
-                      </div>
-                    ))}
+                  <div className="p-4 rounded-xl bg-cream/50 border border-charcoal/10 text-xs sm:text-sm text-charcoal/80">
+                    <strong className="text-forest-deep font-semibold">Ideal For: </strong>
+                    <span>{currentSpace.idealFor}</span>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 pt-2">
+                    <div>
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-charcoal/60 mb-2.5 flex items-center gap-1.5">
+                        <Compass className="w-3.5 h-3.5 text-gold" />
+                        <span>Key Assessment Factors</span>
+                      </h4>
+                      <ul className="space-y-2 text-xs sm:text-[13px] text-charcoal/80 font-sans">
+                        {currentSpace.keyConsiderations.map((c, idx) => (
+                          <li key={idx} className="flex items-start gap-2">
+                            <span className="text-gold font-bold">•</span>
+                            <span>{c}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    <div>
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-charcoal/60 mb-2.5 flex items-center gap-1.5">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-botanical" />
+                        <span>What FarmCare360 Delivers</span>
+                      </h4>
+                      <ul className="space-y-2 text-xs sm:text-[13px] text-charcoal/80 font-sans">
+                        {currentSpace.solutions.map((s, idx) => (
+                          <li key={idx} className="flex items-start gap-2">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-botanical flex-shrink-0 mt-0.5" />
+                            <span>{s}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
                   </div>
                 </div>
 
-                {/* Recommended Setup Services */}
-                <div className="space-y-2 pt-2 border-t border-cream">
-                  <span className="text-xs font-semibold uppercase tracking-wider text-charcoal/60">
-                    Recommended Setup Services:
-                  </span>
-                  <div className="flex flex-wrap gap-2">
-                    {currentSpace.setupServices.map((srv, idx) => (
-                      <Link
-                        key={idx}
-                        href={srv.href}
-                        className="px-3 py-1.5 rounded-lg bg-cream text-charcoal text-xs font-medium border border-cream-border hover:bg-forest hover:text-ivory transition-colors flex items-center gap-1.5"
-                      >
-                        <span>{srv.name}</span>
-                        <ArrowUpRight className="w-3 h-3" />
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Ongoing Care Recommendation */}
-                <div className="p-3.5 rounded-xl bg-ivory border border-cream text-xs text-charcoal/80">
-                  <strong className="text-forest font-semibold block mb-0.5">Recommended Ongoing Rhythm:</strong>
-                  {currentSpace.careRecommendation}
-                </div>
-
-                <div className="pt-2">
+                <div className="pt-6 border-t border-charcoal/10 flex flex-wrap items-center justify-between gap-4">
                   <Link
-                    href={`/contact?propertyType=${encodeURIComponent(currentSpace.name)}`}
-                    className="btn-forest text-xs py-3 px-6 inline-flex items-center gap-2"
+                    href={currentSpace.href}
+                    className="text-xs font-semibold text-forest hover:text-gold transition-colors inline-flex items-center gap-1"
                   >
-                    <span>Request Consultation for {currentSpace.name}</span>
+                    <span>View Related Managed Programs</span>
+                    <ArrowUpRight className="w-4 h-4" />
+                  </Link>
+
+                  <Link
+                    href="/contact"
+                    className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-forest text-ivory hover:bg-forest-dark font-sans font-semibold text-xs sm:text-sm transition-all active:scale-95 shadow-xs"
+                  >
+                    <span>Book Property Assessment</span>
                     <ArrowRight className="w-4 h-4" />
                   </Link>
                 </div>
               </div>
             </div>
           </div>
+
+          {/* Feasibility Framework Cards */}
+          <div className="space-y-6">
+            <div className="text-center max-w-[36em] mx-auto">
+              <span className="text-xs font-bold uppercase tracking-widest text-gold block mb-1">
+                Our Assessment Methodology
+              </span>
+              <h3 className="font-serif text-2xl sm:text-3xl text-forest-deep font-medium">
+                Six factors we evaluate on every property.
+              </h3>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {feasibilityFactors.map((factor, idx) => (
+                <div key={idx} className="p-5 rounded-2xl bg-white border border-charcoal/10 shadow-2xs">
+                  <span className="font-mono text-xs font-bold text-gold block mb-1.5">0{idx + 1}</span>
+                  <h4 className="font-serif text-base text-forest-deep font-semibold mb-1">{factor.title}</h4>
+                  <p className="text-xs text-charcoal/70 leading-relaxed font-sans">{factor.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      {/* Bottom CTA */}
+      <section className="bg-forest-dark text-white py-14 border-t border-white/10">
+        <div className="max-w-[1280px] mx-auto px-5 flex flex-col sm:flex-row items-center justify-between gap-6 text-center sm:text-left">
+          <div className="space-y-1.5">
+            <h2 className="font-serif text-2xl sm:text-3xl text-white font-medium">
+              Have questions about your specific plot or terrace?
+            </h2>
+            <p className="text-white/80 text-sm max-w-[32em]">
+              Our agricultural consultants will evaluate your space and prepare a custom feasibility plan.
+            </p>
+          </div>
+          <Link
+            href="/contact"
+            className="inline-flex items-center justify-center min-h-[48px] px-8 rounded-full bg-gold hover:bg-[#D4B66B] active:scale-[0.98] text-forest-deep font-sans font-semibold text-sm transition-all shadow-sm"
+          >
+            Request Free Assessment →
+          </Link>
         </div>
       </section>
     </div>

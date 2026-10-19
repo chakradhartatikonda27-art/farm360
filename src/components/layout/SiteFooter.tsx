@@ -93,8 +93,18 @@ export function SiteFooter() {
                 </Link>
               </li>
               <li>
+                <Link href="/for-your-space" className="hover:text-white transition-colors">
+                  Spaces We Serve
+                </Link>
+              </li>
+              <li>
                 <Link href="/managed-care" className="hover:text-white transition-colors">
                   Managed Care
+                </Link>
+              </li>
+              <li>
+                <Link href="/transparency" className="hover:text-white transition-colors">
+                  Customer Transparency
                 </Link>
               </li>
               <li>
