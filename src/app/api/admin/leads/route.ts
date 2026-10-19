@@ -11,6 +11,8 @@ export async function GET(req: NextRequest) {
     const stage = searchParams.get('stage') as SalesStage | 'all' | undefined;
     const status = searchParams.get('status') as LeadStatus | 'all' | undefined;
     const source = searchParams.get('source') as LeadSource | 'all' | undefined;
+    const service = searchParams.get('service') || undefined;
+    const dateRange = searchParams.get('dateRange') || undefined;
     const executive = searchParams.get('executive') || undefined;
     const format = searchParams.get('format') || 'json';
 
@@ -18,6 +20,8 @@ export async function GET(req: NextRequest) {
       stage: stage && stage !== 'all' ? stage : undefined,
       status: status && status !== 'all' ? status : undefined,
       source: source && source !== 'all' ? source : undefined,
+      service: service && service !== 'all' ? service : undefined,
+      dateRange: dateRange && dateRange !== 'all' ? dateRange : undefined,
       search,
     });
 

@@ -18,6 +18,7 @@ import {
   AuditLogEntry,
   ContentRevision,
   DashboardStats,
+  CrmDashboardStats,
   LeadItem,
   ProjectItem,
   CrmSettings,
@@ -1702,13 +1703,21 @@ function computeDashboardStats(db: DatabaseSchema): DashboardStats & Record<stri
       resolved: db.enquiries.filter((e) => e.status === 'resolved').length,
       archived: db.enquiries.filter((e) => e.status === 'archived').length,
     },
+    crm: computeCrmStats(db),
     recentAudits: db.auditLogs.slice(0, 8),
   };
 }
 
 /* ==================== LEADS & SALES PIPELINE CRM ==================== */
 
-export function getLeads(filter?: { stage?: string; status?: string; source?: string; search?: string }): LeadItem[] {
+export function getLeads(filter?: {
+  stage?: string;
+  status?: string;
+  source?: string;
+  service?: string;
+  dateRange?: string;
+  search?: string;
+}): LeadItem[] {
   const db = loadDatabase();
   let list = db.leads || [];
 
@@ -1720,6 +1729,23 @@ export function getLeads(filter?: { stage?: string; status?: string; source?: st
   }
   if (filter?.source && filter.source !== 'all') {
     list = list.filter((l) => l.source === filter.source);
+  }
+  if (filter?.service && filter.service !== 'all') {
+    const s = filter.service.toLowerCase();
+    list = list.filter((l) => l.serviceCategory?.toLowerCase().includes(s));
+  }
+  if (filter?.dateRange && filter.dateRange !== 'all') {
+    const now = new Date();
+    if (filter.dateRange === 'today') {
+      const todayStr = now.toISOString().split('T')[0];
+      list = list.filter((l) => l.createdAt.startsWith(todayStr));
+    } else if (filter.dateRange === 'last_7_days') {
+      const sevenDaysAgo = new Date(now.getTime() - 7 * 86400000);
+      list = list.filter((l) => new Date(l.createdAt) >= sevenDaysAgo);
+    } else if (filter.dateRange === 'this_month') {
+      const monthPrefix = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+      list = list.filter((l) => l.createdAt.startsWith(monthPrefix));
+    }
   }
   if (filter?.search) {
     const q = filter.search.toLowerCase();
@@ -1737,7 +1763,14 @@ export function getLeads(filter?: { stage?: string; status?: string; source?: st
   return list.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 }
 
-export async function getLeadsAsync(filter?: { stage?: string; status?: string; source?: string; search?: string }): Promise<LeadItem[]> {
+export async function getLeadsAsync(filter?: {
+  stage?: string;
+  status?: string;
+  source?: string;
+  service?: string;
+  dateRange?: string;
+  search?: string;
+}): Promise<LeadItem[]> {
   const db = await loadDatabaseAsync();
   let list = db.leads || [];
 
@@ -1749,6 +1782,23 @@ export async function getLeadsAsync(filter?: { stage?: string; status?: string; 
   }
   if (filter?.source && filter.source !== 'all') {
     list = list.filter((l) => l.source === filter.source);
+  }
+  if (filter?.service && filter.service !== 'all') {
+    const s = filter.service.toLowerCase();
+    list = list.filter((l) => l.serviceCategory?.toLowerCase().includes(s));
+  }
+  if (filter?.dateRange && filter.dateRange !== 'all') {
+    const now = new Date();
+    if (filter.dateRange === 'today') {
+      const todayStr = now.toISOString().split('T')[0];
+      list = list.filter((l) => l.createdAt.startsWith(todayStr));
+    } else if (filter.dateRange === 'last_7_days') {
+      const sevenDaysAgo = new Date(now.getTime() - 7 * 86400000);
+      list = list.filter((l) => new Date(l.createdAt) >= sevenDaysAgo);
+    } else if (filter.dateRange === 'this_month') {
+      const monthPrefix = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+      list = list.filter((l) => l.createdAt.startsWith(monthPrefix));
+    }
   }
   if (filter?.search) {
     const q = filter.search.toLowerCase();
@@ -2280,8 +2330,12 @@ export async function updateCrmSettingsAsync(settings: Partial<CrmSettings>): Pr
 
 /* ==================== CRM STATS & REPORTING ==================== */
 
-export async function getCrmStatsAsync(): Promise<Record<string, any>> {
+export async function getCrmStatsAsync(): Promise<CrmDashboardStats> {
   const db = await loadDatabaseAsync();
+  return computeCrmStats(db);
+}
+
+export function computeCrmStats(db: DatabaseSchema): CrmDashboardStats {
   const leads = db.leads || [];
   const projects = db.projects || [];
 
@@ -2292,10 +2346,31 @@ export async function getCrmStatsAsync(): Promise<Record<string, any>> {
 
   const closedWon = leads.filter((l) => l.status === 'closed_won' || l.currentStage === 'closed_won');
   const closedLost = leads.filter((l) => l.status === 'closed_lost' || l.currentStage === 'closed_lost');
-  const openLeads = leads.filter((l) => l.status === 'open');
+  const openLeads = leads.filter((l) => l.status === 'open' && l.currentStage !== 'closed_won' && l.currentStage !== 'closed_lost');
 
-  const wonRevenue = closedWon.reduce((acc, l) => acc + (l.finalWonRevenue || l.estimatedDealValue || 0), 0);
-  const totalPipelineValue = openLeads.reduce((acc, l) => acc + (l.estimatedDealValue || 0), 0);
+  // Revenue distinctions (database backed):
+  // 1. Quoted Revenue: Total of commercial quotations prepared for clients
+  const quotedRevenue = leads.reduce((acc, l) => {
+    const val = l.stageValueProposition?.finalQuotedAmount || l.stageValueProposition?.quotationAmount || 0;
+    return acc + Number(val || 0);
+  }, 0);
+
+  // 2. Agreed Deal Value: Total of agreed commercial contracts
+  const agreedDealValue = leads.reduce((acc, l) => {
+    const val = l.stageNegotiation?.finalAgreedAmount || (l.stageClosedWon as any)?.finalAgreedAmount || l.finalWonRevenue || (l.currentStage === 'closed_won' ? (l.estimatedDealValue || 0) : 0);
+    return acc + Number(val || 0);
+  }, 0);
+
+  // 3. Verified Money Received: Total verified advance and milestone cash collections
+  const leadCash = leads.reduce((acc, l) => {
+    const adv = (l.stageNegotiation as any)?.advanceAmountPaid || l.stageNegotiation?.totalReceived || 0;
+    return acc + Number(adv || 0);
+  }, 0);
+  const projectCash = projects.reduce((acc, p) => acc + Number(p.amountReceived || 0), 0);
+  const verifiedMoneyReceived = Math.max(leadCash, projectCash);
+
+  const verifiedPaymentsCount = leads.filter(l => ((l.stageNegotiation as any)?.advanceAmountPaid || l.stageNegotiation?.totalReceived || 0) > 0).length +
+    projects.filter(p => (p.amountReceived || 0) > 0 && !p.leadId).length;
 
   const decidedCount = closedWon.length + closedLost.length;
   const conversionRate = decidedCount > 0 ? Math.round((closedWon.length / decidedCount) * 100) : 0;
@@ -2316,23 +2391,44 @@ export async function getCrmStatsAsync(): Promise<Record<string, any>> {
     leadsBySource[l.source] = (leadsBySource[l.source] || 0) + 1;
   });
 
+  // Aggregate all recent lead activity across the entire database
+  const allLeadActivities: any[] = [];
+  leads.forEach((l) => {
+    (l.activities || []).forEach((act) => {
+      allLeadActivities.push({
+        ...act,
+        leadId: l.id,
+        leadReferenceId: l.referenceId,
+        customerName: l.name,
+      });
+    });
+  });
+  allLeadActivities.sort(
+    (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+  );
+
   return {
     totalLeads,
-    newLeadsToday,
-    unassignedLeads,
     openLeadsCount: openLeads.length,
     closedWonCount: closedWon.length,
     closedLostCount: closedLost.length,
-    totalPipelineValue,
-    wonRevenue,
+    quotedRevenue,
+    agreedDealValue,
+    verifiedMoneyReceived,
+    verifiedPaymentsCount,
+    totalPipelineValue: openLeads.reduce((acc, l) => acc + (l.estimatedDealValue || 0), 0),
+    wonRevenue: agreedDealValue,
     conversionRate,
     leadsByStage,
     leadsBySource,
+    newLeadsToday,
+    unassignedLeads,
     qualificationPending: leads.filter((l) => l.currentStage === 'prospecting' || l.currentStage === 'qualification').length,
     proposalsSubmitted: leads.filter((l) => l.currentStage === 'value_proposition' || l.currentStage === 'decision_makers').length,
     negotiationsInProgress: leads.filter((l) => l.currentStage === 'negotiation').length,
     activeProjectsCount: projects.filter((p) => p.status !== 'completed').length,
     totalProjectsCount: projects.length,
+    recentLeadActivity: allLeadActivities.slice(0, 10),
     recentLeads: leads.slice(0, 5),
   };
 }

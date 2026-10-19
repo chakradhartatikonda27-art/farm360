@@ -190,6 +190,46 @@ export default function ProjectDetailPage() {
         </div>
       </div>
 
+      {/* Planned Dates and Project Manager Card */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="bg-white p-4 rounded-xl border border-[#E6E1D8] shadow-sm">
+          <label className="block text-[10px] text-[#7C887E] uppercase tracking-wider font-semibold mb-1">
+            Planned Start Date
+          </label>
+          <input
+            type="date"
+            value={project.startDate ? project.startDate.split("T")[0] : ""}
+            onChange={(e) => setProject({ ...project, startDate: e.target.value })}
+            className="w-full text-xs bg-[#FAF8F5] border border-[#DCD5C5] rounded-lg p-2 text-[#1B3B2B] font-semibold focus:outline-none focus:ring-1 focus:ring-[#1B3B2B]"
+          />
+        </div>
+
+        <div className="bg-white p-4 rounded-xl border border-[#E6E1D8] shadow-sm">
+          <label className="block text-[10px] text-[#7C887E] uppercase tracking-wider font-semibold mb-1">
+            Target Completion Date
+          </label>
+          <input
+            type="date"
+            value={project.targetCompletionDate ? project.targetCompletionDate.split("T")[0] : ""}
+            onChange={(e) => setProject({ ...project, targetCompletionDate: e.target.value })}
+            className="w-full text-xs bg-[#FAF8F5] border border-[#DCD5C5] rounded-lg p-2 text-[#1B3B2B] font-semibold focus:outline-none focus:ring-1 focus:ring-[#1B3B2B]"
+          />
+        </div>
+
+        <div className="bg-white p-4 rounded-xl border border-[#E6E1D8] shadow-sm">
+          <label className="block text-[10px] text-[#7C887E] uppercase tracking-wider font-semibold mb-1">
+            Assigned Project Manager
+          </label>
+          <input
+            type="text"
+            value={project.projectManager || ""}
+            onChange={(e) => setProject({ ...project, projectManager: e.target.value })}
+            placeholder="e.g. Rajesh Reddy"
+            className="w-full text-xs bg-[#FAF8F5] border border-[#DCD5C5] rounded-lg p-2 text-[#1B3B2B] font-semibold focus:outline-none focus:ring-1 focus:ring-[#1B3B2B]"
+          />
+        </div>
+      </div>
+
       {/* Milestones Card */}
       <div className="bg-white rounded-2xl border border-[#E6E1D8] p-6 shadow-sm space-y-4">
         <div className="flex items-center justify-between">

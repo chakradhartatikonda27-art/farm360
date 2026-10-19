@@ -349,6 +349,40 @@ export interface ContentRevision {
   note?: string;
 }
 
+export interface CrmDashboardStats {
+  totalLeads: number;
+  openLeadsCount: number;
+  closedWonCount: number;
+  closedLostCount: number;
+  quotedRevenue: number;
+  agreedDealValue: number;
+  verifiedMoneyReceived: number;
+  verifiedPaymentsCount: number;
+  totalPipelineValue: number;
+  wonRevenue: number;
+  conversionRate: number;
+  leadsByStage: Record<string, number>;
+  leadsBySource: Record<string, number>;
+  newLeadsToday: number;
+  unassignedLeads: number;
+  qualificationPending: number;
+  proposalsSubmitted: number;
+  negotiationsInProgress: number;
+  activeProjectsCount: number;
+  totalProjectsCount: number;
+  recentLeadActivity: Array<{
+    id: string;
+    timestamp: string;
+    type: string;
+    title: string;
+    description?: string;
+    leadId: string;
+    leadReferenceId: string;
+    customerName: string;
+  }>;
+  recentLeads?: LeadItem[];
+}
+
 export interface DashboardStats {
   totalPages: number;
   publishedPages: number;
@@ -360,6 +394,7 @@ export interface DashboardStats {
   approvedTestimonials: number;
   totalEnquiries: number;
   newEnquiries: number;
+  crm?: CrmDashboardStats;
   recentEnquiries?: ContactEnquiry[];
   recentActivity?: AuditLogEntry[];
 }
