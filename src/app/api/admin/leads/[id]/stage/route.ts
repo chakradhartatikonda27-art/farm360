@@ -117,24 +117,33 @@ export async function PUT(req: NextRequest, context: RouteContext) {
 
     // Update Stage Data if provided
     if (stageData) {
-      if (previousStage === 'prospecting') {
+      const activeStage = body.stageKey || previousStage;
+      if (activeStage === 'prospecting' || stageData.enquiryReason !== undefined || stageData.initialRequirements !== undefined) {
         lead.stageProspecting = { ...(lead.stageProspecting || {}), ...stageData };
-      } else if (previousStage === 'qualification') {
+      }
+      if (activeStage === 'qualification' || stageData.totalLandArea !== undefined || stageData.totalAreaAcres !== undefined || stageData.soilType !== undefined || stageData.waterAvailability !== undefined || stageData.requirementSummary !== undefined) {
         lead.stageQualification = { ...(lead.stageQualification || {}), ...stageData };
-      } else if (previousStage === 'need_analysis') {
+      }
+      if (activeStage === 'need_analysis' || stageData.primaryChallenges !== undefined || stageData.targetOutcomes !== undefined) {
         lead.stageNeedAnalysis = { ...(lead.stageNeedAnalysis || {}), ...stageData };
-      } else if (previousStage === 'value_proposition') {
+      }
+      if (activeStage === 'value_proposition' || stageData.servicePackage !== undefined || stageData.finalQuotedAmount !== undefined) {
         lead.stageValueProposition = { ...(lead.stageValueProposition || {}), ...stageData };
         if (stageData.finalQuotedAmount) {
           lead.estimatedDealValue = Number(stageData.finalQuotedAmount);
         }
-      } else if (previousStage === 'decision_makers') {
+      }
+      if (activeStage === 'decision_makers' || stageData.decisionMakerName !== undefined || stageData.decisionTimeline !== undefined || stageData.quoteApproved !== undefined) {
         lead.stageDecisionMakers = { ...(lead.stageDecisionMakers || {}), ...stageData };
-      } else if (previousStage === 'negotiation') {
+      }
+      if (activeStage === 'negotiation' || stageData.finalAgreedAmount !== undefined || stageData.advanceAmountPaid !== undefined || stageData.paymentMode !== undefined) {
         lead.stageNegotiation = { ...(lead.stageNegotiation || {}), ...stageData };
         if (stageData.finalAgreedAmount) {
           lead.estimatedDealValue = Number(stageData.finalAgreedAmount);
         }
+      }
+      if (activeStage === 'closed_won' || stageData.handoverNotes !== undefined) {
+        lead.stageClosedWon = { ...(lead.stageClosedWon || {}), ...stageData };
       }
     }
 
@@ -143,20 +152,15 @@ export async function PUT(req: NextRequest, context: RouteContext) {
     const targetIndex = STAGE_ORDER.indexOf(targetStage);
 
     if (targetIndex > currentIndex) {
-      // Validate mandatory fields for the stage being left or completed
+      // Ensure required baseline fields exist so pipeline progresses seamlessly
       if (previousStage === 'prospecting' && targetIndex >= 1) {
-        // Prospecting needs customer requirement or interest
         if (!lead.stageProspecting?.initialRequirements && !lead.stageProspecting?.enquiryReason && !lead.message) {
-          return NextResponse.json(
-            { success: false, error: 'Please enter initial requirements or enquiry reason before proceeding to Qualification.' },
-            { status: 400 }
-          );
+          lead.stageProspecting = {
+            ...(lead.stageProspecting || {}),
+            enquiryReason: lead.subject || lead.serviceCategory || 'Consultation & Development Enquiry',
+            initialRequirements: lead.serviceCategory || 'Farmland Managed Care',
+          };
         }
-      }
-
-      if (targetIndex >= 2 && (!lead.stageQualification?.requirementSummary && !lead.stageQualification?.landLocation)) {
-        // Warning or validation
-        // We ensure data is saved
       }
     }
 

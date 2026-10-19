@@ -3,7 +3,7 @@
  * Handles server-side validation and dispatch to CRM / Webhooks / Local Storage.
  */
 
-import { saveEnquiry, saveLeadAsync, generateLeadReferenceId } from '@/lib/cms/db';
+import { saveEnquiry, saveLeadAsync, generateLeadReferenceId } from './cms/db';
 
 export interface ConsultationSubmission {
   fullName: string;

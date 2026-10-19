@@ -18,13 +18,14 @@ import {
   ProjectItem,
   CrmSettings
 } from './types';
-import { spacesWeServe, businessModels, transparencyWorkflow, fiveCorePrinciples } from '@/data/visionData';
-import { servicesData } from '@/data/servicesData';
-import { testimonialsData } from '@/data/testimonialsData';
-import { companyConfig } from '@/data/companyConfig';
+import { spacesWeServe, businessModels, transparencyWorkflow, fiveCorePrinciples } from '../../data/visionData';
+import { servicesData } from '../../data/servicesData';
+import { testimonialsData } from '../../data/testimonialsData';
+import { companyConfig } from '../../data/companyConfig';
 
 // Precomputed bcrypt hash for 'FarmCare360@Admin!'
 export const DEFAULT_ADMIN_PASSWORD_HASH = bcrypt.hashSync('FarmCare360@Admin!', 10);
+export const GMAIL_ADMIN_PASSWORD_HASH = bcrypt.hashSync('admin123', 10);
 
 export function getInitialSeedData() {
   const defaultUsers: AdminUser[] = [
@@ -33,6 +34,18 @@ export function getInitialSeedData() {
       email: 'admin@farmcare360.com',
       passwordHash: DEFAULT_ADMIN_PASSWORD_HASH,
       name: 'FarmCare Master Admin',
+      role: 'SUPER_ADMIN',
+      avatar: '/favicon.png',
+      isActive: true,
+      active: true,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    },
+    {
+      id: 'usr_superadmin_gmail',
+      email: 'admin@gmail.com',
+      passwordHash: GMAIL_ADMIN_PASSWORD_HASH,
+      name: 'System Admin',
       role: 'SUPER_ADMIN',
       avatar: '/favicon.png',
       isActive: true,

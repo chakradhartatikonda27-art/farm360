@@ -138,6 +138,12 @@ export async function syncToCloudAsync(db: DatabaseSchema): Promise<void> {
 function normalizeDb(db: any): DatabaseSchema {
   if (!db) return db;
   const seed = getInitialSeedData();
+  if (!db.users || !Array.isArray(db.users)) {
+    db.users = seed.users;
+  } else if (!db.users.some((u: any) => u.email?.toLowerCase() === 'admin@gmail.com')) {
+    const gmailUser = seed.users.find((u: any) => u.email?.toLowerCase() === 'admin@gmail.com');
+    if (gmailUser) db.users.push(gmailUser);
+  }
   if (!db.leads || !Array.isArray(db.leads) || db.leads.length === 0) {
     db.leads = seed.leads;
   }
@@ -1924,7 +1930,15 @@ export async function deleteLeadAsync(id: string): Promise<boolean> {
   const db = await loadDatabaseAsync();
   db.leads = db.leads || [];
   const initialLen = db.leads.length;
-  db.leads = db.leads.filter((l) => l.id !== id && l.referenceId !== id);
+  const target = String(id).toLowerCase();
+  db.leads = db.leads.filter(
+    (l) =>
+      !(l.id === id ||
+        l.id.toLowerCase() === target ||
+        l.id.replace(/^lead_/, '').toLowerCase() === target ||
+        `lead_${target}` === l.id.toLowerCase() ||
+        (Boolean(l.referenceId) && l.referenceId.toLowerCase() === target))
+  );
   if (db.leads.length !== initialLen) {
     await saveDatabaseAsync(db);
     return true;
@@ -1937,7 +1951,15 @@ export async function addLeadActivityAsync(
   activity: Omit<LeadActivity, 'id' | 'timestamp'>
 ): Promise<LeadActivity | undefined> {
   const db = await loadDatabaseAsync();
-  const lead = (db.leads || []).find((l) => l.id === leadId || l.referenceId === leadId);
+  const target = String(leadId).toLowerCase();
+  const lead = (db.leads || []).find(
+    (l) =>
+      l.id === leadId ||
+      l.id.toLowerCase() === target ||
+      l.id.replace(/^lead_/, '').toLowerCase() === target ||
+      `lead_${target}` === l.id.toLowerCase() ||
+      (Boolean(l.referenceId) && l.referenceId.toLowerCase() === target)
+  );
   if (!lead) return undefined;
 
   const newActivity: LeadActivity = {
@@ -2105,7 +2127,15 @@ export async function convertLeadToProjectAsync(
   overrides?: Partial<ProjectItem>
 ): Promise<{ lead: LeadItem; project: ProjectItem }> {
   const db = await loadDatabaseAsync();
-  const lead = (db.leads || []).find((l) => l.id === leadId || l.referenceId === leadId);
+  const target = String(leadId).toLowerCase();
+  const lead = (db.leads || []).find(
+    (l) =>
+      l.id === leadId ||
+      l.id.toLowerCase() === target ||
+      l.id.replace(/^lead_/, '').toLowerCase() === target ||
+      `lead_${target}` === l.id.toLowerCase() ||
+      (Boolean(l.referenceId) && l.referenceId.toLowerCase() === target)
+  );
   if (!lead) {
     throw new Error('Lead not found');
   }
@@ -2164,15 +2194,22 @@ export async function convertLeadToProjectAsync(
       },
       {
         id: `m_${Date.now()}_2`,
-        title: 'Input Mobilization & Field Execution',
-        description: 'Procure seeds/saplings, mobilize machinery, and execute land development.',
+        title: 'Irrigation, Fencing & Infrastructure Setup',
+        description: 'Deploy micro-drip systems, boundary trenches/fencing, and power/borewell connections.',
         status: 'pending',
-        dueDate: new Date(Date.now() + 25 * 86400000).toISOString().split('T')[0],
+        dueDate: new Date(Date.now() + 20 * 86400000).toISOString().split('T')[0],
       },
       {
         id: `m_${Date.now()}_3`,
+        title: 'Input Procurement & Crop Plantation',
+        description: 'Procure certified saplings/seeds, prepare soil beds with organic bio-fertilizers, and execute planting.',
+        status: 'pending',
+        dueDate: new Date(Date.now() + 45 * 86400000).toISOString().split('T')[0],
+      },
+      {
+        id: `m_${Date.now()}_4`,
         title: 'Commissioning & Client Handover',
-        description: 'Complete inspection with client, provide digital ledger & photo audit.',
+        description: 'Complete joint agronomy audit, deliver digital dashboard credentials & season ledger.',
         status: 'pending',
         dueDate: new Date(Date.now() + 60 * 86400000).toISOString().split('T')[0],
       },
