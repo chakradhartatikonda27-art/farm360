@@ -446,3 +446,13 @@ dialog::backdrop {
   -webkit-backdrop-filter: blur(6px);
 }
 
+/* Mobile-first clean horizontal scroll containers */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
