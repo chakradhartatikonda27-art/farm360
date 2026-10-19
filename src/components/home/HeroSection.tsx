@@ -12,6 +12,8 @@ interface HeroSectionProps {
   secondaryCtaText?: string;
   secondaryCtaLink?: string;
   heroImage?: string;
+  trustBadgeText?: string;
+  trustBadgeLink?: string;
 }
 
 export function HeroSection({
@@ -23,6 +25,8 @@ export function HeroSection({
   secondaryCtaText,
   secondaryCtaLink,
   heroImage,
+  trustBadgeText,
+  trustBadgeLink,
 }: HeroSectionProps = {}) {
   const displayBadge = badge || "Complete Agricultural Solutions";
   const displayTitle = title || "Owning land is a privilege. We make it productive.";
@@ -34,6 +38,9 @@ export function HeroSection({
   const displaySecCtaText = secondaryCtaText || "Discuss Your Land";
   const displaySecCtaLink = secondaryCtaLink || "/contact";
   const displayImage = heroImage || "/images/hero/hero-terrace-farm.jpg";
+  const displayTrustBadge =
+    trustBadgeText || "Customer Transparency Model: Zero unexplained bills";
+  const displayTrustLink = trustBadgeLink || "/transparency";
 
   return (
     <section className="grid grid-cols-1 lg:grid-cols-[1.1fr_1fr] min-h-0 lg:min-h-[660px] bg-forest-dark text-white overflow-hidden">
@@ -75,9 +82,9 @@ export function HeroSection({
         {/* Trust badge link */}
         <div className="mt-7 sm:mt-8 pt-4 border-t border-white/10 flex flex-wrap items-center gap-2 text-xs text-white/80">
           <ShieldCheck className="w-4 h-4 text-gold flex-shrink-0" />
-          <span>Customer Transparency Model: Zero unexplained bills</span>
+          <span>{displayTrustBadge}</span>
           <Link 
-            href="/transparency" 
+            href={displayTrustLink} 
             className="text-gold font-semibold hover:underline inline-flex items-center gap-0.5 touch-manipulation"
           >
             <span>Learn how</span>

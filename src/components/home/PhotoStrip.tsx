@@ -16,21 +16,32 @@ const stripImages = [
   { src: '/images/managed/cat-farmhouse-landscape.jpg', alt: 'Farmhouse landscape care' },
 ];
 
-export function PhotoStrip() {
+export interface PhotoStripItem {
+  src: string;
+  alt?: string;
+}
+
+interface PhotoStripProps {
+  images?: PhotoStripItem[];
+}
+
+export function PhotoStrip({ images }: PhotoStripProps = {}) {
+  const displayImages = images && images.length > 0 ? images : stripImages;
+
   return (
     <section className="strip" aria-label="Agricultural photo gallery">
       <div className="track">
         {/* First sequence */}
-        {stripImages.map((img, idx) => (
+        {displayImages.map((img, idx) => (
           <img
             key={`strip-a-${idx}`}
             src={img.src}
-            alt={img.alt}
+            alt={img.alt || 'Agricultural landscape'}
             loading="lazy"
           />
         ))}
         {/* Cloned sequence for smooth infinite scrolling */}
-        {stripImages.map((img, idx) => (
+        {displayImages.map((img, idx) => (
           <img
             key={`strip-b-${idx}`}
             src={img.src}

@@ -5,77 +5,109 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowUpRight, Images } from 'lucide-react';
 
-export function ProjectGallery() {
-  const galleryItems = [
-    {
-      title: 'Productive farmland',
-      image: '/images/managed/cat-managed-farms.jpg',
-      category: 'farms',
-      isHero: true,
-    },
-    {
-      title: 'Land preparation',
-      image: '/images/services/grid-land-cleaning.jpg',
-      category: 'farms',
-    },
-    {
-      title: 'Irrigation systems',
-      image: '/images/services/grid-drip-sprinkler.jpg',
-      category: 'irrigation',
-    },
-    {
-      title: 'Farm boundaries',
-      image: '/images/services/feat-fencing-boundary.jpg',
-      category: 'boundaries',
-    },
-    {
-      title: 'Kitchen gardens',
-      image: '/images/managed/plot-after.jpg',
-      category: 'gardens',
-    },
-    {
-      title: 'Fruit orchards',
-      image: '/images/services/card-managed-orchard.jpg',
-      category: 'orchards',
-    },
-    {
-      title: 'Landscaped outdoor spaces',
-      image: '/images/services/card-terrace-garden.jpg',
-      category: 'gardens',
-    },
-  ];
+export interface ProjectGalleryItem {
+  title: string;
+  image: string;
+  category?: string;
+  isHero?: boolean;
+}
+
+interface ProjectGalleryProps {
+  badge?: string;
+  title?: string;
+  description?: string;
+  ctaText?: string;
+  ctaLink?: string;
+  items?: ProjectGalleryItem[];
+}
+
+const defaultGalleryItems: ProjectGalleryItem[] = [
+  {
+    title: 'Productive farmland',
+    image: '/images/managed/cat-managed-farms.jpg',
+    category: 'farms',
+    isHero: true,
+  },
+  {
+    title: 'Land preparation',
+    image: '/images/services/grid-land-cleaning.jpg',
+    category: 'farms',
+  },
+  {
+    title: 'Irrigation systems',
+    image: '/images/services/grid-drip-sprinkler.jpg',
+    category: 'irrigation',
+  },
+  {
+    title: 'Farm boundaries',
+    image: '/images/services/feat-fencing-boundary.jpg',
+    category: 'boundaries',
+  },
+  {
+    title: 'Kitchen gardens',
+    image: '/images/managed/plot-after.jpg',
+    category: 'gardens',
+  },
+  {
+    title: 'Fruit orchards',
+    image: '/images/services/card-managed-orchard.jpg',
+    category: 'orchards',
+  },
+  {
+    title: 'Landscaped outdoor spaces',
+    image: '/images/services/card-terrace-garden.jpg',
+    category: 'gardens',
+  },
+];
+
+export function ProjectGallery({
+  badge,
+  title,
+  description,
+  ctaText,
+  ctaLink,
+  items,
+}: ProjectGalleryProps = {}) {
+  const displayBadge = badge || 'Photo Gallery';
+  const displayTitle = title || 'Possibilities start with a plan.';
+  const displayDesc =
+    description ||
+    'Explore our visual blueprints, orchard setups, and agricultural transformations.';
+  const displayCtaText = ctaText || 'Explore Full Gallery (14+ Projects)';
+  const displayCtaLink = ctaLink || '/gallery';
+  const displayItems = items && items.length > 0 ? items : defaultGalleryItems;
 
   return (
-    <section className="py-16 sm:py-24 bg-ivory">
+    <section className="py-12 sm:py-20 bg-ivory">
       <div className="max-w-[1280px] mx-auto px-5">
         {/* Section Header with direct link */}
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 pb-2">
           <div className="space-y-3.5 max-w-[42em]">
             <div className="flex items-center gap-3 text-gold text-[11.5px] font-bold tracking-[0.22em] uppercase">
-              <span>Photo Gallery</span>
+              <span>{displayBadge}</span>
               <span className="w-10 h-[1px] bg-gold inline-block" />
             </div>
             <h2 className="font-serif text-forest-deep text-[clamp(2rem,4.6vw,3.5rem)] font-normal leading-[1.05] tracking-tight">
-              Possibilities start with a plan.
+              {displayTitle}
             </h2>
-            <p className="text-[17px] sm:text-[18px] text-charcoal/80 leading-relaxed font-sans">
-              Explore our visual blueprints, orchard setups, and agricultural transformations.
+            <p className="text-[16px] sm:text-[18px] text-charcoal/80 leading-relaxed font-sans font-light">
+              {displayDesc}
             </p>
           </div>
 
           <Link
-            href="/gallery"
+            href={displayCtaLink}
             className="inline-flex items-center gap-2 self-start sm:self-end px-5 py-2.5 rounded-full bg-forest text-ivory hover:bg-forest-dark transition-all text-xs sm:text-sm font-semibold active:scale-95 shadow-xs"
           >
             <Images className="w-4 h-4" />
-            <span>Explore Full Gallery (14+ Projects)</span>
+            <span>{displayCtaText}</span>
             <ArrowUpRight className="w-4 h-4" />
           </Link>
         </div>
 
         {/* 7-Item Grid Layout (4 columns on desktop, 2 on mobile, item 1 spans 2x2) */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-3.5 mt-10">
-          {galleryItems.map((item, idx) => (
+          {displayItems.map((item, idx) => (
             <Link
               key={idx}
               href="/gallery"

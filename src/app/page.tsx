@@ -27,28 +27,43 @@ export default function HomePage() {
   const transparency = getTransparencyData();
   const testimonials = getTestimonials({ status: 'approved' });
 
-  // Helper to check section visibility from CMS page builder
-  const isSectionEnabled = (sectionId: string, fallback = true) => {
-    if (!page || !page.sections) return fallback;
-    const s = page.sections.find(
-      (sec) => sec.id === sectionId || sec.type === sectionId
+  // Helper to find a section by any key/type/id
+  const findSection = (key: string) => {
+    if (!page || !page.sections) return undefined;
+    return page.sections.find(
+      (s) =>
+        s.id === key ||
+        s.type === key ||
+        s.id === `sec_${key}` ||
+        s.id === `sec-home-${key}` ||
+        s.type === key.replace('sec_', '').replace('sec-home-', '')
     );
-    return s ? s.enabled : fallback;
   };
 
-  const heroSection = page?.sections?.find(
-    (s) => s.id === 'sec-home-hero' || s.type === 'hero'
-  );
-  const spacesSection = page?.sections?.find((s) => s.id === 'sec-home-spaces');
-  const modelsSection = page?.sections?.find((s) => s.id === 'sec-home-models');
-  const transparencySection = page?.sections?.find(
-    (s) => s.id === 'sec-home-transparency'
-  );
+  // Helper to check section visibility from CMS page builder
+  const isSectionEnabled = (key: string, fallback = true) => {
+    const s = findSection(key);
+    if (!s) return fallback;
+    if (typeof s.enabled === 'boolean') return s.enabled;
+    if (typeof s.isVisible === 'boolean') return s.isVisible;
+    return fallback;
+  };
+
+  const heroSection = findSection('hero');
+  const photoStripSection = findSection('photo_strip') || findSection('strip');
+  const spacesSection = findSection('spaces');
+  const modelsSection = findSection('models');
+  const transparencySection = findSection('transparency');
+  const approachSection = findSection('approach');
+  const gallerySection = findSection('gallery');
+  const beforeAfterSection = findSection('before_after');
+  const testimonialsSection = findSection('testimonials');
+  const ctaSection = findSection('cta_banner') || findSection('cta');
 
   return (
     <div className="w-full">
       {/* 1. Hero Section: Core Vision & The Privilege of Land */}
-      {isSectionEnabled('sec-home-hero') && (
+      {isSectionEnabled('hero') && (
         <HeroSection
           badge={heroSection?.subtitle}
           title={heroSection?.title}
@@ -60,15 +75,21 @@ export default function HomePage() {
           }
           ctaText={heroSection?.ctaText}
           ctaLink={heroSection?.ctaLink}
-          heroImage={heroSection?.content?.heroImage}
+          secondaryCtaText={heroSection?.secondaryCtaText}
+          secondaryCtaLink={heroSection?.secondaryCtaLink}
+          heroImage={heroSection?.mediaUrl || heroSection?.content?.heroImage}
+          trustBadgeText={heroSection?.content?.trustBadgeText}
+          trustBadgeLink={heroSection?.content?.trustBadgeLink}
         />
       )}
 
       {/* 2. Visual Photo Strip */}
-      <PhotoStrip />
+      {isSectionEnabled('photo_strip', true) && (
+        <PhotoStrip images={photoStripSection?.content?.images} />
+      )}
 
       {/* 3. The 4 Types of Land and Spaces We Serve */}
-      {isSectionEnabled('sec-home-spaces') && (
+      {isSectionEnabled('spaces') && (
         <SpacesWeServeSection
           spaces={spaces}
           title={spacesSection?.title}
@@ -77,7 +98,7 @@ export default function HomePage() {
       )}
 
       {/* 4. Our 4 Core Business Models */}
-      {isSectionEnabled('sec-home-models') && (
+      {isSectionEnabled('models') && (
         <BusinessModelsSection
           models={businessModels}
           title={modelsSection?.title}
@@ -86,7 +107,7 @@ export default function HomePage() {
       )}
 
       {/* 5. Our Customer Transparency Model (7-Step Approval Process & 5 Principles) */}
-      {isSectionEnabled('sec-home-transparency') && (
+      {isSectionEnabled('transparency') && (
         <CustomerTransparencySection
           steps={transparency.steps}
           principles={transparency.principles}
@@ -96,21 +117,71 @@ export default function HomePage() {
       )}
 
       {/* 6. Our 4-Step Agronomic Approach */}
-      <OurApproach />
+      {isSectionEnabled('approach') && (
+        <OurApproach
+          badge={approachSection?.subtitle}
+          title={approachSection?.title}
+          description={
+            typeof approachSection?.content === 'string'
+              ? approachSection.content
+              : approachSection?.content?.description
+          }
+          steps={approachSection?.content?.steps}
+        />
+      )}
 
       {/* 7. Visual Blueprints & Project Photo Gallery */}
-      <ProjectGallery />
+      {isSectionEnabled('gallery') && (
+        <ProjectGallery
+          badge={gallerySection?.subtitle}
+          title={gallerySection?.title}
+          description={
+            typeof gallerySection?.content === 'string'
+              ? gallerySection.content
+              : gallerySection?.content?.description
+          }
+          ctaText={gallerySection?.ctaText || gallerySection?.content?.ctaText}
+          ctaLink={gallerySection?.ctaLink || gallerySection?.content?.ctaLink}
+          items={gallerySection?.content?.items}
+        />
+      )}
 
       {/* 8. Interactive Before and After Transformation Slider */}
-      <BeforeAfterComparison />
+      {isSectionEnabled('before_after') && (
+        <BeforeAfterComparison
+          title={beforeAfterSection?.title}
+          subtitle={beforeAfterSection?.subtitle}
+          description={
+            typeof beforeAfterSection?.content === 'string'
+              ? beforeAfterSection.content
+              : beforeAfterSection?.content?.description
+          }
+          beforeImage={beforeAfterSection?.secondaryMediaUrl}
+          afterImage={beforeAfterSection?.mediaUrl}
+        />
+      )}
 
       {/* 9. Verified Client Testimonials & Review Marquee */}
-      {isSectionEnabled('sec-home-testimonials') && (
+      {isSectionEnabled('testimonials') && (
         <TrendingReviews testimonials={testimonials} />
       )}
 
       {/* 10. Direct Consultation CTA Banner */}
-      <ContactCtaBanner />
+      {isSectionEnabled('cta_banner') && (
+        <ContactCtaBanner
+          badge={ctaSection?.subtitle}
+          title={ctaSection?.title}
+          description={
+            typeof ctaSection?.content === 'string'
+              ? ctaSection.content
+              : ctaSection?.content?.description
+          }
+          ctaText={ctaSection?.ctaText}
+          ctaLink={ctaSection?.ctaLink}
+          secondaryCtaText={ctaSection?.secondaryCtaText}
+          secondaryCtaLink={ctaSection?.secondaryCtaLink}
+        />
+      )}
     </div>
   );
 }

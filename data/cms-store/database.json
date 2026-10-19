@@ -284,85 +284,214 @@
       "sections": [
         {
           "id": "sec_hero",
+          "name": "Hero Section (Lead Vision & Image)",
           "type": "hero",
           "title": "Owning land is a privilege. We make it productive.",
           "subtitle": "Complete Agricultural Solutions",
-          "content": "Many agricultural lands, open plots, and terraces remain idle, while people dream of farming and rural living. FarmCare360 bridges that gap through end-to-end management, agronomic science, and radical transparency.",
+          "content": {
+            "description": "Many agricultural lands, open plots, and terraces remain idle, while people dream of farming and rural living. FarmCare360 bridges that gap through end-to-end management, agronomic science, and radical transparency.",
+            "heroImage": "/images/hero/hero-terrace-farm.jpg",
+            "trustBadgeText": "Customer Transparency Model: Zero unexplained bills",
+            "trustBadgeLink": "/transparency"
+          },
           "mediaUrl": "/images/hero/hero-terrace-farm.jpg",
           "ctaText": "Explore Our 4 Models",
           "ctaLink": "/services",
           "secondaryCtaText": "Discuss Your Land",
           "secondaryCtaLink": "/contact",
           "order": 1,
-          "isVisible": true
+          "displayOrder": 1,
+          "isVisible": true,
+          "enabled": true
+        },
+        {
+          "id": "sec_strip",
+          "name": "Photo Strip / Carousel",
+          "type": "photo_strip",
+          "title": "Agricultural Photo Showcase",
+          "subtitle": "Visual Gallery Marquee",
+          "content": {
+            "images": [
+              { "src": "/images/managed/cat-managed-farms.jpg", "alt": "Managed farmland" },
+              { "src": "/images/services/card-land-design.jpg", "alt": "Agricultural land design" },
+              { "src": "/images/services/grid-drip-sprinkler.jpg", "alt": "Drip & sprinkler irrigation" },
+              { "src": "/images/services/feat-fencing-boundary.jpg", "alt": "Farm boundary fencing" },
+              { "src": "/images/managed/plot-after.jpg", "alt": "Care-restored agricultural plot" },
+              { "src": "/images/services/card-managed-orchard.jpg", "alt": "Managed fruit orchard" },
+              { "src": "/images/services/feat-terrace-setup.jpg", "alt": "Terrace garden setup" },
+              { "src": "/images/services/grid-soil-water-testing.jpg", "alt": "Soil and water testing" },
+              { "src": "/images/services/grid-planting-orchard.jpg", "alt": "Systematic planting" },
+              { "src": "/images/services/grid-pruning-treecare.jpg", "alt": "Seasonal tree pruning" },
+              { "src": "/images/services/grid-one-time-harvest.jpg", "alt": "Agricultural harvest" },
+              { "src": "/images/managed/cat-farmhouse-landscape.jpg", "alt": "Farmhouse landscape care" }
+            ]
+          },
+          "order": 2,
+          "displayOrder": 2,
+          "isVisible": true,
+          "enabled": true
         },
         {
           "id": "sec_spaces",
+          "name": "The Spaces We Serve",
           "type": "spaces",
           "title": "Tailored agricultural stewardship for every type of property.",
           "subtitle": "The Spaces We Serve",
           "content": "Our approach depends on your property’s size, your objectives, water availability, sunlight, soil conditions, budget, and practical feasibility.",
-          "order": 2,
-          "isVisible": true
+          "order": 3,
+          "displayOrder": 3,
+          "isVisible": true,
+          "enabled": true
         },
         {
           "id": "sec_models",
+          "name": "Our 4 Business Models",
           "type": "models",
           "title": "Four flexible frameworks designed around your land and lifestyle.",
           "subtitle": "Our Business Models",
           "content": "Whether you want hands-off farm stewardship, a peaceful farmhouse retreat, structured land leasing, or fresh home-grown food on your terrace.",
-          "order": 3,
-          "isVisible": true
+          "order": 4,
+          "displayOrder": 4,
+          "isVisible": true,
+          "enabled": true
         },
         {
           "id": "sec_transparency",
+          "name": "Customer Transparency Model",
           "type": "transparency",
           "title": "Our Customer Transparency Model",
           "subtitle": "Radical Openness · Zero Hidden Costs",
           "content": "Our processes give you clear reasons to trust us before any work begins, during execution, and across ongoing maintenance.",
-          "order": 4,
-          "isVisible": true
+          "order": 5,
+          "displayOrder": 5,
+          "isVisible": true,
+          "enabled": true
         },
         {
           "id": "sec_approach",
+          "name": "Our 4-Step Agronomic Approach",
           "type": "approach",
           "title": "From your idea to a living space.",
           "subtitle": "Our Approach",
-          "content": "A disciplined, 4-step agronomic roadmap that turns underutilized soil into thriving agricultural assets.",
-          "order": 5,
-          "isVisible": true
+          "content": {
+            "description": "A disciplined, 4-step agronomic roadmap that turns underutilized soil into thriving agricultural assets.",
+            "steps": [
+              {
+                "number": "01",
+                "title": "Understand Your Vision",
+                "description": "Discuss the property, requirements, goals, and budget.",
+                "image": "/images/services/process-step-1.jpg"
+              },
+              {
+                "number": "02",
+                "title": "Assess Your Space",
+                "description": "Evaluate site conditions, access, layout, and practical requirements.",
+                "image": "/images/services/process-step-2.jpg"
+              },
+              {
+                "number": "03",
+                "title": "Plan Your Solution",
+                "description": "Prepare a tailored scope of work and proposal.",
+                "image": "/images/services/process-step-3.jpg"
+              },
+              {
+                "number": "04",
+                "title": "Create. Maintain. Grow.",
+                "description": "Coordinate agreed services and ongoing support.",
+                "image": "/images/services/process-step-4.jpg"
+              }
+            ]
+          },
+          "order": 6,
+          "displayOrder": 6,
+          "isVisible": true,
+          "enabled": true
         },
         {
           "id": "sec_gallery",
+          "name": "Photo Gallery (Projects Showcase)",
           "type": "gallery",
-          "title": "Real transformations across farms, estates, and rooftops.",
-          "subtitle": "Visual Blueprints & Showcase",
-          "content": "Explore our visual blueprints, orchard setups, and precision irrigation deployments across South India.",
-          "order": 6,
-          "isVisible": true
+          "title": "Possibilities start with a plan.",
+          "subtitle": "Photo Gallery",
+          "ctaText": "Explore Full Gallery (14+ Projects)",
+          "ctaLink": "/gallery",
+          "content": {
+            "description": "Explore our visual blueprints, orchard setups, and agricultural transformations.",
+            "ctaText": "Explore Full Gallery (14+ Projects)",
+            "ctaLink": "/gallery",
+            "items": [
+              {
+                "title": "Productive farmland",
+                "image": "/images/managed/cat-managed-farms.jpg",
+                "category": "farms",
+                "isHero": true
+              },
+              {
+                "title": "Land preparation",
+                "image": "/images/services/grid-land-cleaning.jpg",
+                "category": "farms"
+              },
+              {
+                "title": "Irrigation systems",
+                "image": "/images/services/grid-drip-sprinkler.jpg",
+                "category": "irrigation"
+              },
+              {
+                "title": "Farm boundaries",
+                "image": "/images/services/feat-fencing-boundary.jpg",
+                "category": "boundaries"
+              },
+              {
+                "title": "Kitchen gardens",
+                "image": "/images/managed/plot-after.jpg",
+                "category": "gardens"
+              },
+              {
+                "title": "Fruit orchards",
+                "image": "/images/services/card-managed-orchard.jpg",
+                "category": "orchards"
+              },
+              {
+                "title": "Landscaped outdoor spaces",
+                "image": "/images/services/card-terrace-garden.jpg",
+                "category": "gardens"
+              }
+            ]
+          },
+          "order": 7,
+          "displayOrder": 7,
+          "isVisible": true,
+          "enabled": true
         },
         {
           "id": "sec_before_after",
+          "name": "Before & After Transformation Slider",
           "type": "before_after",
           "title": "See what care can change.",
           "subtitle": "Before & After Transformations",
           "content": "Drag the handle to compare neglected, overgrown sites with scientifically restored productive plots.",
           "mediaUrl": "/images/managed/plot-after.jpg",
           "secondaryMediaUrl": "/images/managed/plot-before.jpg",
-          "order": 7,
-          "isVisible": true
+          "order": 8,
+          "displayOrder": 8,
+          "isVisible": true,
+          "enabled": true
         },
         {
           "id": "sec_testimonials",
+          "name": "Verified Client Testimonials",
           "type": "testimonials",
           "title": "What our clients say.",
           "subtitle": "Client Experiences",
           "content": "Verified stories from orchard owners, estate stewards, and garden enthusiasts.",
-          "order": 8,
-          "isVisible": true
+          "order": 9,
+          "displayOrder": 9,
+          "isVisible": true,
+          "enabled": true
         },
         {
           "id": "sec_cta_banner",
+          "name": "Direct Consultation CTA Banner",
           "type": "cta_banner",
           "title": "Tell us what your space needs.",
           "subtitle": "Plan a Consultation",
@@ -371,8 +500,10 @@
           "ctaLink": "/contact",
           "secondaryCtaText": "WhatsApp Us",
           "secondaryCtaLink": "https://wa.me/919876543210",
-          "order": 9,
-          "isVisible": true
+          "order": 10,
+          "displayOrder": 10,
+          "isVisible": true,
+          "enabled": true
         }
       ]
     },
