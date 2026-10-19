@@ -9,8 +9,9 @@ import { FloatingWhatsApp } from "../common/FloatingWhatsApp";
 export function PublicShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isAdminRoute = pathname?.startsWith("/admin");
+  const isLaunchRoute = pathname?.startsWith("/launch");
 
-  if (isAdminRoute) {
+  if (isAdminRoute || isLaunchRoute) {
     return <>{children}</>;
   }
 
