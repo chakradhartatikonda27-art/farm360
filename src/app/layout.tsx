@@ -1,9 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
-import { SiteHeader } from '@/components/layout/SiteHeader';
-import { SiteFooter } from '@/components/layout/SiteFooter';
-import { FloatingWhatsApp } from '@/components/common/FloatingWhatsApp';
 import { companyConfig } from '@/data/companyConfig';
+import { PublicShell } from '@/components/layout/PublicShell';
 
 export const viewport: Viewport = {
   themeColor: [
@@ -116,10 +114,7 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-        <SiteHeader />
-        <main className="flex-1 w-full">{children}</main>
-        <SiteFooter />
-        <FloatingWhatsApp />
+        <PublicShell>{children}</PublicShell>
       </body>
     </html>
   );

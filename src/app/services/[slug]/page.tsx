@@ -6,6 +6,7 @@ import type { Metadata } from 'next';
 import referencePagesRaw from '@/data/referencePages.json';
 import { FAQAccordion } from '@/components/common/FAQAccordion';
 import { Breadcrumbs } from '@/components/common/Breadcrumbs';
+import { getServiceBySlug, getServices } from '@/lib/cms/db';
 
 interface ReferencePageData {
   id: string;
@@ -73,10 +74,23 @@ interface Props {
 }
 
 export async function generateStaticParams() {
-  return Object.keys(ALIASES).map((slug) => ({ slug }));
+  const cmsServices = getServices();
+  const slugs = new Set([
+    ...Object.keys(ALIASES),
+    ...cmsServices.map((s) => s.slug),
+  ]);
+  return Array.from(slugs).map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const cmsService = getServiceBySlug(params.slug);
+  if (cmsService) {
+    return {
+      title: `${cmsService.seoTitle || cmsService.title} | FarmCare 360°`,
+      description: cmsService.seoDescription || cmsService.shortDescription,
+    };
+  }
+
   const pageId = ALIASES[params.slug] || `p-${params.slug}`;
   const data = referencePages[pageId];
   if (!data) return { title: 'Service Not Found | FarmCare 360°' };
@@ -88,15 +102,75 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default function ServiceDetailPage({ params }: Props) {
+  const cmsService = getServiceBySlug(params.slug);
   const pageId = ALIASES[params.slug] || `p-${params.slug}`;
-  const data = referencePages[pageId];
+  let data = referencePages[pageId];
 
-  if (!data) {
+  if (!data && !cmsService) {
     notFound();
   }
 
   const canonicalSlug = pageId.replace('p-', '');
-  const imageSrc = SERVICE_IMAGES[canonicalSlug] || '/images/hero/hero-terrace-farm.jpg';
+  let imageSrc =
+    SERVICE_IMAGES[canonicalSlug] ||
+    cmsService?.heroImage ||
+    '/images/hero/hero-terrace-farm.jpg';
+
+  if (cmsService) {
+    if (cmsService.heroImage) imageSrc = cmsService.heroImage;
+    if (!data) {
+      data = {
+        id: `p-${cmsService.slug}`,
+        h1: cmsService.title || cmsService.name || 'Agricultural Service',
+        eyebrow: cmsService.category.replace('-', ' ').toUpperCase(),
+        lead: cmsService.shortDescription,
+        challenge: cmsService.fullDescription || cmsService.shortDescription,
+        benefits: cmsService.benefits || [],
+        whatsIncluded: cmsService.features || [],
+        steps: [
+          {
+            step: '01',
+            title: 'Discovery & Soil Audit',
+            description:
+              'Thorough assessment of soil condition, water source, and boundaries.',
+          },
+          {
+            step: '02',
+            title: 'Precision Planning',
+            description:
+              'Agronomic crop selection, input procurement, and machinery mobilization.',
+          },
+          {
+            step: '03',
+            title: 'Supervised Execution',
+            description:
+              'Dedicated field team stewardship with photographic progress reporting.',
+          },
+        ],
+        faqs: [
+          {
+            question: 'How is this service priced?',
+            answer:
+              cmsService.pricingNote ||
+              'Pricing depends on property size, terrain, water access, and specific service scope.',
+          },
+          {
+            question: 'Can I monitor progress remotely?',
+            answer:
+              'Yes. FarmCare360 provides regular digital updates, photos, and itemized billing for full transparency.',
+          },
+        ],
+        related: [],
+      };
+    } else {
+      if (cmsService.title) data.h1 = cmsService.title;
+      if (cmsService.shortDescription) data.lead = cmsService.shortDescription;
+      if (cmsService.features && cmsService.features.length > 0)
+        data.whatsIncluded = cmsService.features;
+      if (cmsService.benefits && cmsService.benefits.length > 0)
+        data.benefits = cmsService.benefits;
+    }
+  }
 
   return (
     <div className="w-full bg-ivory">
@@ -110,6 +184,7 @@ export default function ServiceDetailPage({ params }: Props) {
             fill
             priority
             className="object-cover object-center"
+            unoptimized={imageSrc.startsWith('http') || imageSrc.startsWith('/uploads')}
           />
         </div>
         <div className="absolute inset-0 -z-10 bg-gradient-to-t from-forest-dark via-forest-dark/75 to-forest-dark/40" />

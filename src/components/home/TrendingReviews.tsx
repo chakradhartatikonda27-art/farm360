@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { ArrowUpRight, MessageSquareQuote, Star } from 'lucide-react';
+import { TestimonialItem } from '@/lib/cms/types';
 
 interface ReviewItem {
   name: string;
@@ -55,7 +56,25 @@ const sampleReviews: ReviewItem[] = [
   },
 ];
 
-export function TrendingReviews() {
+interface TrendingReviewsProps {
+  testimonials?: TestimonialItem[];
+}
+
+export function TrendingReviews({ testimonials }: TrendingReviewsProps = {}) {
+  const reviews: ReviewItem[] =
+    testimonials && testimonials.length > 0
+      ? testimonials.map((t) => {
+          const clientName = t.clientName || t.name || 'Valued Client';
+          return {
+            name: clientName,
+            initial: clientName.charAt(0).toUpperCase() || 'C',
+            location: t.location || 'India',
+            service: t.landType || t.serviceRendered || 'Farm Care',
+            quote: t.quote,
+          };
+        })
+      : sampleReviews;
+
   return (
     <section className="py-16 sm:py-24 bg-cream border-t border-charcoal/10 overflow-hidden" aria-labelledby="reviews-heading">
       <div className="max-w-[1280px] mx-auto px-5 mb-10">
@@ -88,7 +107,7 @@ export function TrendingReviews() {
       <div className="mq l" aria-label="Customer reviews marquee">
         <div className="track">
           {/* First sequence */}
-          {sampleReviews.map((rev, idx) => (
+          {reviews.map((rev, idx) => (
             <figure key={`rev-a-${idx}`} className="tr">
               <div className="top">
                 <span className="av" aria-hidden="true">{rev.initial}</span>
@@ -111,7 +130,7 @@ export function TrendingReviews() {
           ))}
 
           {/* Duplicate sequence for seamless 55s infinite loop */}
-          {sampleReviews.map((rev, idx) => (
+          {reviews.map((rev, idx) => (
             <figure key={`rev-b-${idx}`} className="tr" aria-hidden="true">
               <div className="top">
                 <span className="av" aria-hidden="true">{rev.initial}</span>

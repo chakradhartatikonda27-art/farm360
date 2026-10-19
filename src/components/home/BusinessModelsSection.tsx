@@ -2,14 +2,49 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { ArrowUpRight, CheckCircle2, Shield, Sparkles } from 'lucide-react';
-import { businessModels } from '@/data/visionData';
+import { businessModels as defaultModels } from '@/data/visionData';
+import { BusinessModelItem } from '@/lib/cms/types';
 
-export function BusinessModelsSection() {
-  const [activeModelId, setActiveModelId] = useState<string>(businessModels[0].id);
+interface BusinessModelsProps {
+  models?: BusinessModelItem[];
+  title?: string;
+  subtitle?: string;
+}
 
-  const activeModel = businessModels.find((m) => m.id === activeModelId) || businessModels[0];
+export function BusinessModelsSection({
+  models,
+  title,
+  subtitle,
+}: BusinessModelsProps = {}) {
+  const items =
+    models && models.length > 0
+      ? models.map((m, idx) => ({
+          id: m.slug || m.id,
+          code: `MODEL 0${idx + 1}`,
+          title: m.title,
+          tagline: m.subtitle,
+          problem: m.problemSolved,
+          solution: m.solution,
+          servicesIncluded: m.servicesOffered || [],
+          revenueModel: m.revenueModel || 'Agreed monthly or quarterly farm management fee',
+          promise: m.promise || 'Landowner retains full ownership & approves all budgets',
+          href: '/landowners',
+          subModels: m.subModels?.map((s) => ({
+            id: s.id,
+            code: 'PARTNERSHIP',
+            title: s.title,
+            description: s.description,
+            revenueModel: s.subtitle || 'Leasing & Profit Share',
+          })),
+        }))
+      : defaultModels;
+
+  const [activeModelId, setActiveModelId] = useState<string>(items[0]?.id || 'model-1');
+
+  const activeModel = items.find((m) => m.id === activeModelId) || items[0];
+
+  if (!activeModel) return null;
 
   return (
     <section className="py-12 sm:py-20 lg:py-24 bg-cream/40 border-t border-charcoal/10" aria-labelledby="models-heading">
@@ -22,20 +57,21 @@ export function BusinessModelsSection() {
             <span className="w-8 sm:w-10 h-[1px] bg-gold inline-block" />
           </div>
           <h2 id="models-heading" className="font-serif text-forest-deep text-[clamp(2rem,5.5vw,3.6rem)] font-normal leading-[1.08] tracking-tight text-balance">
-            Four structured pathways to make your land productive.
+            {title || 'Four structured pathways to make your land productive.'}
           </h2>
           <p className="text-[15px] sm:text-[17px] text-charcoal/80 leading-relaxed font-sans font-light">
-            Whether you want hands-off farm stewardship, a weekend farmhouse retreat, land leasing facilitation, or a rooftop kitchen garden—we provide clear, transparent models.
+            {subtitle ||
+              'Whether you want hands-off farm stewardship, a weekend farmhouse retreat, land leasing facilitation, or a rooftop kitchen garden—we provide clear, transparent models.'}
           </p>
         </div>
 
-        {/* 4 Model Selector Tabs (Swipeable row on mobile with snap-start, grid on tablet/desktop) */}
+        {/* 4 Model Selector Tabs */}
         <div 
           className="flex overflow-x-auto no-scrollbar snap-x gap-2.5 sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:gap-4 mb-6 sm:mb-10 pb-2 sm:pb-0"
           role="tablist" 
           aria-label="Business model tabs"
         >
-          {businessModels.map((m) => {
+          {items.map((m) => {
             const isSelected = m.id === activeModelId;
             return (
               <button
@@ -108,11 +144,11 @@ export function BusinessModelsSection() {
                 </div>
               </div>
 
-              {/* If Model 3 (Has Sub-models 3.1, 3.2, 3.3) */}
-              {activeModel.subModels && (
+              {/* Sub-models */}
+              {activeModel.subModels && activeModel.subModels.length > 0 && (
                 <div className="space-y-2.5 pt-1">
                   <h4 className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-charcoal/60">
-                    Three Distinct Leasing & Partnership Opportunities:
+                    Partnership & Leasing Options:
                   </h4>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                     {activeModel.subModels.map((sub) => (
@@ -132,64 +168,54 @@ export function BusinessModelsSection() {
               )}
 
               {/* Services Included */}
-              <div className="pt-1">
-                <h4 className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-charcoal/60 mb-2.5">
-                  Scope of Services Included:
-                </h4>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs sm:text-[13px] text-charcoal/80 font-sans">
-                  {activeModel.servicesIncluded.slice(0, 6).map((service, idx) => (
-                    <div key={idx} className="flex items-start gap-2">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-botanical flex-shrink-0 mt-0.5" />
-                      <span>{service}</span>
-                    </div>
-                  ))}
+              {activeModel.servicesIncluded && activeModel.servicesIncluded.length > 0 && (
+                <div className="pt-1">
+                  <h4 className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-charcoal/60 mb-2.5">
+                    Scope of Services Included:
+                  </h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs sm:text-[13px] text-charcoal/80 font-sans">
+                    {activeModel.servicesIncluded.slice(0, 6).map((service, idx) => (
+                      <div key={idx} className="flex items-start gap-2">
+                        <CheckCircle2 className="w-4 h-4 text-botanical flex-shrink-0 mt-0.5" />
+                        <span>{service}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
 
-            {/* Right Column: Visual Image & Commercial Framework */}
-            <div className="lg:col-span-5 flex flex-col justify-between h-full space-y-5 sm:space-y-6">
-              <div className="relative aspect-[16/10] rounded-xl sm:rounded-2xl overflow-hidden bg-forest-dark border border-charcoal/10 shadow-xs">
-                <Image
-                  src={activeModel.image}
-                  alt={activeModel.title}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 1024px) 100vw, 38vw"
-                />
+            {/* Right Column: Commercial Structure & Landowner Promise */}
+            <div className="lg:col-span-5 space-y-4 sm:space-y-5 bg-forest-dark text-white p-5 sm:p-7 rounded-2xl sm:rounded-3xl border border-white/10">
+              <div>
+                <span className="text-[11px] font-bold uppercase tracking-widest text-gold block mb-1">
+                  Transparent Economics
+                </span>
+                <h4 className="font-serif text-xl sm:text-2xl text-white font-medium">
+                  Revenue & Cost Structure
+                </h4>
               </div>
 
-              {/* Revenue Model & Core Promise */}
-              <div className="p-4 sm:p-5 rounded-xl sm:rounded-2xl bg-cream/50 border border-charcoal/10 space-y-3">
-                <div>
-                  <span className="text-[10.5px] sm:text-[11px] font-bold uppercase tracking-wider text-charcoal/60 block mb-0.5">
-                    Revenue & Financial Structure
-                  </span>
-                  <p className="text-xs sm:text-sm text-charcoal/85 leading-relaxed font-sans">
-                    {activeModel.revenueModel}
-                  </p>
-                </div>
-
-                <div className="pt-2.5 border-t border-charcoal/10">
-                  <span className="text-[10.5px] sm:text-[11px] font-bold uppercase tracking-wider text-gold block mb-0.5">
-                    Our Core Promise
-                  </span>
-                  <p className="font-serif text-sm sm:text-base text-forest-deep italic font-medium">
-                    &ldquo;{activeModel.promise}&rdquo;
-                  </p>
-                </div>
+              <div className="p-4 rounded-xl bg-white/5 border border-white/10 text-xs sm:text-[13.5px] text-white/90 leading-relaxed font-sans">
+                {activeModel.revenueModel}
               </div>
 
-              {/* Direct Action Link (Full width button) */}
-              <div className="pt-1">
-                <Link
-                  href={activeModel.href}
-                  className="w-full inline-flex items-center justify-center gap-2 min-h-[48px] px-6 rounded-full bg-forest text-ivory hover:bg-forest-dark active:scale-[0.98] font-sans font-semibold text-sm transition-all shadow-sm touch-manipulation"
-                >
-                  <span>Explore {activeModel.title}</span>
-                  <ArrowUpRight className="w-4 h-4" />
-                </Link>
+              <div className="p-4 rounded-xl bg-gold/15 border border-gold/30">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-gold block mb-1">
+                  Our Uncompromising Promise
+                </span>
+                <p className="font-serif text-sm sm:text-base text-white/95 leading-relaxed font-normal">
+                  "{activeModel.promise}"
+                </p>
               </div>
+
+              <Link
+                href="/landowners"
+                className="w-full inline-flex items-center justify-center gap-2 min-h-[46px] px-6 rounded-full bg-gold hover:bg-[#D4B66B] text-forest-deep font-sans font-semibold text-xs sm:text-sm transition-all shadow-sm active:scale-[0.98] touch-manipulation"
+              >
+                <span>Explore Model Details</span>
+                <ArrowUpRight className="w-4 h-4" />
+              </Link>
             </div>
 
           </div>

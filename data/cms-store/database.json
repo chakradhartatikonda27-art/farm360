@@ -1,0 +1,1597 @@
+{
+  "version": 2,
+  "lastUpdated": "2026-10-19T05:41:34.584Z",
+  "users": [
+    {
+      "id": "usr_superadmin_01",
+      "email": "admin@farmcare360.com",
+      "passwordHash": "$2b$10$8QjqVHDYkRfqKdYujf//IuXkukoSYM2RmJk2IQJttqrAkSJ.NrR4O",
+      "name": "FarmCare Master Admin",
+      "role": "SUPER_ADMIN",
+      "avatar": "/favicon.png",
+      "isActive": true,
+      "active": true,
+      "createdAt": "2026-10-19T05:41:34.583Z",
+      "updatedAt": "2026-10-19T05:41:34.584Z"
+    },
+    {
+      "id": "usr_editor_01",
+      "email": "editor@farmcare360.com",
+      "passwordHash": "$2b$10$8QjqVHDYkRfqKdYujf//IuXkukoSYM2RmJk2IQJttqrAkSJ.NrR4O",
+      "name": "Content & Agronomy Editor",
+      "role": "CONTENT_EDITOR",
+      "avatar": "/favicon.png",
+      "isActive": true,
+      "active": true,
+      "createdAt": "2026-10-19T05:41:34.584Z",
+      "updatedAt": "2026-10-19T05:41:34.584Z"
+    },
+    {
+      "id": "usr_enquiry_01",
+      "email": "enquiries@farmcare360.com",
+      "passwordHash": "$2b$10$8QjqVHDYkRfqKdYujf//IuXkukoSYM2RmJk2IQJttqrAkSJ.NrR4O",
+      "name": "Client Relations Officer",
+      "role": "ENQUIRY_MANAGER",
+      "avatar": "/favicon.png",
+      "isActive": true,
+      "active": true,
+      "createdAt": "2026-10-19T05:41:34.584Z",
+      "updatedAt": "2026-10-19T05:41:34.584Z"
+    }
+  ],
+  "globalSettings": {
+    "brandName": "FarmCare 360°",
+    "tagline": "Complete Agricultural Solutions",
+    "coreMessage": "Your land. Our care. Every step.",
+    "logoUrl": "/images/brand/logo.svg",
+    "lightLogoUrl": "/images/brand/logo-light.svg",
+    "faviconUrl": "/favicon.png",
+    "contact": {
+      "phoneFormatted": "+91 (0) 800-FARMCARE [Pending Verification]",
+      "phoneRaw": "",
+      "email": "contact@farmcare360.com [Configurable Placeholder]",
+      "whatsappFormatted": "+91 98765 43210",
+      "officeAddress": "Ground Floor, Agro-Tech Corridor, Bangalore Rural & Jubilee Hills, Hyderabad",
+      "serviceRegions": [
+        "Bangalore & Surrounding Rural Districts",
+        "Hyderabad & Deccan Agricultural Belts",
+        "Select Farm Clusters across South India"
+      ],
+      "businessHours": "Monday – Saturday: 8:00 AM – 7:00 PM IST",
+      "mapEmbedUrl": "https://maps.google.com"
+    },
+    "socialLinks": [
+      {
+        "platform": "Instagram",
+        "url": "https://instagram.com/farmcare360",
+        "handle": "@farmcare360",
+        "isConfigured": true
+      },
+      {
+        "platform": "YouTube",
+        "url": "https://youtube.com/@farmcare360",
+        "handle": "FarmCare 360° Agriculture",
+        "isConfigured": true
+      },
+      {
+        "platform": "LinkedIn",
+        "url": "https://linkedin.com/company/farmcare360",
+        "handle": "FarmCare 360° Solutions",
+        "isConfigured": true
+      },
+      {
+        "platform": "WhatsApp",
+        "url": "https://wa.me/919876543210?text=Hello%20FarmCare%20360%C2%B0%2C%20I%20would%20like%20to%20discuss%20my%20property%20requirements.",
+        "handle": "+91 98765 43210",
+        "isConfigured": true
+      }
+    ],
+    "announcementTicker": [
+      "Your land. Our care. Every step.",
+      "Plan · Develop · Protect · Grow · Harvest",
+      "One-time services · Managed care · Landowner partnerships",
+      "Radical Customer Transparency: Zero unexplained bills",
+      "Healthy land, brighter tomorrows."
+    ],
+    "footer": {
+      "description": "Healthy land, brighter tomorrows. Complete agricultural stewardship and land asset management across India.",
+      "copyrightText": "© 2026 FarmCare 360°. All rights reserved.",
+      "legalLinks": [
+        {
+          "label": "Privacy Policy",
+          "href": "/privacy-policy"
+        },
+        {
+          "label": "Terms and Conditions",
+          "href": "/terms-and-conditions"
+        }
+      ]
+    },
+    "seoDefaults": {
+      "metaTitle": "FarmCare 360° — Complete Agricultural Solutions",
+      "metaDescription": "Transform underutilized agricultural lands, vacant plots, and residential terraces into productive, well-maintained assets.",
+      "keywords": [
+        "farm management",
+        "terrace garden setup",
+        "agricultural leasing",
+        "drip irrigation",
+        "fruit orchard care",
+        "soil testing"
+      ]
+    },
+    "notificationEmails": [
+      "notifications@farmcare360.com",
+      "admin@farmcare360.com"
+    ],
+    "analyticsId": "G-FC360PROD2026"
+  },
+  "navigation": {
+    "header": [
+      {
+        "label": "Services & Spaces",
+        "href": "/services",
+        "isDropdown": true,
+        "order": 1,
+        "isVisible": true,
+        "children": [
+          {
+            "label": "All Services",
+            "href": "/services",
+            "description": "Land assessment, advisory & tech clusters",
+            "iconName": "Layers"
+          },
+          {
+            "label": "Spaces We Serve",
+            "href": "/for-your-space",
+            "description": "Farms, open plots, terraces & home spaces",
+            "iconName": "Compass"
+          },
+          {
+            "label": "Managed Care",
+            "href": "/managed-care",
+            "description": "Ongoing supervision, labor & farm ops",
+            "iconName": "ShieldCheck"
+          },
+          {
+            "label": "For Landowners",
+            "href": "/landowners",
+            "description": "Direct leasing, partnerships & management",
+            "iconName": "Building2"
+          }
+        ]
+      },
+      {
+        "label": "Transparency",
+        "href": "/transparency",
+        "order": 2,
+        "isVisible": true
+      },
+      {
+        "label": "Explore",
+        "href": "/gallery",
+        "isDropdown": true,
+        "order": 3,
+        "isVisible": true,
+        "children": [
+          {
+            "label": "Photo Gallery",
+            "href": "/gallery",
+            "description": "Real site transformations, crops & systems",
+            "iconName": "Images"
+          },
+          {
+            "label": "Testimonials",
+            "href": "/testimonials",
+            "description": "Verified reviews from landowners & clients",
+            "iconName": "Quote"
+          }
+        ]
+      },
+      {
+        "label": "About Us",
+        "href": "/about",
+        "order": 4,
+        "isVisible": true
+      },
+      {
+        "label": "Contact",
+        "href": "/contact",
+        "order": 5,
+        "isVisible": true
+      }
+    ],
+    "footer": [
+      {
+        "label": "Home",
+        "href": "/",
+        "order": 1,
+        "isVisible": true
+      },
+      {
+        "label": "Our Services",
+        "href": "/services",
+        "order": 2,
+        "isVisible": true
+      },
+      {
+        "label": "Spaces We Serve",
+        "href": "/for-your-space",
+        "order": 3,
+        "isVisible": true
+      },
+      {
+        "label": "Managed Care",
+        "href": "/managed-care",
+        "order": 4,
+        "isVisible": true
+      },
+      {
+        "label": "Customer Transparency",
+        "href": "/transparency",
+        "order": 5,
+        "isVisible": true
+      },
+      {
+        "label": "Photo Gallery",
+        "href": "/gallery",
+        "order": 6,
+        "isVisible": true
+      },
+      {
+        "label": "Testimonials",
+        "href": "/testimonials",
+        "order": 7,
+        "isVisible": true
+      },
+      {
+        "label": "For Landowners",
+        "href": "/landowners",
+        "order": 8,
+        "isVisible": true
+      },
+      {
+        "label": "About Us",
+        "href": "/about",
+        "order": 9,
+        "isVisible": true
+      },
+      {
+        "label": "Contact",
+        "href": "/contact",
+        "order": 10,
+        "isVisible": true
+      }
+    ]
+  },
+  "pages": [
+    {
+      "id": "page_home",
+      "slug": "home",
+      "title": "Home Page",
+      "bannerImage": "/images/hero/hero-terrace-farm.jpg",
+      "seoTitle": "FarmCare 360° — Complete Agricultural Solutions & Managed Farmland",
+      "seoDescription": "Owning land is a privilege. We make it productive through agricultural expertise, micro-irrigation, orchard development, and transparent farm management.",
+      "seoKeywords": [
+        "agricultural services",
+        "farm management",
+        "terrace garden setup",
+        "land cleaning",
+        "drip irrigation"
+      ],
+      "status": "published",
+      "publishedAt": "2026-10-19T05:41:34.584Z",
+      "updatedAt": "2026-10-19T05:41:34.584Z",
+      "sections": [
+        {
+          "id": "sec_hero",
+          "type": "hero",
+          "title": "Owning land is a privilege. We make it productive.",
+          "subtitle": "Complete Agricultural Solutions",
+          "content": "Many agricultural lands, open plots, and terraces remain idle, while people dream of farming and rural living. FarmCare360 bridges that gap through end-to-end management, agronomic science, and radical transparency.",
+          "mediaUrl": "/images/hero/hero-terrace-farm.jpg",
+          "ctaText": "Explore Our 4 Models",
+          "ctaLink": "/services",
+          "secondaryCtaText": "Discuss Your Land",
+          "secondaryCtaLink": "/contact",
+          "order": 1,
+          "isVisible": true
+        },
+        {
+          "id": "sec_spaces",
+          "type": "spaces",
+          "title": "Tailored agricultural stewardship for every type of property.",
+          "subtitle": "The Spaces We Serve",
+          "content": "Our approach depends on your property’s size, your objectives, water availability, sunlight, soil conditions, budget, and practical feasibility.",
+          "order": 2,
+          "isVisible": true
+        },
+        {
+          "id": "sec_models",
+          "type": "models",
+          "title": "Four flexible frameworks designed around your land and lifestyle.",
+          "subtitle": "Our Business Models",
+          "content": "Whether you want hands-off farm stewardship, a peaceful farmhouse retreat, structured land leasing, or fresh home-grown food on your terrace.",
+          "order": 3,
+          "isVisible": true
+        },
+        {
+          "id": "sec_transparency",
+          "type": "transparency",
+          "title": "Our Customer Transparency Model",
+          "subtitle": "Radical Openness · Zero Hidden Costs",
+          "content": "Our processes give you clear reasons to trust us before any work begins, during execution, and across ongoing maintenance.",
+          "order": 4,
+          "isVisible": true
+        },
+        {
+          "id": "sec_approach",
+          "type": "approach",
+          "title": "From your idea to a living space.",
+          "subtitle": "Our Approach",
+          "content": "A disciplined, 4-step agronomic roadmap that turns underutilized soil into thriving agricultural assets.",
+          "order": 5,
+          "isVisible": true
+        },
+        {
+          "id": "sec_gallery",
+          "type": "gallery",
+          "title": "Real transformations across farms, estates, and rooftops.",
+          "subtitle": "Visual Blueprints & Showcase",
+          "content": "Explore our visual blueprints, orchard setups, and precision irrigation deployments across South India.",
+          "order": 6,
+          "isVisible": true
+        },
+        {
+          "id": "sec_before_after",
+          "type": "before_after",
+          "title": "See what care can change.",
+          "subtitle": "Before & After Transformations",
+          "content": "Drag the handle to compare neglected, overgrown sites with scientifically restored productive plots.",
+          "mediaUrl": "/images/managed/plot-after.jpg",
+          "secondaryMediaUrl": "/images/managed/plot-before.jpg",
+          "order": 7,
+          "isVisible": true
+        },
+        {
+          "id": "sec_testimonials",
+          "type": "testimonials",
+          "title": "What our clients say.",
+          "subtitle": "Client Experiences",
+          "content": "Verified stories from orchard owners, estate stewards, and garden enthusiasts.",
+          "order": 8,
+          "isVisible": true
+        },
+        {
+          "id": "sec_cta_banner",
+          "type": "cta_banner",
+          "title": "Tell us what your space needs.",
+          "subtitle": "Plan a Consultation",
+          "content": "Share your location, your plans, and the kind of support you are looking for. Our team can help you explore the next steps.",
+          "ctaText": "Request a Consultation →",
+          "ctaLink": "/contact",
+          "secondaryCtaText": "WhatsApp Us",
+          "secondaryCtaLink": "https://wa.me/919876543210",
+          "order": 9,
+          "isVisible": true
+        }
+      ]
+    },
+    {
+      "id": "page_about",
+      "slug": "about",
+      "title": "About FarmCare 360°",
+      "bannerImage": "/images/managed/cat-farmhouse-landscape.jpg",
+      "seoTitle": "About Us — FarmCare 360° Agricultural Stewardship",
+      "seoDescription": "Bridging the divide between landowners and productive agriculture with science, technology, and absolute operational transparency.",
+      "seoKeywords": [
+        "about farmcare360",
+        "agricultural management company",
+        "farmland stewardship India"
+      ],
+      "status": "published",
+      "publishedAt": "2026-10-19T05:41:34.584Z",
+      "updatedAt": "2026-10-19T05:41:34.584Z",
+      "sections": []
+    },
+    {
+      "id": "page_transparency",
+      "slug": "transparency",
+      "title": "Customer Transparency & Governance",
+      "bannerImage": "/images/services/feat-soil-testing.jpg",
+      "seoTitle": "Customer Transparency Model — 7-Step Approval Process",
+      "seoDescription": "Zero unexplained bills. Discover the 7-step customer approval workflow and 5 core operating principles governing every FarmCare360 project.",
+      "seoKeywords": [
+        "agricultural transparency",
+        "farm billing integrity",
+        "landowner approval workflow"
+      ],
+      "status": "published",
+      "publishedAt": "2026-10-19T05:41:34.584Z",
+      "updatedAt": "2026-10-19T05:41:34.584Z",
+      "sections": []
+    }
+  ],
+  "services": [
+    {
+      "id": "srv_land_cleaning_and_levelling",
+      "slug": "land-cleaning-and-levelling",
+      "name": "Land Cleaning & Levelling",
+      "category": "one-time",
+      "shortDescription": "Transform overgrown, uneven terrain into a clean, workable canvas.",
+      "fullDescription": "Comprehensive removal of thorny shrubs, wild weeds, boulders, and surface grading tailored to your agricultural layout, drainage requirements, and boundary lines.",
+      "features": [
+        "Initial site assessment to identify root depths, rock outcrops, and boundary stakes",
+        "Deployment of appropriate machinery (JCB, heavy excavators, or tractor blades)",
+        "Clearing of thorny shrubs, prosopis (vilayati kikar), and unwanted stump extraction",
+        "Removal or orderly stacking of loose surface boulders and construction debris",
+        "Laser-assisted or contour-based surface levelling for optimal gravity drainage",
+        "Compacting or bunding around property edges where agreed in scope"
+      ],
+      "benefits": [
+        "Eliminates pest harbors, snake habitats, and aggressive weed seed-banks",
+        "Establishes proper natural drainage gradients to prevent water stagnation",
+        "Exposes true boundary markers and facilitates accurate GPS farm mapping",
+        "Creates safe access tracks for tractors, borewell rigs, and fencing equipment"
+      ],
+      "images": [
+        "/images/services/grid-land-cleaning.jpg",
+        "/images/services/grid-land-cleaning.jpg",
+        "/images/services/grid-land-cleaning.jpg",
+        "/images/services/feat-land-farm-design.jpg"
+      ],
+      "ctaText": "Plan a Consultation",
+      "ctaLink": "/contact",
+      "order": 1,
+      "isFeatured": true,
+      "status": "published",
+      "seoTitle": "Land Cleaning & Levelling — FarmCare 360°",
+      "seoDescription": "Comprehensive removal of thorny shrubs, wild weeds, boulders, and surface grading tailored to your agricultural layout, drainage requirements, and boundary",
+      "createdAt": "2026-10-19T05:41:34.584Z",
+      "updatedAt": "2026-10-19T05:41:34.584Z"
+    },
+    {
+      "id": "srv_farm_and_land_planning",
+      "slug": "farm-and-land-planning",
+      "name": "Farm & Land Planning",
+      "category": "one-time",
+      "shortDescription": "Scientific zoning for long-term productivity, water security, and beauty.",
+      "fullDescription": "Holistic master plans that optimize access roads, water storage, crop zoning, windbreaks, residential pockets, and ecological corridors before a single rupee is spent on digging.",
+      "features": [
+        "Topographic contour analysis and watershed drainage pattern mapping",
+        "Soil suitability and microclimatic crop zoning recommendations",
+        "Layout for internal roadways, turning radii, and boundary buffers",
+        "Irrigation pipeline routes, pump house, and water storage reservoir positioning",
+        "High-resolution 2D master plan blueprint with dimensioned plot zones",
+        "Executive summary with step-by-step implementation milestones"
+      ],
+      "benefits": [
+        "Prevents costly infrastructure relocations and irrigation rework",
+        "Optimizes microclimate with windbreaks, shade zoning, and solar orientation",
+        "Integrates rainwater harvesting structures with natural watershed contours",
+        "Phased development roadmaps tailored to realistic budgets and timelines"
+      ],
+      "images": [
+        "/images/services/feat-land-farm-design.jpg",
+        "/images/services/card-land-design.jpg",
+        "/images/services/feat-land-farm-design.jpg",
+        "/images/services/card-land-design.jpg"
+      ],
+      "ctaText": "Plan a Consultation",
+      "ctaLink": "/contact",
+      "order": 2,
+      "isFeatured": true,
+      "status": "published",
+      "seoTitle": "Farm & Land Planning — FarmCare 360°",
+      "seoDescription": "Holistic master plans that optimize access roads, water storage, crop zoning, windbreaks, residential pockets, and ecological corridors before a single rup",
+      "createdAt": "2026-10-19T05:41:34.584Z",
+      "updatedAt": "2026-10-19T05:41:34.584Z"
+    },
+    {
+      "id": "srv_land_preparation",
+      "slug": "land-preparation",
+      "name": "Agricultural Land Preparation",
+      "category": "one-time",
+      "shortDescription": "Deep tillage, organic enrichment, and raised beds for optimal root development.",
+      "fullDescription": "Turn compacted, depleted earth into thriving, aerated soil through subsoiling, rotavation, green manuring, and customized organic enrichment based on lab soil assays.",
+      "features": [
+        "Deep ripping / chiselling to break hardpan layer up to 18-24 inches",
+        "Primary plowing (disc or mouldboard) to invert soil and expose larvae to sunlight",
+        "Secondary tillage and rotavation to achieve fine tilth seedbeds or planting basins",
+        "Incorporation of aged farmyard manure (FYM), press mud, or vermicompost as scoped",
+        "Application of beneficial microbial inoculants (Trichoderma, Pseudomonas, mycorrhiza)",
+        "Formation of raised planting ridges, broad beds, or tree planting pits"
+      ],
+      "benefits": [
+        "Breaks deep subsoil hardpan to allow deep taproot penetration",
+        "Restores active microbial life with well-cured farmyard manure and bio-fertilizers",
+        "Improves water holding capacity while providing healthy root zone aeration",
+        "Suppresses dormant weed seeds through pre-season cultivation cycles"
+      ],
+      "images": [
+        "/images/services/grid-planting-orchard.jpg",
+        "/images/services/grid-planting-orchard.jpg",
+        "/images/services/grid-planting-orchard.jpg",
+        "/images/services/grid-soil-water-testing.jpg"
+      ],
+      "ctaText": "Plan a Consultation",
+      "ctaLink": "/contact",
+      "order": 3,
+      "isFeatured": true,
+      "status": "published",
+      "seoTitle": "Agricultural Land Preparation — FarmCare 360°",
+      "seoDescription": "Turn compacted, depleted earth into thriving, aerated soil through subsoiling, rotavation, green manuring, and customized organic enrichment based on lab s",
+      "createdAt": "2026-10-19T05:41:34.584Z",
+      "updatedAt": "2026-10-19T05:41:34.584Z"
+    },
+    {
+      "id": "srv_fencing_and_boundary_protection",
+      "slug": "fencing-and-boundary-protection",
+      "name": "Fencing & Boundary Protection",
+      "category": "one-time",
+      "shortDescription": "Permanent, theft-resistant, animal-deterrent boundaries built to last.",
+      "fullDescription": "Robust fencing systems including heavy GI chain-link, precast RCC poles, stone pillars, high-tensile barbed wire, and custom farm gates designed for rural and peri-urban security.",
+      "features": [
+        "Line-of-sight survey and boundary marking with your surveyor or existing markers",
+        "Digging of footing pits at standard 8-10 ft intervals with corner strut bracing",
+        "Supply of heavy-duty precast RCC concrete posts or dressed granite stone pillars",
+        "Concrete footing foundation for corner posts, gate posts, and strainers",
+        "Installation of hot-dip GI chain link mesh (standard 8G, 10G, or 12G) or 5-7 strand barbed wire",
+        "Straining, tensioning wire alignment, and optional razor wire / solar fence provision",
+        "Fabrication and installation of vehicular farm swing gates with lockable drop-bolts"
+      ],
+      "benefits": [
+        "Secures legal possession and prevents neighbor encroachments",
+        "Shields costly fruit saplings and vegetable beds from stray cattle and wildlife",
+        "Durable galvanized GI wire coatings resist rusting in high-humidity zones",
+        "Provides peace of mind for absentee landowners and weekend farm investors"
+      ],
+      "images": [
+        "/images/services/feat-fencing-boundary.jpg",
+        "/images/services/feat-fencing-boundary.jpg",
+        "/images/services/feat-fencing-boundary.jpg",
+        "/images/landowners/lease-directly.jpg"
+      ],
+      "ctaText": "Plan a Consultation",
+      "ctaLink": "/contact",
+      "order": 4,
+      "isFeatured": true,
+      "status": "published",
+      "seoTitle": "Fencing & Boundary Protection — FarmCare 360°",
+      "seoDescription": "Robust fencing systems including heavy GI chain-link, precast RCC poles, stone pillars, high-tensile barbed wire, and custom farm gates designed for rural ",
+      "createdAt": "2026-10-19T05:41:34.584Z",
+      "updatedAt": "2026-10-19T05:41:34.584Z"
+    },
+    {
+      "id": "srv_borewell_coordination",
+      "slug": "borewell-coordination",
+      "name": "Borewell & Water Coordination",
+      "category": "one-time",
+      "shortDescription": "Scientific hydrogeological point selection, drilling oversight, and yield testing.",
+      "fullDescription": "Coordinate geophysical electrical resistivity surveys, vetted rotary drilling contractors, quality casing pipes, and accurate yield testing to secure your farm’s lifeblood.",
+      "features": [
+        "Coordination with qualified hydrogeologists for scientific point identification",
+        "Screening and dispatch of high-capacity hydraulic rotary drilling rigs",
+        "Supervision of drilling depth, aquifer strike points, and strata logging",
+        "Installation of heavy-duty ISI slotted PVC or MS casing pipes through loose topsoil",
+        "Air-compressor yield blowing, gravel packing, and silt flushing",
+        "Water sample collection for comprehensive laboratory potability and TDS testing",
+        "Detailed handover report with borehole depth, casing depth, water strike, and pump recommendations"
+      ],
+      "benefits": [
+        "Geophysical resistivity survey cross-checks water fracture zones",
+        "On-site supervision ensures specified pipe thickness and casing depth are actually installed",
+        "V-notch flow testing measures real continuous discharge in litres per hour (LPH)",
+        "Prevents contractor over-invoicing and manages local drilling logistics"
+      ],
+      "images": [
+        "/images/services/grid-borewell-coordination.jpg",
+        "/images/services/grid-borewell-coordination.jpg",
+        "/images/services/grid-borewell-coordination.jpg",
+        "/images/services/grid-soil-water-testing.jpg"
+      ],
+      "ctaText": "Plan a Consultation",
+      "ctaLink": "/contact",
+      "order": 5,
+      "isFeatured": true,
+      "status": "published",
+      "seoTitle": "Borewell & Water Coordination — FarmCare 360°",
+      "seoDescription": "Coordinate geophysical electrical resistivity surveys, vetted rotary drilling contractors, quality casing pipes, and accurate yield testing to secure your ",
+      "createdAt": "2026-10-19T05:41:34.584Z",
+      "updatedAt": "2026-10-19T05:41:34.584Z"
+    },
+    {
+      "id": "srv_drip_and_sprinkler_installation",
+      "slug": "drip-and-sprinkler-installation",
+      "name": "Drip & Sprinkler Irrigation Installation",
+      "category": "one-time",
+      "shortDescription": "Save up to 60% water while delivering precise nutrients directly to plant roots.",
+      "fullDescription": "Custom-engineered pressurized irrigation layouts: inline drip for orchards, micro-sprinklers for vegetables, disc filtration, and automated solenoid manifolds for effortless watering.",
+      "features": [
+        "Hydraulic calculation of flow rates, friction loss, and operating pressure",
+        "Mainline and sub-main PVC pipeline trenching, laying, and solvent welding",
+        "Heavy-duty disc or screen filtration unit to prevent emitter clogging",
+        "Venturi injector setup for effortless liquid bio-fertilizer dosing",
+        "UV-stabilized virgin HDPE lateral lines with pressure-compensating (PC) drippers",
+        "Flush valves, air-release valves, pressure gauges, and control ball-valves per zone",
+        "Commissioning pressure test, emitter flow calibration, and operator handover training"
+      ],
+      "benefits": [
+        "Delivers uniform water discharge to every single tree regardless of terrain elevation",
+        "Enables fertigation — injecting liquid nutrients directly into irrigation lines",
+        "Significantly reduces electricity pumping hours and prevents soil crusting",
+        "Modular layout allows expanding rows as new orchard plots are planted"
+      ],
+      "images": [
+        "/images/services/grid-drip-sprinkler.jpg",
+        "/images/services/grid-drip-sprinkler.jpg",
+        "/images/services/grid-drip-sprinkler.jpg",
+        "/images/hero/hero-terrace-farm.jpg"
+      ],
+      "ctaText": "Plan a Consultation",
+      "ctaLink": "/contact",
+      "order": 6,
+      "isFeatured": true,
+      "status": "published",
+      "seoTitle": "Drip & Sprinkler Irrigation Installation — FarmCare 360°",
+      "seoDescription": "Custom-engineered pressurized irrigation layouts: inline drip for orchards, micro-sprinklers for vegetables, disc filtration, and automated solenoid manifo",
+      "createdAt": "2026-10-19T05:41:34.584Z",
+      "updatedAt": "2026-10-19T05:41:34.584Z"
+    },
+    {
+      "id": "srv_soil_and_water_testing",
+      "slug": "soil-and-water-testing",
+      "name": "Soil & Water Testing Coordination",
+      "category": "one-time",
+      "shortDescription": "Stop guessing. Understand your land’s exact chemistry and mineral balance.",
+      "fullDescription": "Standardized core-sampling across your property sent to accredited agricultural testing labs, followed by a clear, plain-language agronomic roadmap on what amendments your soil actually requires.",
+      "features": [
+        "Multi-point zigzag soil sampling across stratified zones at 0-15cm and 15-30cm depths",
+        "Proper sample drying, bagging, labelling, and chain-of-custody documentation",
+        "Water sample collection directly from active borewell or storage source",
+        "Certified lab testing for pH, EC, Organic Carbon %, N, P, K, Calcium, Magnesium, Sulphur, Zinc, Iron, Manganese, Boron",
+        "Water testing for Sodium Adsorption Ratio (SAR), bicarbonates, nitrates, and heavy metals",
+        "Consultation with an agronomist translating lab numbers into a practical site recipe"
+      ],
+      "benefits": [
+        "Identifies pH imbalances (acidic vs alkaline) that cause severe nutrient lockup",
+        "Pinpoints electrical conductivity (EC) to prevent salt shock in irrigation water",
+        "Measures exact Nitrogen, Phosphorus, Potassium (NPK) and secondary micronutrients",
+        "Provides actionable dosage charts for gypsum, lime, zinc, or compost additions"
+      ],
+      "images": [
+        "/images/services/grid-soil-water-testing.jpg",
+        "/images/services/grid-soil-water-testing.jpg",
+        "/images/services/grid-soil-water-testing.jpg",
+        "/images/services/grid-planting-orchard.jpg"
+      ],
+      "ctaText": "Plan a Consultation",
+      "ctaLink": "/contact",
+      "order": 7,
+      "isFeatured": false,
+      "status": "published",
+      "seoTitle": "Soil & Water Testing Coordination — FarmCare 360°",
+      "seoDescription": "Standardized core-sampling across your property sent to accredited agricultural testing labs, followed by a clear, plain-language agronomic roadmap on what",
+      "createdAt": "2026-10-19T05:41:34.584Z",
+      "updatedAt": "2026-10-19T05:41:34.584Z"
+    },
+    {
+      "id": "srv_planting_and_orchard_setup",
+      "slug": "planting-and-orchard-setup",
+      "name": "Planting & High-Density Orchard Setup",
+      "category": "one-time",
+      "shortDescription": "Vetted genuine grafts, precision pit preparation, and high-survival planting.",
+      "fullDescription": "Turn acreage into productive fruit orchards (Mango, Guava, Pomegranate, Citrus, Avocado, Chikoo, Coconut) with certified disease-free nursery stock, mycorrhizal root dips, and support staking.",
+      "features": [
+        "Selection of fruit species and cultivars suited to your climate zone and soil profile",
+        "Precision layout marking according to canopy spacing (e.g. 5m x 5m, 3m x 2m HDP)",
+        "Pit excavation (3ft x 3ft x 3ft or mechanized tractor auger) and sun-curing",
+        "Pit filling mixture: topsoil, aged manure, vermicompost, neem cake, bone meal, and bio-agents",
+        "Careful graft planting without burying graft union, staking with treated bamboo poles",
+        "Immediate basin establishment, prophylactic drenching, and initial irrigation cycle",
+        "Care schedule document for the critical first 90 days of sapling establishment"
+      ],
+      "benefits": [
+        "Procurement of true-to-type, certified grafted saplings from government-accredited mother blocks",
+        "Engineered planting pits with organic compost, neem cake, and bio-inoculants prevent root rot",
+        "Supports high-density planting (HDP) for early commercial yields and easier harvesting",
+        "Proper bamboo staking and tree guards shield saplings from wind damage and grazing"
+      ],
+      "images": [
+        "/images/services/card-managed-orchard.jpg",
+        "/images/services/grid-planting-orchard.jpg",
+        "/images/services/card-managed-orchard.jpg",
+        "/images/services/grid-planting-orchard.jpg"
+      ],
+      "ctaText": "Plan a Consultation",
+      "ctaLink": "/contact",
+      "order": 8,
+      "isFeatured": false,
+      "status": "published",
+      "seoTitle": "Planting & High-Density Orchard Setup — FarmCare 360°",
+      "seoDescription": "Turn acreage into productive fruit orchards (Mango, Guava, Pomegranate, Citrus, Avocado, Chikoo, Coconut) with certified disease-free nursery stock, mycorr",
+      "createdAt": "2026-10-19T05:41:34.584Z",
+      "updatedAt": "2026-10-19T05:41:34.584Z"
+    },
+    {
+      "id": "srv_pruning_and_tree_care",
+      "slug": "pruning-and-tree-care",
+      "name": "Orchard Pruning & Tree Canopy Care",
+      "category": "one-time",
+      "shortDescription": "Scientific training, canopy thinning, deadwood removal, and disease sanitization.",
+      "fullDescription": "Professional pruning using sanitized shears and pole saws to open canopies to sunlight, remove parasitic mistletoe, stimulate fruiting spurs, and protect cut wounds with organic Bordeaux paste.",
+      "features": [
+        "Canopy inspection to diagnose branch structural integrity, borers, and gummosis",
+        "Removal of crossing branches, water sprouts, diseased limbs, and deadwood",
+        "Center-opening thinning to achieve open-center or modified central leader form",
+        "Sterilization of pruning blades between trees to prevent cross-contamination",
+        "Sealing of all cuts larger than 1 inch with protective copper oxychloride / Bordeaux paste",
+        "Clearing and chipping of pruned wood; application of organic trunk whitewash to deter borers"
+      ],
+      "benefits": [
+        "Maximizes sunlight penetration and air circulation to dramatically lower fungal blight",
+        "Directs tree energy away from unproductive water suckers into heavy fruit set",
+        "Maintains manageable tree heights for easier pest inspection and safe fruit picking",
+        "Removes decayed limbs before storm winds cause structural splits down tree trunks"
+      ],
+      "images": [
+        "/images/services/grid-pruning-treecare.jpg",
+        "/images/services/grid-pruning-treecare.jpg",
+        "/images/services/grid-pruning-treecare.jpg",
+        "/images/services/grid-nutrition-pestcare.jpg"
+      ],
+      "ctaText": "Plan a Consultation",
+      "ctaLink": "/contact",
+      "order": 9,
+      "isFeatured": false,
+      "status": "published",
+      "seoTitle": "Orchard Pruning & Tree Canopy Care — FarmCare 360°",
+      "seoDescription": "Professional pruning using sanitized shears and pole saws to open canopies to sunlight, remove parasitic mistletoe, stimulate fruiting spurs, and protect c",
+      "createdAt": "2026-10-19T05:41:34.584Z",
+      "updatedAt": "2026-10-19T05:41:34.584Z"
+    },
+    {
+      "id": "srv_farm_electrical_work",
+      "slug": "farm-electrical-work",
+      "name": "Farm Electrical & Pump Automation",
+      "category": "one-time",
+      "shortDescription": "Reliable pump starter panels, lightning protection, and solar pumping coordination.",
+      "fullDescription": "Safe, weatherproof rural electrical infrastructure: DOL and Star-Delta starter panels, single-phasing preventers, dry-run cutoffs, underground cabling, and solar pump conversions.",
+      "features": [
+        "Load assessment and coordination with state electricity boards (DISCOMs) where needed",
+        "Installation of heavy-duty IP65 weatherproof outdoor control panels",
+        "Star-Delta or Digital DOL starters with integrated digital voltmeter and ammeter",
+        "Dry-run protection sensors to prevent motor burnout when borewell water dips",
+        "Underground laying of 4-core copper armoured submersible cable in HDPE conduit",
+        "Chemical earthing with bentonite compound and copper-bonded electrode rods",
+        "Solar DC pumping systems coordination where grid power is unreliable"
+      ],
+      "benefits": [
+        "Comprehensive motor protection against low voltage, phase reversal, and dry-run damage",
+        "Armoured cable trenching protects lines from rodent gnawing and tractor plowing",
+        "Proper copper chemical earthing pits protect pump motors from lightning surges",
+        "GSM smart starter integration enables remote pump control and SMS failure alerts"
+      ],
+      "images": [
+        "/images/services/grid-borewell-coordination.jpg",
+        "/images/services/grid-borewell-coordination.jpg",
+        "/images/services/grid-borewell-coordination.jpg",
+        "/images/services/grid-drip-sprinkler.jpg"
+      ],
+      "ctaText": "Plan a Consultation",
+      "ctaLink": "/contact",
+      "order": 10,
+      "isFeatured": false,
+      "status": "published",
+      "seoTitle": "Farm Electrical & Pump Automation — FarmCare 360°",
+      "seoDescription": "Safe, weatherproof rural electrical infrastructure: DOL and Star-Delta starter panels, single-phasing preventers, dry-run cutoffs, underground cabling, and",
+      "createdAt": "2026-10-19T05:41:34.584Z",
+      "updatedAt": "2026-10-19T05:41:34.584Z"
+    },
+    {
+      "id": "srv_one_time_harvest_support",
+      "slug": "one-time-harvest-support",
+      "name": "One-Time Harvest & Post-Harvest Support",
+      "category": "one-time",
+      "shortDescription": "Skilled harvesting crews, gentle handling, crate sorting, and market linkages.",
+      "fullDescription": "Coordinate trained harvesting labor, harvest clippers, food-grade ventilated crates, on-farm grading, and introductions to verified local fruit & vegetable buyers for surplus disposal.",
+      "features": [
+        "Pre-harvest maturity assessment and harvest window scheduling",
+        "Mobilization of skilled pickers equipped with telescopic harvest poles and clippers",
+        "Provision of clean, food-grade plastic harvesting crates (avoiding rough gunny sacks)",
+        "Field-level sorting, cleaning, desapping (for mangoes), and weight tallying",
+        "Assistance packing produce for personal delivery to friends/family or cold storage",
+        "Facilitating connections with verified local wholesale buyers or organic aggregators"
+      ],
+      "benefits": [
+        "Timely labor mobilization ensures crops are harvested at peak brix (sweetness) and maturity",
+        "Gentle picking protocols (retaining pedicels) extend post-harvest shelf life by days",
+        "On-farm grading separates Grade A premium table fruit from processing grades",
+        "Connecting excess produce with local buyers helps monetize surplus harvest"
+      ],
+      "images": [
+        "/images/services/grid-one-time-harvest.jpg",
+        "/images/services/grid-one-time-harvest.jpg",
+        "/images/services/grid-one-time-harvest.jpg",
+        "/images/managed/harvest-surplus-basket.jpg"
+      ],
+      "ctaText": "Plan a Consultation",
+      "ctaLink": "/contact",
+      "order": 11,
+      "isFeatured": false,
+      "status": "published",
+      "seoTitle": "One-Time Harvest & Post-Harvest Support — FarmCare 360°",
+      "seoDescription": "Coordinate trained harvesting labor, harvest clippers, food-grade ventilated crates, on-farm grading, and introductions to verified local fruit & vegetable",
+      "createdAt": "2026-10-19T05:41:34.584Z",
+      "updatedAt": "2026-10-19T05:41:34.584Z"
+    },
+    {
+      "id": "srv_kitchen_gardens_and_landscaping",
+      "slug": "kitchen-gardens-and-landscaping",
+      "name": "Kitchen Gardens, Terraces & Landscape Design",
+      "category": "one-time",
+      "shortDescription": "Fresh organic greens, aromatic herbs, and lush native landscaping at your doorstep.",
+      "fullDescription": "Turn empty terraces, backyards, or farmhouse perimeters into flourishing organic food forests with raised cedar/brick planters, lightweight living potting mixes, drip timers, and native flowering borders.",
+      "features": [
+        "Structural site check: sun path, wind exposure, drainage points, and tap connections",
+        "Custom wooden raised beds, terracotta planters, or UV-stabilized growbags",
+        "Enriched living potting soil blend with bio-fertilizers and organic humic conditioners",
+        "Automated tap-timer micro-drip irrigation system with adjustable shrub bubblers",
+        "Initial planting of seasonal companion vegetables, culinary herbs, and companion pollinators",
+        "Comprehensive starter kit with organic neem oil spray, bio-nutrients, and care manual"
+      ],
+      "benefits": [
+        "Engineered lightweight potting substrate (cocopeat, vermiculite, perlite) prevents roof load issues",
+        "Integrated waterproofing drain-cell mats protect slab concrete from root penetration and dampness",
+        "Daily harvest of pesticide-free salad greens, tomatoes, brinjals, chillies, and culinary herbs",
+        "Automated micro-drip timers keep your garden thriving even while you travel"
+      ],
+      "images": [
+        "/images/services/feat-terrace-setup.jpg",
+        "/images/services/grid-kitchen-gardens.jpg",
+        "/images/services/feat-terrace-setup.jpg",
+        "/images/services/grid-kitchen-gardens.jpg"
+      ],
+      "ctaText": "Plan a Consultation",
+      "ctaLink": "/contact",
+      "order": 12,
+      "isFeatured": false,
+      "status": "published",
+      "seoTitle": "Kitchen Gardens, Terraces & Landscape Design — FarmCare 360°",
+      "seoDescription": "Turn empty terraces, backyards, or farmhouse perimeters into flourishing organic food forests with raised cedar/brick planters, lightweight living potting ",
+      "createdAt": "2026-10-19T05:41:34.584Z",
+      "updatedAt": "2026-10-19T05:41:34.584Z"
+    },
+    {
+      "id": "srv_agricultural_construction",
+      "slug": "agricultural-construction",
+      "name": "Agricultural Construction & Site Development",
+      "category": "one-time",
+      "shortDescription": "Barns, tool sheds, farm security quarters, water ponds, and internal roads.",
+      "fullDescription": "Coordinate practical farmstead construction: pre-engineered steel storage sheds, pump houses, rainwater collection ponds, gravel access tracks, and rural solar lighting systems.",
+      "features": [
+        "Site layout planning for farm structures to respect prevailing wind, slope, and aesthetics",
+        "Construction of pump houses, security rooms, and fertilizer/tool storage sheds",
+        "Excavation and geomembrane lining coordination for rainwater harvesting ponds",
+        "Gravel (WBM) road preparation with roadside drainage swales and pipe culverts",
+        "Perimeter solar street lighting and security camera post preparation",
+        "Supervision by experienced civil & agricultural site supervisors"
+      ],
+      "benefits": [
+        "Cost-effective rural building techniques suited to local weather and soil types",
+        "Secure storage sheds keep expensive irrigation pumps, tools, and fertilizers safe from theft",
+        "Rainwater farm ponds recharge local aquifers and provide reserve dry-season irrigation",
+        "Weather-resistant internal gravel roads allow tractor and vehicle access all year round"
+      ],
+      "images": [
+        "/images/hero/hero-terrace-farm.jpg",
+        "/images/services/card-land-design.jpg",
+        "/images/hero/hero-terrace-farm.jpg",
+        "/images/services/feat-land-farm-design.jpg"
+      ],
+      "ctaText": "Plan a Consultation",
+      "ctaLink": "/contact",
+      "order": 13,
+      "isFeatured": false,
+      "status": "published",
+      "seoTitle": "Agricultural Construction & Site Development — FarmCare 360°",
+      "seoDescription": "Coordinate practical farmstead construction: pre-engineered steel storage sheds, pump houses, rainwater collection ponds, gravel access tracks, and rural s",
+      "createdAt": "2026-10-19T05:41:34.584Z",
+      "updatedAt": "2026-10-19T05:41:34.584Z"
+    }
+  ],
+  "spaces": [
+    {
+      "id": "agricultural-land",
+      "slug": "agricultural-land",
+      "number": "01",
+      "title": "Agricultural Land",
+      "subtitle": "Acreage Properties & Commercial Farms (1 Acre or More)",
+      "summary": "Farmland parcels requiring comprehensive master planning, heavy land preparation, precision irrigation, crop cultivation, or ongoing operational management.",
+      "idealFor": "Absentee landowners, farm investors, family-owned agricultural estates, and new farming entrepreneurs.",
+      "keyConsiderations": [
+        "Property size (1+ acre) & topography",
+        "Water availability & groundwater yield",
+        "Soil nutrient and microbial profile",
+        "Owner economic & lifestyle objectives"
+      ],
+      "solutions": [
+        "Comprehensive agricultural zoning and topographic design",
+        "High-density fruit orchard establishment (Mango, Guava, Citrus)",
+        "Borewell recharging, swales, and drip irrigation networks",
+        "Full-time or seasonal farm supervision and labour coordination"
+      ],
+      "image": "/images/managed/cat-managed-farms.jpg",
+      "gallery": [
+        "/images/managed/cat-managed-farms.jpg"
+      ],
+      "order": 1,
+      "status": "published",
+      "seoTitle": "Agricultural Land Management — FarmCare 360°",
+      "seoDescription": "Farmland parcels requiring comprehensive master planning, heavy land preparation, precision irrigation, crop cultivation, or ongoing operational management",
+      "createdAt": "2026-10-19T05:41:34.584Z",
+      "updatedAt": "2026-10-19T05:41:34.584Z"
+    },
+    {
+      "id": "residential-open-plots",
+      "slug": "residential-open-plots",
+      "number": "02",
+      "title": "Residential & Open Plots",
+      "subtitle": "Vacant Sites & Developing Plots",
+      "summary": "Unbuilt residential parcels and perimeter sites that owners want to keep clean, securely fenced, landscaped, or transformed into productive interim green spaces.",
+      "idealFor": "Non-resident plot owners, suburban property owners, and investors safeguarding land against encroachment.",
+      "keyConsiderations": [
+        "Boundary clarity and legal demarcations",
+        "Weed density, scrub overgrowth, and fire risks",
+        "Accessibility for clearing machinery",
+        "Interim agricultural or aesthetic productivity"
+      ],
+      "solutions": [
+        "Heavy scrub extraction and laser grading",
+        "Reinforced precast RCC fencing and boundary demarcation",
+        "Low-maintenance ground cover and perimeter tree planting",
+        "Monthly GPS photographic inspection and audit logs"
+      ],
+      "image": "/images/managed/cat-vacant-site.jpg",
+      "gallery": [
+        "/images/managed/cat-vacant-site.jpg"
+      ],
+      "order": 2,
+      "status": "published",
+      "seoTitle": "Residential & Open Plots Management — FarmCare 360°",
+      "seoDescription": "Unbuilt residential parcels and perimeter sites that owners want to keep clean, securely fenced, landscaped, or transformed into productive interim green s",
+      "createdAt": "2026-10-19T05:41:34.584Z",
+      "updatedAt": "2026-10-19T05:41:34.584Z"
+    },
+    {
+      "id": "terraces-rooftops",
+      "slug": "terraces-rooftops",
+      "number": "03",
+      "title": "Terraces & Rooftops",
+      "subtitle": "Residential Terraces & Urban Rooftop Spaces",
+      "summary": "Unutilized rooftop surfaces transformed into thriving organic vegetable gardens, compact fruit arbors, and modern urban micro-farming systems.",
+      "idealFor": "Urban homeowners, apartment associations, penthouse residents, and wellness enthusiasts.",
+      "keyConsiderations": [
+        "Structural load capacity and waterproofing integrity",
+        "Direct sunlight hours and wind exposure",
+        "Water supply, pressure, and drainage gradients",
+        "Maintenance bandwidth and desired crop varieties"
+      ],
+      "solutions": [
+        "Root-barrier safe growing containers and raised planters",
+        "Lightweight enriched soil media and vermicompost beds",
+        "Solar-timed automated drip and misting networks",
+        "Scheduled bi-weekly or monthly expert plant nutrition visits"
+      ],
+      "image": "/images/hero/hero-terrace-farm.jpg",
+      "gallery": [
+        "/images/hero/hero-terrace-farm.jpg"
+      ],
+      "order": 3,
+      "status": "published",
+      "seoTitle": "Terraces & Rooftops Management — FarmCare 360°",
+      "seoDescription": "Unutilized rooftop surfaces transformed into thriving organic vegetable gardens, compact fruit arbors, and modern urban micro-farming systems.",
+      "createdAt": "2026-10-19T05:41:34.584Z",
+      "updatedAt": "2026-10-19T05:41:34.584Z"
+    },
+    {
+      "id": "spaces-around-homes",
+      "slug": "spaces-around-homes",
+      "number": "04",
+      "title": "Spaces Around Homes",
+      "subtitle": "Front Yards, Backyards & Surrounding Open Grounds",
+      "summary": "Open spaces around residential villas, farmhouses, and gated layouts converted into productive kitchen gardens, native pollinator borders, and peaceful retreats.",
+      "idealFor": "Farmhouse retreat owners, villa residents, and multi-generational families wanting fresh food at their doorstep.",
+      "keyConsiderations": [
+        "Microclimate, shaded zones, and orientation",
+        "Soil compaction and drainage remediation",
+        "Aesthetic integration with architecture",
+        "Pet-safe, child-safe natural growing practices"
+      ],
+      "solutions": [
+        "Custom kitchen garden layouts with vegetable & herb raised beds",
+        "Native fruiting bushes, citrus groves, and flowering borders",
+        "Composting units and rainwater harvesting catchment",
+        "Ongoing routine pruning, pest deterrence, and seasonal replanting"
+      ],
+      "image": "/images/managed/cat-farmhouse-landscape.jpg",
+      "gallery": [
+        "/images/managed/cat-farmhouse-landscape.jpg"
+      ],
+      "order": 4,
+      "status": "published",
+      "seoTitle": "Spaces Around Homes Management — FarmCare 360°",
+      "seoDescription": "Open spaces around residential villas, farmhouses, and gated layouts converted into productive kitchen gardens, native pollinator borders, and peaceful ret",
+      "createdAt": "2026-10-19T05:41:34.584Z",
+      "updatedAt": "2026-10-19T05:41:34.584Z"
+    }
+  ],
+  "businessModels": [
+    {
+      "id": "model-1-farm-management",
+      "code": "Model 1",
+      "title": "End-to-End Farm Management",
+      "tagline": "Professional agricultural stewardship for absentee and busy landowners.",
+      "problem": "Many people want to own and operate agricultural land without personally handling daily labour, irrigation, crop selection, fertilizers, and equipment. Entering farming without experienced guidance can lead to crop failures and wasted capital.",
+      "solution": "FarmCare360 acts as your full-service farm management partner. We plan, coordinate, supervise, and monitor every activity on your farm according to an agreed scientific roadmap and transparent budget.",
+      "revenueModel": "Recurring farm management fee (monthly, quarterly, or annual contract based on acreage and complexity). Agricultural inputs, machinery, and labour are billed transparently as separate approved operational expenses.",
+      "promise": "The landowner should not have to manage every farming detail personally to maintain a thriving, well-organized farm.",
+      "servicesIncluded": [
+        "Comprehensive land, soil, water, and objective audit",
+        "Tailored crop development roadmap and seasonal calendars",
+        "Coordination and supervision of skilled agricultural labour and machinery",
+        "Irrigation scheduling and precision moisture monitoring",
+        "Custom fertilizer, manure, and balanced crop nutrition programs",
+        "Integrated pest and disease management under qualified agronomists",
+        "Scheduled pruning, weeding, mulching, and tree basin upkeep",
+        "Regular photographic inspection reports and digital field visit logs",
+        "Complete expense record keeping with pre-approval workflows",
+        "Harvesting, post-harvest produce handling, and market linkages"
+      ],
+      "image": "/images/services/card-managed-orchard.jpg",
+      "href": "/managed-care",
+      "order": 1,
+      "status": "published",
+      "createdAt": "2026-10-19T05:41:34.584Z",
+      "updatedAt": "2026-10-19T05:41:34.584Z"
+    },
+    {
+      "id": "model-2-farm-development-living",
+      "code": "Model 2",
+      "title": "Farm Development, Farmhouses & Managed Farm Living",
+      "tagline": "Turning empty land into a peaceful, functional countryside retreat.",
+      "problem": "Converting raw land into a living farmhouse retreat requires intricate coordination across topographic civil work, fencing, borewells, architecture, horticulture, and ongoing estate upkeep that overwhelmed owners struggle to manage.",
+      "solution": "We help clients plan, develop, and maintain a complete farm property tailored to their lifestyle and budget. After development, clients transition into our recurring Annual Maintenance Contracts (AMC) for effortless weekend enjoyment.",
+      "revenueModel": "Turnkey project planning and development fees, implementation coordination charges, and ongoing Annual Maintenance Contracts (AMC).",
+      "promise": "We help customers turn their dream of a farmhouse retreat into a practical, maintainable reality.",
+      "servicesIncluded": [
+        "Topographic land assessment and holistic site masterplanning",
+        "Farm layout and productive landscape architectural design",
+        "Fruit orchards, kitchen gardens, and native shaded walkways",
+        "Multi-zone pressurized micro-irrigation and water harvesting swales",
+        "Heavy-duty perimeter fencing and security gates",
+        "Soil improvement, deep ripping, and contour grading",
+        "Farmhouse construction coordination with qualified architects & contractors",
+        "Recurring AMC subscription covering landscape, irrigation, and security upkeep"
+      ],
+      "image": "/images/services/feat-land-farm-design.jpg",
+      "href": "/services/farm-and-land-planning",
+      "order": 2,
+      "status": "published",
+      "createdAt": "2026-10-19T05:41:34.584Z",
+      "updatedAt": "2026-10-19T05:41:34.584Z"
+    },
+    {
+      "id": "model-3-land-leasing-partnerships",
+      "code": "Model 3",
+      "title": "Land Leasing & Productive Land Utilization",
+      "tagline": "Connecting landowners with productive, revenue-generating agricultural opportunities.",
+      "problem": "Many landowners have fertile acreage that lies idle because they cannot cultivate it. Concurrently, skilled commercial growers seek quality land with water security to execute profitable agricultural ventures.",
+      "solution": "FarmCare360 provides three distinct, structured pathways to monetize and protect idle land through leasing and farming partnerships.",
+      "revenueModel": "Leasing facilitation fees, management oversight fees, or direct agricultural produce revenues from operated leaseholds.",
+      "promise": "Idle land is safeguarded, put to productive agricultural use, and generates dependable returns without operational friction.",
+      "servicesIncluded": [
+        "Comprehensive property and agronomic feasibility audits",
+        "Tenant and agricultural operator background vetting",
+        "Structured legal lease documentation and permitted usage guidelines",
+        "Direct FarmCare360 leasing for high-potential commercial orchards",
+        "Transparent crop-share and revenue-share partnership structures",
+        "Independent quarterly land condition and boundary inspection audits"
+      ],
+      "image": "/images/landowners/lease-partner.jpg",
+      "href": "/landowners",
+      "order": 3,
+      "status": "published",
+      "subModels": [
+        {
+          "id": "model-3-1",
+          "code": "Model 3.1",
+          "title": "Helping Landowners Lease Their Land",
+          "description": "We evaluate property suitability, match verified agricultural operators, structure secure lease terms, and coordinate documentation, with optional ongoing land condition monitoring.",
+          "revenueModel": "Clearly agreed leasing facilitation fee + optional ongoing monitoring retainer.",
+          "targetAudience": "Landowners seeking reliable tenants without managing farm operations."
+        },
+        {
+          "id": "model-3-2",
+          "code": "Model 3.2",
+          "title": "FarmCare360 Directly Leases Suitable Agricultural Land",
+          "description": "Where the economics make rigorous sense, FarmCare360 directly leases land and operates commercial orchards, high-density fruit crops, or integrated projects.",
+          "revenueModel": "Revenue generated from commercial produce sales and value-added harvest output.",
+          "targetAudience": "High-potential agricultural acreage with reliable water and strong commercial prospects."
+        },
+        {
+          "id": "model-3-3",
+          "code": "Model 3.3",
+          "title": "Managed Leasing & Farm Partnerships",
+          "description": "Structured collaborative agreements where the landowner contributes land and the operating partner contributes agreed capital, labour, or management, sharing revenue or profits under a clear legal agreement.",
+          "revenueModel": "Agreed percentage share of net farm profits or crop revenues.",
+          "targetAudience": "Landowners interested in participating in farming upside rather than fixed rent."
+        }
+      ],
+      "createdAt": "2026-10-19T05:41:34.584Z",
+      "updatedAt": "2026-10-19T05:41:34.584Z"
+    },
+    {
+      "id": "model-4-terrace-small-space-farming",
+      "code": "Model 4",
+      "title": "Terrace Gardens, Site Gardens & Small-Space Farming",
+      "tagline": "Bringing fresh, chemical-free food production to rooftops and residential yards.",
+      "problem": "Millions of urban residents dream of harvesting their own food, but lack knowledge about container gardening, soil mixtures, watering schedules, pest identification, and plant nutrition.",
+      "solution": "FarmCare360 creates custom, highly productive food-growing environments for terraces, front yards, and open spaces—paired with regular expert maintenance so growing food is convenient and foolproof.",
+      "revenueModel": "Initial setup and installation fee + recurring monthly, quarterly, or annual care subscription.",
+      "promise": "We bring food production closer to people’s everyday lives, helping them experience the health and satisfaction of eating food they grew.",
+      "servicesIncluded": [
+        "Homeowner culinary preference mapping (greens, herbs, root vegetables, fruits)",
+        "Sunlight, water quality, and structural drainage assessment",
+        "Custom raised planter beds, lightweight bio-soil media, or hydroponic systems",
+        "Installation of automated micro-drip and misting manifolds",
+        "Supply of non-GMO organic seeds, heirloom saplings, and bio-nutrients",
+        "Ongoing weekly or bi-weekly expert visits for pruning, staking, and biological pest defense",
+        "Transparent guidance so families learn and experience the joy of harvesting"
+      ],
+      "image": "/images/services/feat-terrace-setup.jpg",
+      "href": "/services/terrace-garden-setup",
+      "order": 4,
+      "status": "published",
+      "createdAt": "2026-10-19T05:41:34.584Z",
+      "updatedAt": "2026-10-19T05:41:34.584Z"
+    }
+  ],
+  "transparencySteps": [
+    {
+      "step": "01",
+      "title": "Need Identified",
+      "actor": "On-Site Farm Team",
+      "description": "The farm team scouts the property during regular operations and identifies a specific requirement (e.g. fertilizer top-dressing, drip line repair, or weed clearing).",
+      "deliverable": "Field inspection log with timestamped photographs of the requirement."
+    },
+    {
+      "step": "02",
+      "title": "Agronomic Evaluation",
+      "actor": "Senior Agricultural Specialist",
+      "description": "Our qualified agronomists review the observation, determine whether the intervention is necessary, and prescribe the exact scientific solution.",
+      "deliverable": "Technical recommendation note detailing required materials and specifications."
+    },
+    {
+      "step": "03",
+      "title": "Transparent Cost Estimate",
+      "actor": "Operations & Procurement Team",
+      "description": "FarmCare360 compiles an itemized estimate covering materials at wholesale rates, machinery hours, and labour requirements.",
+      "deliverable": "Itemized quotation breakdown with zero hidden markups."
+    },
+    {
+      "step": "04",
+      "title": "Landowner Review",
+      "actor": "Landowner Notification",
+      "description": "The customer receives the recommendation, supporting photographs, technical rationale, and estimated cost via their digital channel or email.",
+      "deliverable": "One-click approval request with complete supporting context."
+    },
+    {
+      "step": "05",
+      "title": "Approval & Fund Allocation",
+      "actor": "Landowner Action",
+      "description": "The customer reviews, approves the expenditure, and releases the agreed funds. No non-emergency work proceeds without prior approval.",
+      "deliverable": "Documented authorization record added to the property ledger."
+    },
+    {
+      "step": "06",
+      "title": "Supervised Field Execution",
+      "actor": "Execution & Quality Team",
+      "description": "FarmCare360 deploys skilled labour, machinery, and genuine agricultural inputs to execute the approved scope to exacting standards.",
+      "deliverable": "Supervised field operations conducted under agronomist oversight."
+    },
+    {
+      "step": "07",
+      "title": "Proof & Audit Handover",
+      "actor": "Final Verification",
+      "description": "FarmCare360 uploads completion evidence: supplier bills, geo-tagged completion photos, and updated property health logs.",
+      "deliverable": "Verified completion report and transparent ledger reconciliation."
+    }
+  ],
+  "transparencyPrinciples": [
+    {
+      "number": "01",
+      "title": "End-to-End Responsibility",
+      "description": "We do not hand off half-finished advice. From initial soil testing to harvest logistics, we take full accountability for field execution.",
+      "practicalApplication": "One dedicated partner coordinates surveyors, machinery operators, agronomists, and suppliers under a unified service level."
+    },
+    {
+      "number": "02",
+      "title": "Radical Transparency",
+      "description": "No unexplained bills or mystery expenditures. Landowners review and pre-approve all operational expenses before work begins.",
+      "practicalApplication": "Every input purchase is backed by supplier invoices, site photo verification, and clear ledger updates."
+    },
+    {
+      "number": "03",
+      "title": "Technology-Enabled Management",
+      "description": "We utilize digital field tools, automated moisture sensors, GPS mapping, and structured reporting to make remote ownership seamless.",
+      "practicalApplication": "Landowners anywhere in the world receive timestamped photo logs and structured status updates on their mobile device."
+    },
+    {
+      "number": "04",
+      "title": "Grounded Agricultural Expertise",
+      "description": "Technology alone cannot replace field knowledge. All decisions are steered by qualified agronomists and practical soil practitioners.",
+      "practicalApplication": "Fertilizer and pest protocols are based on scientific laboratory assays rather than guesswork or vendor push."
+    },
+    {
+      "number": "05",
+      "title": "Trust & Long-Term Accountability",
+      "description": "We measure success in multi-year land health, client retention, and thriving harvests rather than quick one-off sales.",
+      "practicalApplication": "We communicate seasonal risks honestly, document all approvals, and treat your land with the stewardship it deserves."
+    }
+  ],
+  "transparencyDocuments": [
+    {
+      "id": "doc_procurement_policy",
+      "title": "Material Procurement & Original Vendor Invoice Disclosure Policy",
+      "category": "Governance & Auditing",
+      "fileUrl": "/documents/farmcare360-procurement-policy-v2.pdf",
+      "fileSize": "420 KB",
+      "version": "v2.1",
+      "effectiveDate": "2026-01-01",
+      "lastUpdated": "2026-03-15",
+      "isPublic": true
+    },
+    {
+      "id": "doc_quality_standards",
+      "title": "Agricultural Quality & Agronomic Protocol Standards (IS 12785 compliant)",
+      "category": "Agronomic Quality",
+      "fileUrl": "/documents/farmcare360-quality-standards.pdf",
+      "fileSize": "780 KB",
+      "version": "v1.4",
+      "effectiveDate": "2025-06-01",
+      "lastUpdated": "2026-02-10",
+      "isPublic": true
+    },
+    {
+      "id": "doc_leasing_terms",
+      "title": "Model Agricultural Land Lease & Partnership Template",
+      "category": "Landowner Agreements",
+      "fileUrl": "/documents/farmcare360-model-lease-terms.pdf",
+      "fileSize": "560 KB",
+      "version": "v3.0",
+      "effectiveDate": "2026-02-01",
+      "lastUpdated": "2026-04-01",
+      "isPublic": true
+    }
+  ],
+  "testimonials": [
+    {
+      "id": "test-1",
+      "name": "R. K. Sharma",
+      "initial": "R",
+      "location": "Dehradun Valley",
+      "role": "Orchard Estate Owner",
+      "serviceRendered": "Managed Orchard Care & Micro-Irrigation",
+      "rating": 5,
+      "quote": "Our mango orchard needed systematic canopy management, drip automation, and pest deterrence. FarmCare 360° delivered institutional-grade agricultural rigor.",
+      "fullStory": "After years of relying on unverified local laborers with unpredictable schedules, our 12-acre mango orchard was severely underperforming. FarmCare 360° stepped in with a comprehensive 12-month care regimen: tree-by-tree pruning, automated drip lines with Venturi fertigation, and preventative organic pest control. In our very first harvest under their management, marketable fruit yield increased by 38% with zero fruit-fly infestation.",
+      "status": "published",
+      "isFeatured": true,
+      "order": 1,
+      "createdAt": "2026-10-19T05:41:34.584Z"
+    },
+    {
+      "id": "test-2",
+      "name": "Ananya Deshmukh",
+      "initial": "A",
+      "location": "Pune Outskirts",
+      "role": "Urban Homeowner & Architect",
+      "serviceRendered": "Turnkey Terrace Garden Setup & Monthly Upkeep",
+      "rating": 5,
+      "quote": "Transformed our bare rooftop into a vibrant kitchen garden. We now harvest crisp greens, heirloom tomatoes, and culinary herbs weekly.",
+      "fullStory": "We wanted an elevated food forest that would withstand fierce summer sun and heavy monsoon downpours without creating structural leaks. FarmCare 360° handled root-barrier membrane testing, lightweight enriched growing media, custom cedar planters, and an automated mist-and-drip system. We receive weekly scheduled care visits, and our family now enjoys fresh chemical-free greens at the dinner table every single week.",
+      "status": "published",
+      "isFeatured": true,
+      "order": 2,
+      "createdAt": "2026-10-19T05:41:34.584Z"
+    },
+    {
+      "id": "test-3",
+      "name": "Suresh Reddy",
+      "initial": "S",
+      "location": "Hyderabad Rural Belt",
+      "role": "Non-Resident Landowner (San Jose, CA)",
+      "serviceRendered": "Boundary Fencing & Monthly Vacant Land Stewardship",
+      "rating": 5,
+      "quote": "Being overseas, regular boundary monitoring and weed control was an endless worry. Their GPS photo inspection reports give total peace of mind.",
+      "fullStory": "As an NRI with 5 acres on the periphery of Hyderabad, my persistent fear was unauthorized encroachment, thorny weed overgrowth, and seasonal fire hazards. FarmCare 360° installed a sturdy galvanized perimeter fence, performed heavy bush clearing, and provides monthly geo-tagged photographic inspection reports. I can open my portal from California and verify the exact status of my property in high definition.",
+      "status": "published",
+      "isFeatured": true,
+      "order": 3,
+      "createdAt": "2026-10-19T05:41:34.584Z"
+    },
+    {
+      "id": "test-4",
+      "name": "Vikramjit Singh",
+      "initial": "V",
+      "location": "Mohali Green Belt",
+      "role": "Weekend Farmhouse Owner",
+      "serviceRendered": "Farmhouse Landscaping & Smart Micro-Irrigation",
+      "rating": 5,
+      "quote": "From boundary fencing to automated sub-surface sprinklers, every single step was planned and executed seamlessly. Outstanding agricultural craftsmanship.",
+      "fullStory": "We envisioned a picturesque countryside retreat combining a flowering native landscape, shade-tree alley, and kitchen garden. FarmCare 360° performed laser topographical leveling, constructed swales to collect rainwater, and laid down multi-zone pressurized irrigation with weather-sensor controllers. Our weekend home is lush, self-sufficient, and requires zero manual hose watering.",
+      "status": "published",
+      "isFeatured": true,
+      "order": 4,
+      "createdAt": "2026-10-19T05:41:34.584Z"
+    },
+    {
+      "id": "test-5",
+      "name": "Meera Krishnan",
+      "initial": "M",
+      "location": "Bengaluru North",
+      "role": "Agricultural Investor",
+      "serviceRendered": "Soil Testing, Land Prep & Orchard Planting",
+      "rating": 5,
+      "quote": "Scientific soil and water testing saved us millions by identifying mineral deficiencies before planting our high-density saplings.",
+      "fullStory": "Before planting 3,000 high-density saplings, FarmCare 360° conducted thorough laboratory testing across 16 sample grid coordinates. They identified subsoil compaction and high alkaline water that would have stunted root development. Following their remediation blueprint—subsoil ripping, gypsum amendment, and acid injection manifolds—every single sapling took root with a 99.2% survival rate.",
+      "status": "published",
+      "isFeatured": false,
+      "order": 5,
+      "createdAt": "2026-10-19T05:41:34.584Z"
+    },
+    {
+      "id": "test-6",
+      "name": "Praveen Nair",
+      "initial": "P",
+      "location": "Kochi Outskirts",
+      "role": "Plantation Trustee",
+      "serviceRendered": "Annual Managed Care Package",
+      "rating": 5,
+      "quote": "Their annual managed care plan keeps our property tidy, productive, and secure. Clear communication, transparent invoicing, and trustworthy teams.",
+      "fullStory": "Managing a generational estate remotely was becoming impossible due to labor scarcity. FarmCare 360° assigned a dedicated agronomic team and mechanized the clearing, tree-basin weeding, and organic composting. The estate looks immaculate year-round, and our intercropped pepper vines produced record yields.",
+      "status": "published",
+      "isFeatured": false,
+      "order": 6,
+      "createdAt": "2026-10-19T05:41:34.584Z"
+    },
+    {
+      "id": "test-7",
+      "name": "Dr. G. Sundaram",
+      "initial": "G",
+      "location": "Coimbatore Suburban",
+      "role": "Community Garden Chairman",
+      "serviceRendered": "Community Farm Design & Bi-Weekly Maintenance",
+      "rating": 5,
+      "quote": "FarmCare 360° designed and manages a community edible landscape for 140 resident families. Children learn farming hands-on every weekend.",
+      "fullStory": "Our residential community had unused green common ground that was costing money to mow and weed. FarmCare 360° proposed an interactive community farm model with raised vegetable beds, butterfly pollinator borders, and composting stations. Today, over 140 families harvest fresh spinach, gourds, and radishes, creating a cohesive, healthy neighborhood culture.",
+      "status": "published",
+      "isFeatured": false,
+      "order": 7,
+      "createdAt": "2026-10-19T05:41:34.584Z"
+    },
+    {
+      "id": "test-8",
+      "name": "Col. Rajeshwar Rao",
+      "initial": "R",
+      "location": "Warangal Agricultural Belt",
+      "role": "Retiree & Landowner",
+      "serviceRendered": "Solar Pumping & Drip Irrigation System",
+      "rating": 5,
+      "quote": "Their solar-powered borewell automation and pressure-compensating drippers eliminated our reliance on erratic village power grids.",
+      "fullStory": "Power cuts used to ruin our irrigation cycles. FarmCare 360° installed a 5HP solar pumping setup coupled with a 50,000-liter storage sump and gravity drip lines. We can now irrigate even during peak summer power shortages with zero generator fuel bills.",
+      "status": "published",
+      "isFeatured": false,
+      "order": 8,
+      "createdAt": "2026-10-19T05:41:34.584Z"
+    }
+  ],
+  "faqs": [
+    {
+      "id": "faq_1",
+      "question": "How does FarmCare 360° ensure billing transparency for materials and labour?",
+      "answer": "We operate under our strict 7-Step Customer Approval Model. Before any purchase, we provide a detailed written estimate with line-item rates. All procurement includes original third-party GST vendor invoices without markup or hidden surcharges, backed by geotagged date-stamped photographic proof.",
+      "category": "Transparency & Pricing",
+      "pageAssignment": "all",
+      "order": 1,
+      "status": "published"
+    },
+    {
+      "id": "faq_2",
+      "question": "Can you manage my farmland if I live in another city or abroad?",
+      "answer": "Yes! Over 60% of our managed farm clients are non-resident Indians (NRIs) or city dwellers living in Bangalore, Hyderabad, or Mumbai. We assign a dedicated agricultural supervisor, conduct scheduled visits, maintain boundary security, and send bi-weekly digital reports with high-res photos and video updates.",
+      "category": "Farmland Management",
+      "pageAssignment": "home",
+      "order": 2,
+      "status": "published"
+    },
+    {
+      "id": "faq_3",
+      "question": "What happens to the land ownership when leasing through FarmCare 360°?",
+      "answer": "You retain 100% undisputed legal ownership of your land at all times. FarmCare 360° acts either as a facilitation and operational partner or a licensed tenant under formal registered lease documentation with clear clauses protecting your rights, tenure, and property condition.",
+      "category": "Landowner Partnerships",
+      "pageAssignment": "landowners",
+      "order": 3,
+      "status": "published"
+    },
+    {
+      "id": "faq_4",
+      "question": "Can any residential terrace support an organic kitchen garden?",
+      "answer": "Most RCC concrete terraces built to standard engineering codes can easily support raised beds and container gardens. We conduct a preliminary structural weight assessment, install waterproof drainage membranes, and use ultra-lightweight coco-peat based soil media to ensure zero seepage and minimal structural load.",
+      "category": "Terrace Gardens",
+      "pageAssignment": "for-your-space",
+      "order": 4,
+      "status": "published"
+    }
+  ],
+  "enquiries": [
+    {
+      "id": "enq_1001",
+      "referenceId": "FC-2026-8821",
+      "name": "Dr. Anand Mahindra",
+      "phone": "+91 98450 12345",
+      "email": "anand.mahindra@example.com",
+      "location": "Chikkaballapur District, Karnataka",
+      "propertyType": "15-Acre Commercial Farmland",
+      "projectDescription": "Looking for turnkey high-density mango and guava orchard planning with automated solar drip irrigation and perimeter solar fencing.",
+      "status": "new",
+      "priority": "high",
+      "internalNotes": [
+        "Initial contact via website consultation form on Oct 18.",
+        "Requested site audit report for upcoming weekend."
+      ],
+      "assignedTo": "Lead Agronomist - Karnataka Cluster",
+      "createdAt": "2026-10-18T14:30:00Z",
+      "updatedAt": "2026-10-18T14:30:00Z"
+    },
+    {
+      "id": "enq_1002",
+      "referenceId": "FC-2026-7452",
+      "name": "Sunita & Vikram Rao",
+      "phone": "+91 99890 54321",
+      "email": "sunita.rao@example.com",
+      "location": "Shadnagar Outskirts, Hyderabad",
+      "propertyType": "4-Acre Weekend Farmhouse Site",
+      "projectDescription": "Need landscape planning, fruit trees, indigenous vegetable patches, and monthly scheduled maintenance visits.",
+      "status": "in_progress",
+      "priority": "medium",
+      "internalNotes": [
+        "Spoke on phone on Oct 17. Soil and borewell water samples collected for testing.",
+        "Preparing Model 2 Managed Farm Living proposal."
+      ],
+      "assignedTo": "Project Manager - Hyderabad Cluster",
+      "createdAt": "2026-10-17T09:15:00Z",
+      "updatedAt": "2026-10-18T11:20:00Z"
+    },
+    {
+      "id": "enq_1003",
+      "referenceId": "FC-2026-5129",
+      "name": "Rajesh K. Varma",
+      "phone": "+91 97000 98765",
+      "email": "rajesh.varma@example.com",
+      "location": "Whitefield, Bangalore",
+      "propertyType": "Residential Penthouse Terrace (2,200 sq.ft)",
+      "projectDescription": "Rooftop kitchen garden with automated drip lines, hydroponic herbs, and citrus planters.",
+      "status": "resolved",
+      "priority": "medium",
+      "internalNotes": [
+        "Site assessment completed. Proposal approved. Installation scheduled for next month."
+      ],
+      "assignedTo": "Urban Garden Specialist",
+      "createdAt": "2026-10-15T16:45:00Z",
+      "updatedAt": "2026-10-17T18:00:00Z"
+    }
+  ],
+  "mediaAssets": [
+    {
+      "id": "med_hero_farm",
+      "filename": "hero-terrace-farm.jpg",
+      "originalName": "Modern Residential Rooftop Garden overlooking Farmland",
+      "mimeType": "image/jpeg",
+      "size": 969020,
+      "url": "/images/hero/hero-terrace-farm.jpg",
+      "alt": "Pristine architectural rooftop terrace garden with organic vegetables and micro-drip irrigation",
+      "caption": "Flagship residential terrace garden and agricultural landscape setup",
+      "folder": "hero",
+      "tags": [
+        "hero",
+        "terrace",
+        "vegetables",
+        "featured"
+      ],
+      "createdAt": "2026-10-19T05:41:34.584Z",
+      "updatedAt": "2026-10-19T05:41:34.584Z"
+    },
+    {
+      "id": "med_managed_farms",
+      "filename": "cat-managed-farms.jpg",
+      "originalName": "Managed Agricultural Land",
+      "mimeType": "image/jpeg",
+      "size": 845200,
+      "url": "/images/managed/cat-managed-farms.jpg",
+      "alt": "Commercial agricultural land under scientific farm management",
+      "folder": "spaces",
+      "tags": [
+        "farm",
+        "orchard",
+        "agriculture"
+      ],
+      "createdAt": "2026-10-19T05:41:34.584Z",
+      "updatedAt": "2026-10-19T05:41:34.584Z"
+    },
+    {
+      "id": "med_farmhouse",
+      "filename": "cat-farmhouse-landscape.jpg",
+      "originalName": "Farmhouse & Retreat Estate",
+      "mimeType": "image/jpeg",
+      "size": 792400,
+      "url": "/images/managed/cat-farmhouse-landscape.jpg",
+      "alt": "Managed farmhouse living with lush fruit trees and recreational greenery",
+      "folder": "spaces",
+      "tags": [
+        "farmhouse",
+        "retreat",
+        "landscape"
+      ],
+      "createdAt": "2026-10-19T05:41:34.584Z",
+      "updatedAt": "2026-10-19T05:41:34.584Z"
+    },
+    {
+      "id": "med_drip_irrigation",
+      "filename": "grid-drip-sprinkler.jpg",
+      "originalName": "Automated Drip Irrigation System",
+      "mimeType": "image/jpeg",
+      "size": 512000,
+      "url": "/images/services/grid-drip-sprinkler.jpg",
+      "alt": "Sub-surface and surface micro-irrigation lines installed across farm rows",
+      "folder": "services",
+      "tags": [
+        "irrigation",
+        "water",
+        "drip"
+      ],
+      "createdAt": "2026-10-19T05:41:34.584Z",
+      "updatedAt": "2026-10-19T05:41:34.584Z"
+    },
+    {
+      "id": "med_soil_testing",
+      "filename": "grid-soil-water-testing.jpg",
+      "originalName": "Scientific Soil & Water Testing",
+      "mimeType": "image/jpeg",
+      "size": 489000,
+      "url": "/images/services/grid-soil-water-testing.jpg",
+      "alt": "Soil lab testing and water quality analysis for agricultural viability",
+      "folder": "services",
+      "tags": [
+        "soil",
+        "testing",
+        "science"
+      ],
+      "createdAt": "2026-10-19T05:41:34.584Z",
+      "updatedAt": "2026-10-19T05:41:34.584Z"
+    }
+  ],
+  "auditLogs": [
+    {
+      "id": "aud_1",
+      "userId": "usr_superadmin_01",
+      "userName": "FarmCare Master Admin",
+      "action": "SYSTEM_INITIALIZATION",
+      "entityType": "SYSTEM",
+      "entityId": "global",
+      "details": "FarmCare 360° CMS & Admin Panel initialized with full production data store.",
+      "timestamp": "2026-10-19T05:41:34.584Z"
+    }
+  ],
+  "revisions": []
+}

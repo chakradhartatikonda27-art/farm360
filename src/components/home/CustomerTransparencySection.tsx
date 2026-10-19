@@ -13,19 +13,60 @@ import {
   ChevronLeft,
   ChevronRight
 } from 'lucide-react';
-import { transparencyWorkflow, fiveCorePrinciples } from '@/data/visionData';
+import { transparencyWorkflow as defaultSteps, fiveCorePrinciples as defaultPrinciples } from '@/data/visionData';
+import { TransparencyStep, TransparencyPrinciple } from '@/lib/cms/types';
 
-export function CustomerTransparencySection() {
+interface TransparencySectionProps {
+  steps?: TransparencyStep[];
+  principles?: TransparencyPrinciple[];
+  title?: string;
+  subtitle?: string;
+}
+
+export function CustomerTransparencySection({
+  steps,
+  principles,
+  title,
+  subtitle,
+}: TransparencySectionProps = {}) {
+  const workflowItems =
+    steps && steps.length > 0
+      ? steps.map((s) => ({
+          step: s.stepNumber,
+          title: s.title,
+          badge: s.badge || `Stage ${s.stepNumber}`,
+          description: s.description,
+          deliverables: [
+            'Documented client signoff',
+            'Full receipt & photo log',
+            'Independent agronomist review',
+          ],
+        }))
+      : defaultSteps;
+
+  const principleItems =
+    principles && principles.length > 0
+      ? principles.map((p, idx) => ({
+          id: p.id || `p-${idx}`,
+          name: p.title || p.name || `Principle ${idx + 1}`,
+          description: p.description,
+        }))
+      : defaultPrinciples.map((p) => ({
+          id: p.number,
+          name: p.title,
+          description: p.description,
+        }));
+
   const [activeStepIndex, setActiveStepIndex] = useState<number>(0);
 
-  const activeStep = transparencyWorkflow[activeStepIndex];
+  const activeStep = workflowItems[activeStepIndex] || workflowItems[0];
 
   const handleNextStep = () => {
-    setActiveStepIndex((prev) => (prev + 1) % transparencyWorkflow.length);
+    setActiveStepIndex((prev) => (prev + 1) % workflowItems.length);
   };
 
   const handlePrevStep = () => {
-    setActiveStepIndex((prev) => (prev - 1 + transparencyWorkflow.length) % transparencyWorkflow.length);
+    setActiveStepIndex((prev) => (prev - 1 + workflowItems.length) % workflowItems.length);
   };
 
   const principleIcons = [
@@ -50,146 +91,129 @@ export function CustomerTransparencySection() {
             <span className="w-8 sm:w-10 h-[1px] bg-gold inline-block" />
           </div>
           <h2 id="transparency-heading" className="font-serif text-white text-[clamp(2rem,5.5vw,3.6rem)] font-normal leading-[1.08] tracking-tight text-balance">
-            Customers should not have to blindly trust us.
+            {title || 'Customers should not have to blindly trust us.'}
           </h2>
           <p className="text-[15px] sm:text-[17px] text-white/85 leading-relaxed font-sans font-light">
-            Our processes give you clear reasons to trust us. Explore our defined 7-step approval protocol for every operational decision and expense.
+            {subtitle ||
+              'Our processes give you clear reasons to trust us. Explore our defined 7-step approval protocol for every operational decision and expense.'}
           </p>
         </div>
 
-        {/* 7-Step Approval Timeline / Stepper */}
-        <div className="bg-white/5 border border-white/10 backdrop-blur-md rounded-2xl sm:rounded-3xl p-5 sm:p-8 lg:p-10 mb-12 sm:mb-16">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-5 border-b border-white/10 mb-6">
-            <div>
-              <span className="text-[11px] font-mono font-bold tracking-widest text-gold uppercase block">The 7-Step Approval Flow</span>
-              <h3 className="font-serif text-lg sm:text-2xl text-white font-medium mt-0.5">
-                How field expenses are proposed, approved & audited
-              </h3>
-            </div>
-            <Link
-              href="/transparency"
-              className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-gold hover:text-white transition-colors touch-manipulation"
-            >
-              <span>View Full Protocol</span>
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
-
-          {/* Stepper Tabs Bar (Horizontal swipeable on mobile, 7-col grid on desktop) */}
-          <div 
-            className="flex overflow-x-auto no-scrollbar snap-x gap-2 mb-6 pb-1.5 lg:grid lg:grid-cols-7"
-            role="tablist"
-            aria-label="7-step approval process"
-          >
-            {transparencyWorkflow.map((step, idx) => {
-              const isSelected = idx === activeStepIndex;
+        {/* 7-Step Approval Stepper Tabs */}
+        <div className="mb-6 sm:mb-8 overflow-x-auto no-scrollbar pb-2">
+          <div className="flex gap-2 sm:gap-3 min-w-max">
+            {workflowItems.map((step, idx) => {
+              const isActive = idx === activeStepIndex;
               return (
                 <button
-                  key={step.step}
-                  role="tab"
-                  aria-selected={isSelected}
+                  key={step.step || idx}
                   onClick={() => setActiveStepIndex(idx)}
-                  className={`min-w-[130px] lg:min-w-0 snap-start flex-shrink-0 lg:flex-shrink p-3 rounded-xl text-left transition-all duration-200 border flex flex-col justify-between active:scale-[0.98] touch-manipulation focus:outline-none focus-visible:ring-2 focus-visible:ring-gold ${
-                    isSelected
-                      ? 'bg-gold text-forest-deep border-gold shadow-md'
-                      : 'bg-white/5 hover:bg-white/10 text-white/70 border-white/10'
+                  className={`px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-full text-xs font-semibold transition-all flex items-center gap-2 ${
+                    isActive
+                      ? 'bg-gold text-forest-deep shadow-md font-bold'
+                      : 'bg-white/10 text-white/80 hover:bg-white/15'
                   }`}
                 >
-                  <span className={`font-mono text-[10.5px] font-bold ${isSelected ? 'text-forest-deep' : 'text-gold'}`}>
-                    STEP {step.step}
+                  <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${
+                    isActive ? 'bg-forest-deep text-gold' : 'bg-white/20 text-white'
+                  }`}>
+                    {idx + 1}
                   </span>
-                  <span className="font-sans text-xs font-semibold mt-1 leading-snug line-clamp-1">
-                    {step.title}
-                  </span>
+                  <span>{step.title}</span>
                 </button>
               );
             })}
           </div>
-
-          {/* Active Step Showcase Card */}
-          <div className="p-5 sm:p-7 lg:p-8 rounded-xl sm:rounded-2xl bg-white/10 border border-white/15">
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-5 sm:gap-6 items-start">
-              
-              <div className="md:col-span-8 space-y-3">
-                <div className="flex flex-wrap items-center gap-2 text-xs font-mono uppercase tracking-wider text-gold">
-                  <span>Step {activeStep.step} of 07</span>
-                  <span>·</span>
-                  <span className="text-white/70">Role: {activeStep.actor}</span>
-                </div>
-                <h4 className="font-serif text-xl sm:text-3xl text-white font-medium">
-                  {activeStep.title}
-                </h4>
-                <p className="text-white/85 text-sm sm:text-base leading-relaxed font-sans font-light">
-                  {activeStep.description}
-                </p>
-              </div>
-
-              <div className="md:col-span-4 p-4 rounded-xl bg-forest-dark/90 border border-white/10 space-y-2">
-                <span className="text-[10.5px] font-bold uppercase tracking-widest text-gold block">
-                  Documented Evidence / Output
-                </span>
-                <p className="text-xs sm:text-[13px] text-white/95 leading-snug font-sans flex items-start gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-botanical flex-shrink-0 mt-0.5" />
-                  <span>{activeStep.deliverable}</span>
-                </p>
-              </div>
-
-            </div>
-
-            {/* Mobile Thumb Navigation (Prev / Next Step buttons) */}
-            <div className="flex items-center justify-between pt-4 mt-5 border-t border-white/10 text-xs">
-              <button
-                type="button"
-                onClick={handlePrevStep}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 active:scale-95 text-white/80 font-medium transition-all touch-manipulation"
-              >
-                <ChevronLeft className="w-4 h-4" />
-                <span>Prev Step</span>
-              </button>
-              <span className="font-mono text-white/60 text-[11px]">
-                {activeStepIndex + 1} / {transparencyWorkflow.length}
-              </span>
-              <button
-                type="button"
-                onClick={handleNextStep}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gold/90 hover:bg-gold active:scale-95 text-forest-deep font-semibold transition-all touch-manipulation"
-              >
-                <span>Next Step</span>
-                <ChevronRight className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
         </div>
 
-        {/* The 5 Principles Section */}
-        <div>
-          <div className="text-center max-w-[36em] mx-auto mb-8 sm:mb-10">
-            <span className="text-[11px] font-bold uppercase tracking-widest text-gold block mb-1.5">Our Operating Philosophy</span>
-            <h3 className="font-serif text-2xl sm:text-3xl lg:text-4xl text-white font-medium">
-              Five principles that make FarmCare360 different.
-            </h3>
-          </div>
+        {/* Active Step Showcase Card */}
+        {activeStep && (
+          <div className="bg-white/5 border border-white/10 rounded-2xl sm:rounded-3xl p-6 sm:p-10 mb-12 sm:mb-16">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+              <div>
+                <span className="text-xs font-mono font-bold text-gold uppercase tracking-wider">
+                  Stage {activeStep.step || activeStepIndex + 1} of {workflowItems.length}
+                </span>
+                <h3 className="font-serif text-2xl sm:text-3xl text-white font-medium mt-1">
+                  {activeStep.title}
+                </h3>
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={handlePrevStep}
+                  className="p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
+                  aria-label="Previous step"
+                >
+                  <ChevronLeft className="w-5 h-5" />
+                </button>
+                <button
+                  onClick={handleNextStep}
+                  className="p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
+                  aria-label="Next step"
+                >
+                  <ChevronRight className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
-            {fiveCorePrinciples.map((p, idx) => (
+            <p className="text-sm sm:text-base text-white/90 leading-relaxed font-sans max-w-3xl">
+              {activeStep.description}
+            </p>
+
+            {(((activeStep as any).deliverables || [(activeStep as any).deliverable]).filter(Boolean) as string[]).length > 0 && (
+              <div className="mt-6 pt-6 border-t border-white/10">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-gold mb-3">
+                  Verification & Deliverables:
+                </h4>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  {(((activeStep as any).deliverables || [(activeStep as any).deliverable]).filter(Boolean) as string[]).map((d: string, i: number) => (
+                    <div key={i} className="flex items-start gap-2 text-xs text-white/80">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                      <span>{d}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* 5 Core Principles */}
+        <div>
+          <h3 className="font-serif text-xl sm:text-2xl font-bold text-white mb-6">
+            Our 5 Fundamental Principles of Stewardship
+          </h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+            {principleItems.map((p, idx) => (
               <div
-                key={p.number}
-                className="p-4 sm:p-5 rounded-xl sm:rounded-2xl bg-white/5 border border-white/10 hover:border-gold/50 transition-all duration-300 flex flex-col justify-between"
+                key={p.id || idx}
+                className="p-5 rounded-2xl bg-white/5 border border-white/10 flex flex-col justify-between"
               >
                 <div>
-                  <div className="flex items-center justify-between mb-2 sm:mb-3">
-                    <span className="font-mono text-xs font-bold text-gold">{p.number}</span>
-                    {principleIcons[idx]}
+                  <div className="mb-3">
+                    {principleIcons[idx % principleIcons.length]}
                   </div>
-                  <h4 className="font-serif text-base sm:text-lg text-white font-medium mb-1.5">{p.title}</h4>
-                  <p className="text-xs text-white/75 leading-relaxed font-sans">{p.description}</p>
-                </div>
-                <div className="mt-3.5 pt-2.5 border-t border-white/10 text-[11px] text-gold font-medium">
-                  {p.practicalApplication}
+                  <h4 className="font-serif text-base font-bold text-white mb-2">
+                    {p.name}
+                  </h4>
+                  <p className="text-xs text-white/70 leading-relaxed">
+                    {p.description}
+                  </p>
                 </div>
               </div>
             ))}
           </div>
+        </div>
+
+        {/* Link to full transparency charter */}
+        <div className="mt-10 pt-6 border-t border-white/10 text-center">
+          <Link
+            href="/transparency"
+            className="inline-flex items-center gap-2 text-gold font-semibold text-sm hover:underline"
+          >
+            <span>Read the Complete FarmCare360 Transparency Charter</span>
+            <ArrowRight className="w-4 h-4" />
+          </Link>
         </div>
 
       </div>

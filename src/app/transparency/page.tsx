@@ -5,6 +5,9 @@ import { ShieldCheck, Eye, CheckCircle2, AlertTriangle, FileText, Smartphone, Ar
 import { Breadcrumbs } from '@/components/common/Breadcrumbs';
 import { transparencyWorkflow, fiveCorePrinciples } from '@/data/visionData';
 import { companyConfig } from '@/data/companyConfig';
+import { getTransparencyData } from '@/lib/cms/db';
+
+export const revalidate = 0;
 
 export const metadata: Metadata = {
   title: `Customer Transparency Model | ${companyConfig.brandName} — Trust & Accountability`,
@@ -18,6 +21,32 @@ export const metadata: Metadata = {
 };
 
 export default function TransparencyPage() {
+  const cmsData = getTransparencyData();
+  const workflow =
+    cmsData.steps && cmsData.steps.length > 0
+      ? cmsData.steps.map((s) => ({
+          step: s.stepNumber,
+          title: s.title,
+          actor: s.badge || 'Field Agronomist & Client',
+          description: s.description,
+          deliverable: 'Client digital signoff & photo evidence log',
+        }))
+      : transparencyWorkflow;
+
+  const principles =
+    cmsData.principles && cmsData.principles.length > 0
+      ? cmsData.principles.map((p, idx) => ({
+          id: p.id || `prn_${idx}`,
+          title: p.title || p.name || `Principle ${idx + 1}`,
+          description: p.description,
+        }))
+      : fiveCorePrinciples.map((p, idx) => ({
+          id: `prn_${idx}`,
+          title: p.title,
+          description: p.description,
+        }));
+
+  const documents = cmsData.documents || [];
   return (
     <div className="w-full bg-ivory">
       {/* Breadcrumb Navigation */}
@@ -89,7 +118,7 @@ export default function TransparencyPage() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-              {transparencyWorkflow.map((step) => (
+              {workflow.map((step) => (
                 <div
                   key={step.step}
                   className="p-5 sm:p-6 rounded-xl sm:rounded-2xl bg-white border border-charcoal/10 shadow-2xs flex flex-col justify-between space-y-4 hover:border-gold transition-colors"
@@ -198,20 +227,70 @@ export default function TransparencyPage() {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5 sm:gap-4">
-              {fiveCorePrinciples.map((p) => (
-                <div key={p.number} className="p-4 sm:p-5 rounded-xl sm:rounded-2xl bg-white border border-charcoal/10 flex flex-col justify-between shadow-2xs">
+              {principles.map((p, idx) => (
+                <div key={p.id || idx} className="p-4 sm:p-5 rounded-xl sm:rounded-2xl bg-white border border-charcoal/10 flex flex-col justify-between shadow-2xs">
                   <div>
-                    <span className="font-mono text-xs font-bold text-gold block mb-1.5 sm:mb-2">{p.number}</span>
+                    <span className="font-mono text-xs font-bold text-gold block mb-1.5 sm:mb-2">0{idx + 1}</span>
                     <h3 className="font-serif text-base sm:text-lg text-forest-deep font-semibold mb-1.5">{p.title}</h3>
                     <p className="text-xs text-charcoal/75 leading-relaxed font-sans">{p.description}</p>
                   </div>
                   <div className="mt-3.5 pt-2.5 border-t border-charcoal/10 text-[11px] text-forest font-semibold">
-                    {p.practicalApplication}
+                    Stewardship Standard
                   </div>
                 </div>
               ))}
             </div>
           </div>
+
+          {/* Section 5: Downloadable Transparency Documents & Policies */}
+          {documents.length > 0 && (
+            <div className="space-y-5 sm:space-y-6 pt-4 border-t border-charcoal/10">
+              <div className="max-w-[36em]">
+                <span className="text-[11px] sm:text-xs font-bold uppercase tracking-widest text-gold block mb-1">
+                  Public Disclosures & Documentation
+                </span>
+                <h2 className="font-serif text-2xl sm:text-3xl text-forest-deep font-medium">
+                  Official agreements & transparency charters.
+                </h2>
+                <p className="text-sm text-charcoal/70 mt-1">
+                  Download sample contracts, audit policies, and standard operating charters.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {documents.map((doc) => (
+                  <div
+                    key={doc.id}
+                    className="p-5 rounded-2xl bg-white border border-charcoal/10 shadow-2xs flex flex-col justify-between"
+                  >
+                    <div>
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-forest/5 text-forest border border-forest/15">
+                          {doc.category}
+                        </span>
+                        <span className="text-xs text-charcoal-subtle">
+                          {doc.effectiveDate}
+                        </span>
+                      </div>
+                      <h4 className="font-serif text-base font-bold text-forest-deep mb-2">
+                        {doc.title}
+                      </h4>
+                    </div>
+
+                    <a
+                      href={doc.fileUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-4 pt-3 border-t border-charcoal/10 inline-flex items-center justify-between text-xs font-bold text-forest hover:text-gold transition-colors"
+                    >
+                      <span>Download Document</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </a>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
         </div>
       </main>

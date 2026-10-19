@@ -4,12 +4,50 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight, CheckCircle2, Compass } from 'lucide-react';
-import { spacesWeServe } from '@/data/visionData';
+import { spacesWeServe as defaultSpaces } from '@/data/visionData';
+import { SpaceItem } from '@/lib/cms/types';
 
-export function SpacesWeServeSection() {
-  const [selectedSpaceId, setSelectedSpaceId] = useState<string>(spacesWeServe[0].id);
+interface SpacesSectionProps {
+  spaces?: SpaceItem[];
+  title?: string;
+  subtitle?: string;
+}
 
-  const activeSpace = spacesWeServe.find((s) => s.id === selectedSpaceId) || spacesWeServe[0];
+export function SpacesWeServeSection({
+  spaces,
+  title,
+  subtitle,
+}: SpacesSectionProps = {}) {
+  // Normalize items
+  const items =
+    spaces && spaces.length > 0
+      ? spaces.map((s, idx) => ({
+          id: s.slug || s.id,
+          number: `0${idx + 1}`,
+          title: s.title,
+          subtitle: s.category?.toUpperCase() || 'SPACE CATEGORY',
+          summary: s.description,
+          idealFor:
+            s.keyChallenges?.slice(0, 2).join(', ') || 'Landowners looking for turn-key management',
+          image: s.image || '/images/approach/approach-step1.jpg',
+          keyConsiderations: s.assessmentFactors || [
+            'Soil profile and health',
+            'Water source and yield',
+            'Boundary security',
+          ],
+          solutions: s.farmcareSolutions || [
+            'Scientific layout planning',
+            'Turnkey execution',
+            'Periodic photographic updates',
+          ],
+        }))
+      : defaultSpaces;
+
+  const [selectedSpaceId, setSelectedSpaceId] = useState<string>(items[0]?.id || '1');
+
+  const activeSpace = items.find((s) => s.id === selectedSpaceId) || items[0];
+
+  if (!activeSpace) return null;
 
   return (
     <section className="py-12 sm:py-20 lg:py-24 bg-ivory border-t border-charcoal/10" aria-labelledby="spaces-heading">
@@ -22,16 +60,17 @@ export function SpacesWeServeSection() {
             <span className="w-8 sm:w-10 h-[1px] bg-gold inline-block" />
           </div>
           <h2 id="spaces-heading" className="font-serif text-forest-deep text-[clamp(2rem,5.5vw,3.6rem)] font-normal leading-[1.08] tracking-tight text-balance">
-            Tailored agricultural stewardship for every type of property.
+            {title || 'Tailored agricultural stewardship for every type of property.'}
           </h2>
           <p className="text-[15px] sm:text-[17px] text-charcoal/80 leading-relaxed font-sans font-light">
-            Our approach depends on your property’s size, your objectives, water availability, sunlight, soil conditions, budget, and practical feasibility.
+            {subtitle ||
+              'Our approach depends on your property’s size, your objectives, water availability, sunlight, soil conditions, budget, and practical feasibility.'}
           </p>
         </div>
 
-        {/* 4 Space Selector Pills (2x2 on mobile, 4 columns on tablet/desktop) */}
+        {/* Space Selector Pills */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3.5 mb-6 sm:mb-10" role="tablist" aria-label="Spaces we serve">
-          {spacesWeServe.map((space) => {
+          {items.map((space) => {
             const isSelected = space.id === selectedSpaceId;
             return (
               <button
@@ -73,6 +112,7 @@ export function SpacesWeServeSection() {
                 fill
                 className="object-cover"
                 sizes="(max-width: 1024px) 100vw, 42vw"
+                unoptimized={activeSpace.image.startsWith('http') || activeSpace.image.startsWith('/uploads')}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-forest-dark/80 via-transparent to-transparent pointer-events-none" />
               <div className="absolute bottom-4 left-4 right-4 text-white">
@@ -133,7 +173,7 @@ export function SpacesWeServeSection() {
                 </div>
               </div>
 
-              {/* Action row (Full-width button on mobile) */}
+              {/* Action row */}
               <div className="pt-4 sm:pt-6 border-t border-charcoal/10 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4">
                 <span className="text-xs text-charcoal/60 font-sans text-center sm:text-left">
                   Ready to assess your {activeSpace.title.toLowerCase()}?

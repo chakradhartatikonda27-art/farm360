@@ -3,7 +3,38 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight, ShieldCheck, Sparkles } from 'lucide-react';
 
-export function HeroSection() {
+interface HeroSectionProps {
+  badge?: string;
+  title?: string;
+  description?: string;
+  ctaText?: string;
+  ctaLink?: string;
+  secondaryCtaText?: string;
+  secondaryCtaLink?: string;
+  heroImage?: string;
+}
+
+export function HeroSection({
+  badge,
+  title,
+  description,
+  ctaText,
+  ctaLink,
+  secondaryCtaText,
+  secondaryCtaLink,
+  heroImage,
+}: HeroSectionProps = {}) {
+  const displayBadge = badge || "Complete Agricultural Solutions";
+  const displayTitle = title || "Owning land is a privilege. We make it productive.";
+  const displayDesc =
+    description ||
+    "Many agricultural lands, open plots, and terraces remain idle, while people dream of farming and rural living. FarmCare360 bridges that gap through end-to-end management, agronomic science, and radical transparency.";
+  const displayCtaText = ctaText || "Explore Our 4 Models";
+  const displayCtaLink = ctaLink || "/services";
+  const displaySecCtaText = secondaryCtaText || "Discuss Your Land";
+  const displaySecCtaLink = secondaryCtaLink || "/contact";
+  const displayImage = heroImage || "/images/hero/hero-terrace-farm.jpg";
+
   return (
     <section className="grid grid-cols-1 lg:grid-cols-[1.1fr_1fr] min-h-0 lg:min-h-[660px] bg-forest-dark text-white overflow-hidden">
       {/* Editorial Content Column (Order 1 on all viewports for Mobile-First Storytelling) */}
@@ -11,34 +42,33 @@ export function HeroSection() {
         {/* Eyebrow with Gold Accent */}
         <div className="flex items-center gap-2.5 text-gold text-[11px] sm:text-[11.5px] font-bold tracking-[0.2em] sm:tracking-[0.22em] uppercase">
           <Sparkles className="w-3.5 h-3.5 text-gold" />
-          <span>Complete Agricultural Solutions</span>
+          <span>{displayBadge}</span>
           <span className="w-8 sm:w-10 h-[1px] bg-gold inline-block" />
         </div>
 
         {/* Editorial Headline */}
         <h1 className="font-serif text-white font-normal text-[clamp(2.1rem,6.8vw,4.5rem)] leading-[1.06] sm:leading-[1.03] tracking-tight my-4 sm:my-5 text-balance">
-          Owning land is a privilege. <br className="hidden sm:inline" />
-          We make it productive.
+          {displayTitle}
         </h1>
 
         {/* Subcopy rooted in user vision */}
         <p className="text-[15px] sm:text-[17px] lg:text-[18px] text-white/90 leading-relaxed font-sans max-w-[34em] font-light">
-          Many agricultural lands, open plots, and terraces remain idle, while people dream of farming and rural living. FarmCare360 bridges that gap through end-to-end management, agronomic science, and radical transparency.
+          {displayDesc}
         </p>
 
         {/* Dual Actions - Full-width stacked on mobile, row on tablet/desktop */}
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-3.5 mt-6 sm:mt-8 w-full sm:w-auto">
           <Link
-            href="/services"
+            href={displayCtaLink}
             className="w-full sm:w-auto inline-flex items-center justify-center min-h-[48px] px-7 rounded-full bg-gold hover:bg-[#D4B66B] active:scale-[0.98] text-forest-deep font-sans font-semibold text-[15px] transition-all shadow-sm text-center touch-manipulation"
           >
-            Explore Our 4 Models
+            {displayCtaText}
           </Link>
           <Link
-            href="/contact"
+            href={displaySecCtaLink}
             className="w-full sm:w-auto inline-flex items-center justify-center min-h-[48px] px-7 rounded-full bg-transparent border-1.5 border-white/80 text-white hover:bg-white/10 active:scale-[0.98] font-sans font-semibold text-[15px] transition-all text-center touch-manipulation"
           >
-            Discuss Your Land
+            {displaySecCtaText}
           </Link>
         </div>
 
@@ -63,12 +93,13 @@ export function HeroSection() {
         aria-label="Modern residential terrace garden overlooking an agricultural landscape"
       >
         <Image
-          src="/images/hero/hero-terrace-farm.jpg"
+          src={displayImage}
           alt="Modern residential terrace garden overlooking an agricultural landscape"
           fill
           priority
           className="object-cover object-center"
           sizes="(max-width: 1024px) 100vw, 50vw"
+          unoptimized={displayImage.startsWith('http') || displayImage.startsWith('/uploads')}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-forest-dark/50 via-transparent to-transparent lg:bg-gradient-to-r lg:from-forest-dark/40 lg:to-transparent pointer-events-none" />
       </div>

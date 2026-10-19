@@ -3,6 +3,8 @@
  * Handles server-side validation and dispatch to CRM / Webhooks / Local Storage.
  */
 
+import { saveEnquiry } from '@/lib/cms/db';
+
 export interface ConsultationSubmission {
   fullName: string;
   phone: string;
@@ -104,6 +106,32 @@ export async function processConsultation(
     } catch (err) {
       console.error('Failed to dispatch CRM webhook, falling back to local audit:', err);
     }
+  }
+
+  // Save directly to CMS CRM database
+  try {
+    saveEnquiry({
+      id: referenceId,
+      name: data.fullName,
+      phone: data.phone,
+      email: data.email,
+      location: data.location,
+      serviceInterest: `${data.preferredEngagement} — ${data.serviceCategory || data.propertyType}`,
+      landSize: data.approxSize || data.propertyType,
+      message: data.projectDescription,
+      status: 'new',
+      priority: 'medium',
+      notes: [
+        {
+          id: `note-${Date.now()}`,
+          author: 'System',
+          text: `Consultation enquiry submitted via website form. Ref: ${referenceId}`,
+          createdAt: new Date().toISOString(),
+        },
+      ],
+    });
+  } catch (err) {
+    console.error('Failed to save enquiry to CMS store:', err);
   }
 
   // Log lead to server console for operational traceability
