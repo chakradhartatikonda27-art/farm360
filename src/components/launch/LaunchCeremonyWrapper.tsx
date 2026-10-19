@@ -336,27 +336,27 @@ export function LaunchCeremonyWrapper({ children }: LaunchCeremonyWrapperProps) 
 
       {/* ==================== 3. GRAND THEATRE STAGE OVERLAY ==================== */}
       {!curtainsOpen && (
-        <div className="fixed inset-0 z-50 overflow-hidden flex flex-col justify-between select-none">
-          {/* Left Velvet Curtain Panel */}
+        <div className="fixed inset-0 z-50 overflow-hidden flex flex-col justify-between select-none bg-[#050A07]">
+          {/* Left Midnight Obsidian Velvet Curtain Panel */}
           <div
-            className={`absolute top-0 bottom-0 left-0 w-1/2 bg-gradient-to-r from-[#4A0A10] via-[#7B0D18] to-[#98121F] shadow-2xl transition-transform duration-1000 ease-out z-10 ${
+            className={`absolute top-0 bottom-0 left-0 w-1/2 bg-gradient-to-r from-[#030705] via-[#08140E] to-[#0E2017] shadow-2xl transition-transform duration-1000 ease-out z-10 ${
               curtainsOpen ? "-translate-x-full" : "translate-x-0"
             }`}
           >
             {/* Velvet Vertical pleat shadows */}
-            <div className="absolute inset-0 opacity-40 bg-[repeating-linear-gradient(90deg,transparent,transparent_40px,rgba(0,0,0,0.5)_40px,rgba(0,0,0,0.5)_80px)]" />
-            <div className="absolute top-0 bottom-0 right-0 w-4 bg-gradient-to-l from-gold/40 to-transparent" />
+            <div className="absolute inset-0 opacity-50 bg-[repeating-linear-gradient(90deg,transparent,transparent_44px,rgba(0,0,0,0.65)_44px,rgba(0,0,0,0.65)_88px)]" />
+            <div className="absolute top-0 bottom-0 right-0 w-3 bg-gradient-to-l from-gold/60 via-gold/30 to-transparent" />
           </div>
 
-          {/* Right Velvet Curtain Panel */}
+          {/* Right Midnight Obsidian Velvet Curtain Panel */}
           <div
-            className={`absolute top-0 bottom-0 right-0 w-1/2 bg-gradient-to-l from-[#4A0A10] via-[#7B0D18] to-[#98121F] shadow-2xl transition-transform duration-1000 ease-out z-10 ${
+            className={`absolute top-0 bottom-0 right-0 w-1/2 bg-gradient-to-l from-[#030705] via-[#08140E] to-[#0E2017] shadow-2xl transition-transform duration-1000 ease-out z-10 ${
               curtainsOpen ? "translate-x-full" : "translate-x-0"
             }`}
           >
             {/* Velvet Vertical pleat shadows */}
-            <div className="absolute inset-0 opacity-40 bg-[repeating-linear-gradient(90deg,transparent,transparent_40px,rgba(0,0,0,0.5)_40px,rgba(0,0,0,0.5)_80px)]" />
-            <div className="absolute top-0 bottom-0 left-0 w-4 bg-gradient-to-r from-gold/40 to-transparent" />
+            <div className="absolute inset-0 opacity-50 bg-[repeating-linear-gradient(90deg,transparent,transparent_44px,rgba(0,0,0,0.65)_44px,rgba(0,0,0,0.65)_88px)]" />
+            <div className="absolute top-0 bottom-0 left-0 w-3 bg-gradient-to-r from-gold/60 via-gold/30 to-transparent" />
           </div>
 
           {/* Golden Volumetric Spotlights */}
@@ -383,7 +383,7 @@ export function LaunchCeremonyWrapper({ children }: LaunchCeremonyWrapperProps) 
                 </p>
 
                 <p className="text-xs text-ivory/70 mt-3 leading-relaxed">
-                  Join the official premiere ceremony. The red ribbon will be cut, opening directly into the live website.
+                  Join the official premiere ceremony. The ceremonial ribbon will be cut, revealing the official live website.
                 </p>
 
                 {/* Big Grand Launch Button */}
@@ -419,18 +419,21 @@ export function LaunchCeremonyWrapper({ children }: LaunchCeremonyWrapperProps) 
             {/* SCENE 2: RIBBON & GOLDEN SCISSORS */}
             {hasStarted && phase === "ribbon_cutting" && (
               <div className="relative w-full flex items-center justify-center">
-                {/* 1. Heavy Satin Crimson Ribbon */}
+                {/* 1. Heavy Satin Emerald & 24K Gold Ceremonial Ribbon */}
                 <div className="relative w-full max-w-5xl h-20 sm:h-24 flex items-center justify-center">
                   {/* Left Half of Ribbon */}
                   <div
-                    className={`h-full bg-gradient-to-r from-[#64070D] via-[#A8101C] to-[#C91A26] border-y-4 border-gold shadow-2xl transition-all duration-700 ${
+                    className={`relative h-full bg-gradient-to-r from-[#06180F] via-[#0E3520] to-[#185333] border-y-4 border-gold shadow-[0_10px_40px_rgba(0,0,0,0.8)] transition-all duration-700 overflow-hidden ${
                       ribbonCut ? "-translate-x-48 rotate-[-12deg] opacity-0" : "flex-1 translate-x-0"
                     }`}
-                  />
+                  >
+                    {/* Inner Gold Pinstripe */}
+                    <div className="absolute top-1/2 left-0 right-0 -translate-y-1/2 h-1 bg-gradient-to-r from-gold/30 via-gold to-gold/30" />
+                  </div>
 
                   {/* Central Golden Seal Crest */}
                   <div
-                    className={`absolute z-20 w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-gradient-to-br from-[#FFF0B3] via-[#D4AF37] to-[#7A5B18] border-4 border-white shadow-2xl flex flex-col items-center justify-center transition-all duration-500 ${
+                    className={`absolute z-20 w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-gradient-to-br from-[#FFF0B3] via-[#D4AF37] to-[#7A5B18] border-4 border-white shadow-[0_10px_35px_rgba(212,175,55,0.4)] flex flex-col items-center justify-center transition-all duration-500 ${
                       ribbonCut ? "scale-0 opacity-0" : "scale-100 opacity-100"
                     }`}
                   >
@@ -441,10 +444,13 @@ export function LaunchCeremonyWrapper({ children }: LaunchCeremonyWrapperProps) 
 
                   {/* Right Half of Ribbon */}
                   <div
-                    className={`h-full bg-gradient-to-l from-[#64070D] via-[#A8101C] to-[#C91A26] border-y-4 border-gold shadow-2xl transition-all duration-700 ${
+                    className={`relative h-full bg-gradient-to-l from-[#06180F] via-[#0E3520] to-[#185333] border-y-4 border-gold shadow-[0_10px_40px_rgba(0,0,0,0.8)] transition-all duration-700 overflow-hidden ${
                       ribbonCut ? "translate-x-48 rotate-[12deg] opacity-0" : "flex-1 translate-x-0"
                     }`}
-                  />
+                  >
+                    {/* Inner Gold Pinstripe */}
+                    <div className="absolute top-1/2 left-0 right-0 -translate-y-1/2 h-1 bg-gradient-to-l from-gold/30 via-gold to-gold/30" />
+                  </div>
 
                   {/* 2. Precision Golden Ceremonial Scissors */}
                   {!ribbonCut && (
@@ -564,7 +570,7 @@ export function LaunchCeremonyWrapper({ children }: LaunchCeremonyWrapperProps) 
             className="p-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-ivory transition-colors"
             title={isMuted ? "Unmute Sound" : "Mute Sound"}
           >
-            {isMuted ? <VolumeX className="w-4 h-4 text-rose-400" /> : <Volume2 className="w-4 h-4 text-gold" />}
+            {isMuted ? <VolumeX className="w-4 h-4 text-gold/60" /> : <Volume2 className="w-4 h-4 text-gold" />}
           </button>
 
           <Link
