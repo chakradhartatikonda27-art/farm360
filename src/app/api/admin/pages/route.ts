@@ -1,9 +1,12 @@
 import { NextResponse } from 'next/server';
-import { getPages, savePage, addAuditLog } from '@/lib/cms/db';
+import { revalidatePath } from 'next/cache';
+import { getPages, getPagesAsync, savePageAsync, addAuditLogAsync } from '@/lib/cms/db';
 import { getCurrentAdminUser, hasPermission } from '@/lib/cms/auth';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
-  const pages = getPages();
+  const pages = (await getPagesAsync()) || getPages();
   return NextResponse.json({ success: true, data: pages });
 }
 
@@ -19,8 +22,8 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Title and slug are required' }, { status: 400 });
     }
 
-    const saved = savePage(body);
-    addAuditLog({
+    const saved = await savePageAsync(body);
+    await addAuditLogAsync({
       userId: user.id,
       userName: user.name,
       action: 'CREATE_PAGE',
@@ -28,6 +31,11 @@ export async function POST(req: Request) {
       entityId: saved.id,
       details: `Created page: "${saved.title}" (slug: /${saved.slug})`,
     });
+
+    try {
+      revalidatePath('/', 'layout');
+      revalidatePath('/');
+    } catch {}
 
     return NextResponse.json(saved);
   } catch (err: any) {

@@ -1,11 +1,14 @@
 import { NextResponse } from 'next/server';
-import { getSpaces, saveSpace, addAuditLog } from '@/lib/cms/db';
+import { revalidatePath } from 'next/cache';
+import { getSpaces, getSpacesAsync, saveSpaceAsync, addAuditLogAsync } from '@/lib/cms/db';
 import { getCurrentAdminUser, hasPermission } from '@/lib/cms/auth';
+
+export const dynamic = 'force-dynamic';
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const status = searchParams.get('status') || undefined;
-  const spaces = getSpaces({ status });
+  const spaces = (await getSpacesAsync({ status })) || getSpaces({ status });
   return NextResponse.json({ success: true, data: spaces });
 }
 
@@ -21,8 +24,8 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Title is required' }, { status: 400 });
     }
 
-    const saved = saveSpace(body);
-    addAuditLog({
+    const saved = await saveSpaceAsync(body);
+    await addAuditLogAsync({
       userId: user.id,
       userName: user.name,
       action: 'CREATE_SPACE',
@@ -30,6 +33,11 @@ export async function POST(req: Request) {
       entityId: saved.id,
       details: `Created space category: "${saved.title}"`,
     });
+
+    try {
+      revalidatePath('/', 'layout');
+      revalidatePath('/');
+    } catch {}
 
     return NextResponse.json(saved);
   } catch (err: any) {

@@ -1,16 +1,20 @@
 import { NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { 
   getTransparencyData, 
-  updateTransparencyWorkflow, 
-  updateTransparencyPrinciples, 
-  saveTransparencyDocument, 
-  deleteTransparencyDocument,
-  addAuditLog 
+  getTransparencyDataAsync,
+  updateTransparencyWorkflowAsync, 
+  updateTransparencyPrinciplesAsync, 
+  saveTransparencyDocumentAsync, 
+  deleteTransparencyDocumentAsync,
+  addAuditLogAsync 
 } from '@/lib/cms/db';
 import { getCurrentAdminUser, hasPermission } from '@/lib/cms/auth';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
-  const data = getTransparencyData();
+  const data = (await getTransparencyDataAsync()) || getTransparencyData();
   return NextResponse.json({ success: true, data: data, ...data });
 }
 
@@ -25,8 +29,8 @@ export async function PUT(req: Request) {
     const { action, steps, principles, document, documentId } = body;
 
     if (action === 'update_steps' && Array.isArray(steps)) {
-      const updated = updateTransparencyWorkflow(steps);
-      addAuditLog({
+      const updated = await updateTransparencyWorkflowAsync(steps);
+      await addAuditLogAsync({
         userId: user.id,
         userName: user.name,
         action: 'UPDATE_TRANSPARENCY_WORKFLOW',
@@ -34,12 +38,17 @@ export async function PUT(req: Request) {
         entityId: 'workflow_steps',
         details: 'Updated the 7-step customer approval workflow',
       });
+      try {
+        revalidatePath('/', 'layout');
+        revalidatePath('/');
+        revalidatePath('/transparency');
+      } catch {}
       return NextResponse.json({ success: true, steps: updated });
     }
 
     if (action === 'update_principles' && Array.isArray(principles)) {
-      const updated = updateTransparencyPrinciples(principles);
-      addAuditLog({
+      const updated = await updateTransparencyPrinciplesAsync(principles);
+      await addAuditLogAsync({
         userId: user.id,
         userName: user.name,
         action: 'UPDATE_TRANSPARENCY_PRINCIPLES',
@@ -47,12 +56,17 @@ export async function PUT(req: Request) {
         entityId: 'five_principles',
         details: 'Updated the five core operating principles',
       });
+      try {
+        revalidatePath('/', 'layout');
+        revalidatePath('/');
+        revalidatePath('/transparency');
+      } catch {}
       return NextResponse.json({ success: true, principles: updated });
     }
 
     if (action === 'save_document' && document) {
-      const savedDoc = saveTransparencyDocument(document);
-      addAuditLog({
+      const savedDoc = await saveTransparencyDocumentAsync(document);
+      await addAuditLogAsync({
         userId: user.id,
         userName: user.name,
         action: 'SAVE_TRANSPARENCY_DOCUMENT',
@@ -60,12 +74,17 @@ export async function PUT(req: Request) {
         entityId: savedDoc.id,
         details: `Saved transparency policy document: "${savedDoc.title}"`,
       });
+      try {
+        revalidatePath('/', 'layout');
+        revalidatePath('/');
+        revalidatePath('/transparency');
+      } catch {}
       return NextResponse.json({ success: true, document: savedDoc });
     }
 
     if (action === 'delete_document' && documentId) {
-      deleteTransparencyDocument(documentId);
-      addAuditLog({
+      await deleteTransparencyDocumentAsync(documentId);
+      await addAuditLogAsync({
         userId: user.id,
         userName: user.name,
         action: 'DELETE_TRANSPARENCY_DOCUMENT',
@@ -73,6 +92,11 @@ export async function PUT(req: Request) {
         entityId: documentId,
         details: `Deleted transparency document: ${documentId}`,
       });
+      try {
+        revalidatePath('/', 'layout');
+        revalidatePath('/');
+        revalidatePath('/transparency');
+      } catch {}
       return NextResponse.json({ success: true });
     }
 

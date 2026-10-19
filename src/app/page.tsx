@@ -11,21 +11,24 @@ import { TrendingReviews } from '@/components/home/TrendingReviews';
 import { ContactCtaBanner } from '@/components/home/ContactCtaBanner';
 import {
   getPageBySlug,
-  getSpaces,
-  getBusinessModels,
-  getTransparencyData,
-  getTestimonials,
+  getPageBySlugAsync,
+  getSpacesAsync,
+  getBusinessModelsAsync,
+  getTransparencyDataAsync,
+  getTestimonialsAsync,
 } from '@/lib/cms/db';
 
+export const dynamic = 'force-dynamic';
 export const revalidate = 0; // Dynamic revalidation on every change
+export const fetchCache = 'force-no-store';
 
-export default function HomePage() {
-  // Load dynamic CMS data
-  const page = getPageBySlug('home');
-  const spaces = getSpaces({ status: 'active' });
-  const businessModels = getBusinessModels();
-  const transparency = getTransparencyData();
-  const testimonials = getTestimonials({ status: 'approved' });
+export default async function HomePage() {
+  // Load dynamic CMS data with instant cloud synchronization
+  const page = (await getPageBySlugAsync('home')) || getPageBySlug('home');
+  const spaces = await getSpacesAsync({ status: 'active' });
+  const businessModels = await getBusinessModelsAsync();
+  const transparency = await getTransparencyDataAsync();
+  const testimonials = await getTestimonialsAsync({ status: 'approved' });
 
   // Helper to find a section by any key/type/id
   const findSection = (key: string) => {

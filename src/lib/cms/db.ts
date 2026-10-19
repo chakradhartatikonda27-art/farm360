@@ -21,7 +21,7 @@ import {
 } from './types';
 import { getInitialSeedData } from './seedData';
 
-interface DatabaseSchema {
+export interface DatabaseSchema {
   version: number;
   lastUpdated: string;
   users: AdminUser[];
@@ -51,16 +51,76 @@ const DB_DIR = IS_VERCEL
   : BUNDLED_DB_DIR;
 const DB_FILE = path.join(DB_DIR, 'database.json');
 
-// In-memory cache for fast read access
+// In-memory cache for ultra-fast response
 let memoryDb: DatabaseSchema | null = null;
+let latestBlobTime = 0;
+let lastCloudCheckTime = 0;
+const CLOUD_CHECK_INTERVAL_MS = 2000;
 
 function ensureDbDirectory() {
   try {
     if (!fs.existsSync(DB_DIR)) {
       fs.mkdirSync(DB_DIR, { recursive: true });
     }
-  } catch (err) {
+  } catch {
     // Read-only filesystem warning
+  }
+}
+
+// Global synchronization lock for Vercel Blob updates
+let isSyncing = false;
+let pendingDb: DatabaseSchema | null = null;
+
+export async function syncToCloudAsync(db: DatabaseSchema): Promise<void> {
+  const token = process.env.BLOB_READ_WRITE_TOKEN;
+  if (!token) {
+    return;
+  }
+
+  if (isSyncing) {
+    pendingDb = db;
+    return;
+  }
+
+  isSyncing = true;
+  try {
+    const { put, list, del } = await import('@vercel/blob');
+    const timestamp = Date.now();
+    const pathname = `cms/db-${timestamp}.json`;
+
+    await put(pathname, JSON.stringify(db, null, 2), {
+      access: 'public',
+      contentType: 'application/json',
+      addRandomSuffix: false,
+      token,
+    });
+
+    latestBlobTime = timestamp;
+
+    // Prune older blobs in the background, keeping only the 3 newest
+    try {
+      const listRes = await list({ prefix: 'cms/db-', token });
+      if (listRes.blobs && listRes.blobs.length > 3) {
+        const sorted = listRes.blobs.sort(
+          (a, b) => new Date(b.uploadedAt).getTime() - new Date(a.uploadedAt).getTime()
+        );
+        const toDelete = sorted.slice(3).map((b) => b.url);
+        if (toDelete.length > 0) {
+          await del(toDelete, { token });
+        }
+      }
+    } catch (pruneErr) {
+      console.warn('Vercel Blob prune notice:', pruneErr);
+    }
+  } catch (err) {
+    console.warn('Vercel Blob sync error:', err);
+  } finally {
+    isSyncing = false;
+    if (pendingDb) {
+      const next = pendingDb;
+      pendingDb = null;
+      await syncToCloudAsync(next);
+    }
   }
 }
 
@@ -78,9 +138,7 @@ export function loadDatabase(): DatabaseSchema {
       memoryDb = JSON.parse(fileContent);
       return memoryDb!;
     }
-  } catch (e) {
-    // Ignore and proceed to bundled
-  }
+  } catch {}
 
   // Next, try reading from bundled file (data/cms-store/database.json)
   try {
@@ -97,9 +155,7 @@ export function loadDatabase(): DatabaseSchema {
 
       return memoryDb!;
     }
-  } catch (e) {
-    // Ignore and proceed to seedData
-  }
+  } catch {}
 
   // Fallback to code seed data
   const seed = getInitialSeedData();
@@ -113,6 +169,67 @@ export function loadDatabase(): DatabaseSchema {
   return memoryDb;
 }
 
+export async function loadDatabaseAsync(): Promise<DatabaseSchema> {
+  const token = process.env.BLOB_READ_WRITE_TOKEN;
+
+  if (token) {
+    const now = Date.now();
+    const shouldCheck = !memoryDb || (now - lastCloudCheckTime > CLOUD_CHECK_INTERVAL_MS);
+
+    if (shouldCheck) {
+      lastCloudCheckTime = now;
+      try {
+        const { list } = await import('@vercel/blob');
+        const abortCtrl = new AbortController();
+        const timer = setTimeout(() => abortCtrl.abort(), 4000);
+
+        const listRes = await list({ prefix: 'cms/db-', token, abortSignal: abortCtrl.signal });
+        clearTimeout(timer);
+
+        if (listRes.blobs && listRes.blobs.length > 0) {
+          const sorted = listRes.blobs.sort(
+            (a, b) => new Date(b.uploadedAt).getTime() - new Date(a.uploadedAt).getTime()
+          );
+          const newest = sorted[0];
+          const newestTime = new Date(newest.uploadedAt).getTime();
+
+          if (!memoryDb || newestTime > latestBlobTime) {
+            const res = await fetch(newest.url, {
+              cache: 'no-store',
+              headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate' },
+            });
+            if (res.ok) {
+              const cloudDb = await res.json();
+              memoryDb = cloudDb;
+              latestBlobTime = newestTime;
+
+              try {
+                ensureDbDirectory();
+                fs.writeFileSync(DB_FILE, JSON.stringify(cloudDb, null, 2), 'utf8');
+              } catch {}
+
+              return memoryDb!;
+            }
+          } else if (memoryDb) {
+            return memoryDb;
+          }
+        } else {
+          // No blobs in cloud store yet, upload bundled/initial database to cloud
+          const localDb = loadDatabase();
+          syncToCloudAsync(localDb).catch(() => {});
+          return localDb;
+        }
+      } catch (err) {
+        console.warn('loadDatabaseAsync Vercel Blob notice:', err);
+      }
+    } else if (memoryDb) {
+      return memoryDb;
+    }
+  }
+
+  return loadDatabase();
+}
+
 export function saveDatabase(db: DatabaseSchema) {
   memoryDb = db;
   db.lastUpdated = new Date().toISOString();
@@ -123,9 +240,28 @@ export function saveDatabase(db: DatabaseSchema) {
     fs.writeFileSync(tempFile, JSON.stringify(db, null, 2), 'utf8');
     fs.renameSync(tempFile, DB_FILE);
   } catch (err) {
-    // In read-only serverless environments, in-memory state is preserved for the instance lifetime
     console.warn('Persistent disk write skipped/failed:', err);
   }
+
+  // Push to Vercel Blob cloud in background
+  syncToCloudAsync(db).catch((e) => console.warn('Background cloud sync failed:', e));
+}
+
+export async function saveDatabaseAsync(db: DatabaseSchema): Promise<void> {
+  memoryDb = db;
+  db.lastUpdated = new Date().toISOString();
+
+  try {
+    ensureDbDirectory();
+    const tempFile = `${DB_FILE}.tmp.${Date.now()}`;
+    fs.writeFileSync(tempFile, JSON.stringify(db, null, 2), 'utf8');
+    fs.renameSync(tempFile, DB_FILE);
+  } catch (err) {
+    console.warn('Persistent disk write skipped/failed:', err);
+  }
+
+  // Await cloud persistence so live updates are instantly distributed
+  await syncToCloudAsync(db);
 }
 
 /* ==================== AUDIT LOGS ==================== */
@@ -137,7 +273,6 @@ export function addAuditLog(entry: Omit<AuditLogEntry, 'id' | 'timestamp'>) {
     ...entry,
   };
   db.auditLogs.unshift(newLog);
-  // Keep last 500 logs
   if (db.auditLogs.length > 500) {
     db.auditLogs = db.auditLogs.slice(0, 500);
   }
@@ -145,8 +280,28 @@ export function addAuditLog(entry: Omit<AuditLogEntry, 'id' | 'timestamp'>) {
   return newLog;
 }
 
+export async function addAuditLogAsync(entry: Omit<AuditLogEntry, 'id' | 'timestamp'>) {
+  const db = await loadDatabaseAsync();
+  const newLog: AuditLogEntry = {
+    id: `aud_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+    timestamp: new Date().toISOString(),
+    ...entry,
+  };
+  db.auditLogs.unshift(newLog);
+  if (db.auditLogs.length > 500) {
+    db.auditLogs = db.auditLogs.slice(0, 500);
+  }
+  await saveDatabaseAsync(db);
+  return newLog;
+}
+
 export function getAuditLogs(limit: number = 50) {
   const db = loadDatabase();
+  return db.auditLogs.slice(0, limit);
+}
+
+export async function getAuditLogsAsync(limit: number = 50) {
+  const db = await loadDatabaseAsync();
   return db.auditLogs.slice(0, limit);
 }
 
@@ -156,13 +311,28 @@ export function getUsers(): AdminUser[] {
   return db.users;
 }
 
+export async function getUsersAsync(): Promise<AdminUser[]> {
+  const db = await loadDatabaseAsync();
+  return db.users;
+}
+
 export function getUserByEmail(email: string): AdminUser | undefined {
   const db = loadDatabase();
   return db.users.find((u) => u.email.toLowerCase() === email.toLowerCase());
 }
 
+export async function getUserByEmailAsync(email: string): Promise<AdminUser | undefined> {
+  const db = await loadDatabaseAsync();
+  return db.users.find((u) => u.email.toLowerCase() === email.toLowerCase());
+}
+
 export function getUserById(id: string): AdminUser | undefined {
   const db = loadDatabase();
+  return db.users.find((u) => u.id === id);
+}
+
+export async function getUserByIdAsync(id: string): Promise<AdminUser | undefined> {
+  const db = await loadDatabaseAsync();
   return db.users.find((u) => u.id === id);
 }
 
@@ -199,6 +369,39 @@ export function saveUser(user: Partial<AdminUser> & { email: string }): AdminUse
   }
 }
 
+export async function saveUserAsync(user: Partial<AdminUser> & { email: string }): Promise<AdminUser> {
+  const db = await loadDatabaseAsync();
+  const existingIdx = db.users.findIndex((u) => u.email.toLowerCase() === user.email.toLowerCase() || (user.id && u.id === user.id));
+  
+  if (existingIdx >= 0) {
+    const updated = {
+      ...db.users[existingIdx],
+      ...user,
+      updatedAt: new Date().toISOString(),
+    };
+    db.users[existingIdx] = updated;
+    await saveDatabaseAsync(db);
+    return updated;
+  } else {
+    const isActive = user.isActive !== undefined ? user.isActive : (user.active !== undefined ? user.active : true);
+    const newUser: AdminUser = {
+      id: user.id || `usr_${Date.now()}`,
+      email: user.email,
+      passwordHash: user.passwordHash || '',
+      name: user.name || user.email.split('@')[0],
+      role: user.role || 'CONTENT_EDITOR',
+      isActive,
+      active: isActive,
+      avatar: user.avatar,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    db.users.push(newUser);
+    await saveDatabaseAsync(db);
+    return newUser;
+  }
+}
+
 export function deleteUser(id: string): boolean {
   const db = loadDatabase();
   const initialLen = db.users.length;
@@ -210,9 +413,25 @@ export function deleteUser(id: string): boolean {
   return false;
 }
 
+export async function deleteUserAsync(id: string): Promise<boolean> {
+  const db = await loadDatabaseAsync();
+  const initialLen = db.users.length;
+  db.users = db.users.filter((u) => u.id !== id);
+  if (db.users.length !== initialLen) {
+    await saveDatabaseAsync(db);
+    return true;
+  }
+  return false;
+}
+
 /* ==================== GLOBAL SETTINGS ==================== */
 export function getGlobalSettings(): GlobalSettings {
   const db = loadDatabase();
+  return db.globalSettings;
+}
+
+export async function getGlobalSettingsAsync(): Promise<GlobalSettings> {
+  const db = await loadDatabaseAsync();
   return db.globalSettings;
 }
 
@@ -238,9 +457,36 @@ export function updateGlobalSettings(settings: Partial<GlobalSettings>): GlobalS
   return db.globalSettings;
 }
 
+export async function updateGlobalSettingsAsync(settings: Partial<GlobalSettings>): Promise<GlobalSettings> {
+  const db = await loadDatabaseAsync();
+  db.globalSettings = {
+    ...db.globalSettings,
+    ...settings,
+    contact: {
+      ...db.globalSettings.contact,
+      ...(settings.contact || {}),
+    },
+    footer: {
+      ...db.globalSettings.footer,
+      ...(settings.footer || {}),
+    },
+    seoDefaults: {
+      ...db.globalSettings.seoDefaults,
+      ...(settings.seoDefaults || {}),
+    },
+  };
+  await saveDatabaseAsync(db);
+  return db.globalSettings;
+}
+
 /* ==================== NAVIGATION ==================== */
 export function getNavigation() {
   const db = loadDatabase();
+  return db.navigation;
+}
+
+export async function getNavigationAsync() {
+  const db = await loadDatabaseAsync();
   return db.navigation;
 }
 
@@ -252,14 +498,32 @@ export function updateNavigation(nav: { header?: NavigationItem[]; footer?: Navi
   return db.navigation;
 }
 
+export async function updateNavigationAsync(nav: { header?: NavigationItem[]; footer?: NavigationItem[] }) {
+  const db = await loadDatabaseAsync();
+  if (nav.header) db.navigation.header = nav.header;
+  if (nav.footer) db.navigation.footer = nav.footer;
+  await saveDatabaseAsync(db);
+  return db.navigation;
+}
+
 /* ==================== PAGES & PAGE BUILDER ==================== */
 export function getPages(): CmsPage[] {
   const db = loadDatabase();
   return db.pages;
 }
 
+export async function getPagesAsync(): Promise<CmsPage[]> {
+  const db = await loadDatabaseAsync();
+  return db.pages;
+}
+
 export function getPageBySlug(slug: string): CmsPage | undefined {
   const db = loadDatabase();
+  return db.pages.find((p) => p.slug === slug);
+}
+
+export async function getPageBySlugAsync(slug: string): Promise<CmsPage | undefined> {
+  const db = await loadDatabaseAsync();
   return db.pages.find((p) => p.slug === slug);
 }
 
@@ -296,12 +560,56 @@ export function savePage(page: Partial<CmsPage> & { slug: string; title: string 
   }
 }
 
+export async function savePageAsync(page: Partial<CmsPage> & { slug: string; title: string }): Promise<CmsPage> {
+  const db = await loadDatabaseAsync();
+  const existingIdx = db.pages.findIndex((p) => p.slug === page.slug || (page.id && p.id === page.id));
+
+  let savedPage: CmsPage;
+  if (existingIdx >= 0) {
+    savedPage = {
+      ...db.pages[existingIdx],
+      ...page,
+      updatedAt: new Date().toISOString(),
+    };
+    db.pages[existingIdx] = savedPage;
+  } else {
+    savedPage = {
+      id: page.id || `page_${Date.now()}`,
+      slug: page.slug,
+      title: page.title,
+      bannerImage: page.bannerImage,
+      seoTitle: page.seoTitle || page.title,
+      seoDescription: page.seoDescription || '',
+      seoKeywords: page.seoKeywords || [],
+      status: page.status || 'draft',
+      publishedAt: page.status === 'published' ? new Date().toISOString() : undefined,
+      updatedAt: new Date().toISOString(),
+      sections: page.sections || [],
+    };
+    db.pages.push(savedPage);
+  }
+
+  await saveDatabaseAsync(db);
+  return savedPage;
+}
+
 export function deletePage(idOrSlug: string): boolean {
   const db = loadDatabase();
   const initialLen = db.pages.length;
   db.pages = db.pages.filter((p) => p.id !== idOrSlug && p.slug !== idOrSlug);
   if (db.pages.length !== initialLen) {
     saveDatabase(db);
+    return true;
+  }
+  return false;
+}
+
+export async function deletePageAsync(idOrSlug: string): Promise<boolean> {
+  const db = await loadDatabaseAsync();
+  const initialLen = db.pages.length;
+  db.pages = db.pages.filter((p) => p.id !== idOrSlug && p.slug !== idOrSlug);
+  if (db.pages.length !== initialLen) {
+    await saveDatabaseAsync(db);
     return true;
   }
   return false;
@@ -320,13 +628,35 @@ export function getServices(filter?: { status?: string; category?: string }): Se
   return list.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
 }
 
+export async function getServicesAsync(filter?: { status?: string; category?: string }): Promise<ServiceItem[]> {
+  const db = await loadDatabaseAsync();
+  let list = db.services;
+  if (filter?.status) {
+    list = list.filter((s) => s.status === filter.status);
+  }
+  if (filter?.category && filter.category !== 'all') {
+    list = list.filter((s) => s.category === filter.category);
+  }
+  return list.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+}
+
 export function getServiceBySlug(slug: string): ServiceItem | undefined {
   const db = loadDatabase();
   return db.services.find((s) => s.slug === slug);
 }
 
+export async function getServiceBySlugAsync(slug: string): Promise<ServiceItem | undefined> {
+  const db = await loadDatabaseAsync();
+  return db.services.find((s) => s.slug === slug);
+}
+
 export function getServiceById(id: string): ServiceItem | undefined {
   const db = loadDatabase();
+  return db.services.find((s) => s.id === id);
+}
+
+export async function getServiceByIdAsync(id: string): Promise<ServiceItem | undefined> {
+  const db = await loadDatabaseAsync();
   return db.services.find((s) => s.id === id);
 }
 
@@ -370,12 +700,63 @@ export function saveService(service: Partial<ServiceItem> & { name: string; slug
   }
 }
 
+export async function saveServiceAsync(service: Partial<ServiceItem> & { name: string; slug: string }): Promise<ServiceItem> {
+  const db = await loadDatabaseAsync();
+  const existingIdx = db.services.findIndex((s) => s.id === service.id || s.slug === service.slug);
+
+  let savedService: ServiceItem;
+  if (existingIdx >= 0) {
+    savedService = {
+      ...db.services[existingIdx],
+      ...service,
+      updatedAt: new Date().toISOString(),
+    };
+    db.services[existingIdx] = savedService;
+  } else {
+    savedService = {
+      id: service.id || `srv_${Date.now()}`,
+      slug: service.slug,
+      name: service.name,
+      category: service.category || 'one-time',
+      shortDescription: service.shortDescription || '',
+      fullDescription: service.fullDescription || '',
+      features: service.features || [],
+      benefits: service.benefits || [],
+      images: service.images || [],
+      ctaText: service.ctaText || 'Plan a Consultation',
+      ctaLink: service.ctaLink || '/contact',
+      order: service.order !== undefined ? service.order : db.services.length + 1,
+      isFeatured: service.isFeatured || false,
+      status: service.status || 'published',
+      seoTitle: service.seoTitle || service.name,
+      seoDescription: service.seoDescription || service.shortDescription,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    db.services.push(savedService);
+  }
+
+  await saveDatabaseAsync(db);
+  return savedService;
+}
+
 export function deleteService(idOrSlug: string): boolean {
   const db = loadDatabase();
   const initialLen = db.services.length;
   db.services = db.services.filter((s) => s.id !== idOrSlug && s.slug !== idOrSlug);
   if (db.services.length !== initialLen) {
     saveDatabase(db);
+    return true;
+  }
+  return false;
+}
+
+export async function deleteServiceAsync(idOrSlug: string): Promise<boolean> {
+  const db = await loadDatabaseAsync();
+  const initialLen = db.services.length;
+  db.services = db.services.filter((s) => s.id !== idOrSlug && s.slug !== idOrSlug);
+  if (db.services.length !== initialLen) {
+    await saveDatabaseAsync(db);
     return true;
   }
   return false;
@@ -391,8 +772,22 @@ export function getSpaces(filter?: { status?: string }): SpaceItem[] {
   return list.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
 }
 
+export async function getSpacesAsync(filter?: { status?: string }): Promise<SpaceItem[]> {
+  const db = await loadDatabaseAsync();
+  let list = db.spaces;
+  if (filter?.status) {
+    list = list.filter((s) => s.status === filter.status);
+  }
+  return list.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+}
+
 export function getSpaceById(id: string): SpaceItem | undefined {
   const db = loadDatabase();
+  return db.spaces.find((s) => s.id === id || s.slug === id);
+}
+
+export async function getSpaceByIdAsync(id: string): Promise<SpaceItem | undefined> {
+  const db = await loadDatabaseAsync();
   return db.spaces.find((s) => s.id === id || s.slug === id);
 }
 
@@ -435,6 +830,45 @@ export function saveSpace(space: Partial<SpaceItem> & { title: string }): SpaceI
   }
 }
 
+export async function saveSpaceAsync(space: Partial<SpaceItem> & { title: string }): Promise<SpaceItem> {
+  const db = await loadDatabaseAsync();
+  const existingIdx = db.spaces.findIndex((s) => s.id === space.id || s.slug === space.slug);
+
+  let savedSpace: SpaceItem;
+  if (existingIdx >= 0) {
+    savedSpace = {
+      ...db.spaces[existingIdx],
+      ...space,
+      updatedAt: new Date().toISOString(),
+    };
+    db.spaces[existingIdx] = savedSpace;
+  } else {
+    savedSpace = {
+      id: space.id || `spc_${Date.now()}`,
+      slug: space.slug || space.title.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+      number: space.number || `0${db.spaces.length + 1}`,
+      title: space.title,
+      subtitle: space.subtitle || '',
+      summary: space.summary || '',
+      idealFor: space.idealFor || '',
+      keyConsiderations: space.keyConsiderations || [],
+      solutions: space.solutions || [],
+      image: space.image || '/images/managed/cat-managed-farms.jpg',
+      gallery: space.gallery || [],
+      order: space.order !== undefined ? space.order : db.spaces.length + 1,
+      status: space.status || 'published',
+      seoTitle: space.seoTitle || space.title,
+      seoDescription: space.seoDescription || space.summary,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    db.spaces.push(savedSpace);
+  }
+
+  await saveDatabaseAsync(db);
+  return savedSpace;
+}
+
 export function deleteSpace(id: string): boolean {
   const db = loadDatabase();
   const initialLen = db.spaces.length;
@@ -446,9 +880,25 @@ export function deleteSpace(id: string): boolean {
   return false;
 }
 
+export async function deleteSpaceAsync(id: string): Promise<boolean> {
+  const db = await loadDatabaseAsync();
+  const initialLen = db.spaces.length;
+  db.spaces = db.spaces.filter((s) => s.id !== id && s.slug !== id);
+  if (db.spaces.length !== initialLen) {
+    await saveDatabaseAsync(db);
+    return true;
+  }
+  return false;
+}
+
 /* ==================== BUSINESS MODELS ==================== */
 export function getBusinessModels(): BusinessModelItem[] {
   const db = loadDatabase();
+  return db.businessModels.sort((a, b) => (a.order ?? a.displayOrder ?? 0) - (b.order ?? b.displayOrder ?? 0));
+}
+
+export async function getBusinessModelsAsync(): Promise<BusinessModelItem[]> {
+  const db = await loadDatabaseAsync();
   return db.businessModels.sort((a, b) => (a.order ?? a.displayOrder ?? 0) - (b.order ?? b.displayOrder ?? 0));
 }
 
@@ -490,9 +940,56 @@ export function saveBusinessModel(model: Partial<BusinessModelItem> & { title: s
   }
 }
 
+export async function saveBusinessModelAsync(model: Partial<BusinessModelItem> & { title: string }): Promise<BusinessModelItem> {
+  const db = await loadDatabaseAsync();
+  const existingIdx = db.businessModels.findIndex((m) => m.id === model.id);
+
+  let savedModel: BusinessModelItem;
+  if (existingIdx >= 0) {
+    savedModel = {
+      ...db.businessModels[existingIdx],
+      ...model,
+      updatedAt: new Date().toISOString(),
+    };
+    db.businessModels[existingIdx] = savedModel;
+  } else {
+    savedModel = {
+      id: model.id || `bm_${Date.now()}`,
+      code: model.code || `Model ${db.businessModels.length + 1}`,
+      title: model.title,
+      tagline: model.tagline || '',
+      problem: model.problem || '',
+      solution: model.solution || '',
+      revenueModel: model.revenueModel || '',
+      promise: model.promise || '',
+      servicesIncluded: model.servicesIncluded || [],
+      image: model.image || '/images/managed/cat-managed-farms.jpg',
+      href: model.href || '/services',
+      order: model.order !== undefined ? model.order : db.businessModels.length + 1,
+      status: model.status || 'published',
+      subModels: model.subModels,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    db.businessModels.push(savedModel);
+  }
+
+  await saveDatabaseAsync(db);
+  return savedModel;
+}
+
 /* ==================== TRANSPARENCY ==================== */
 export function getTransparencyData() {
   const db = loadDatabase();
+  return {
+    steps: db.transparencySteps,
+    principles: db.transparencyPrinciples,
+    documents: db.transparencyDocuments,
+  };
+}
+
+export async function getTransparencyDataAsync() {
+  const db = await loadDatabaseAsync();
   return {
     steps: db.transparencySteps,
     principles: db.transparencyPrinciples,
@@ -507,10 +1004,24 @@ export function updateTransparencyWorkflow(steps: TransparencyStep[]) {
   return db.transparencySteps;
 }
 
+export async function updateTransparencyWorkflowAsync(steps: TransparencyStep[]) {
+  const db = await loadDatabaseAsync();
+  db.transparencySteps = steps;
+  await saveDatabaseAsync(db);
+  return db.transparencySteps;
+}
+
 export function updateTransparencyPrinciples(principles: TransparencyPrinciple[]) {
   const db = loadDatabase();
   db.transparencyPrinciples = principles;
   saveDatabase(db);
+  return db.transparencyPrinciples;
+}
+
+export async function updateTransparencyPrinciplesAsync(principles: TransparencyPrinciple[]) {
+  const db = await loadDatabaseAsync();
+  db.transparencyPrinciples = principles;
+  await saveDatabaseAsync(db);
   return db.transparencyPrinciples;
 }
 
@@ -545,12 +1056,54 @@ export function saveTransparencyDocument(doc: Partial<TransparencyDocument> & { 
   }
 }
 
+export async function saveTransparencyDocumentAsync(doc: Partial<TransparencyDocument> & { title: string; fileUrl: string }): Promise<TransparencyDocument> {
+  const db = await loadDatabaseAsync();
+  const existingIdx = db.transparencyDocuments.findIndex((d) => d.id === doc.id);
+
+  let savedDoc: TransparencyDocument;
+  if (existingIdx >= 0) {
+    savedDoc = {
+      ...db.transparencyDocuments[existingIdx],
+      ...doc,
+      lastUpdated: new Date().toISOString(),
+    };
+    db.transparencyDocuments[existingIdx] = savedDoc;
+  } else {
+    savedDoc = {
+      id: doc.id || `doc_${Date.now()}`,
+      title: doc.title,
+      category: doc.category || 'General Governance',
+      fileUrl: doc.fileUrl,
+      fileSize: doc.fileSize || '1 MB',
+      version: doc.version || 'v1.0',
+      effectiveDate: doc.effectiveDate || new Date().toISOString().split('T')[0],
+      lastUpdated: new Date().toISOString(),
+      isPublic: doc.isPublic !== undefined ? doc.isPublic : true,
+    };
+    db.transparencyDocuments.push(savedDoc);
+  }
+
+  await saveDatabaseAsync(db);
+  return savedDoc;
+}
+
 export function deleteTransparencyDocument(id: string): boolean {
   const db = loadDatabase();
   const initialLen = db.transparencyDocuments.length;
   db.transparencyDocuments = db.transparencyDocuments.filter((d) => d.id !== id);
   if (db.transparencyDocuments.length !== initialLen) {
     saveDatabase(db);
+    return true;
+  }
+  return false;
+}
+
+export async function deleteTransparencyDocumentAsync(id: string): Promise<boolean> {
+  const db = await loadDatabaseAsync();
+  const initialLen = db.transparencyDocuments.length;
+  db.transparencyDocuments = db.transparencyDocuments.filter((d) => d.id !== id);
+  if (db.transparencyDocuments.length !== initialLen) {
+    await saveDatabaseAsync(db);
     return true;
   }
   return false;
@@ -566,8 +1119,22 @@ export function getTestimonials(filter?: { status?: string }): TestimonialItem[]
   return list.sort((a, b) => (a.order ?? a.displayOrder ?? 0) - (b.order ?? b.displayOrder ?? 0));
 }
 
+export async function getTestimonialsAsync(filter?: { status?: string }): Promise<TestimonialItem[]> {
+  const db = await loadDatabaseAsync();
+  let list = db.testimonials;
+  if (filter?.status) {
+    list = list.filter((t) => t.status === filter.status);
+  }
+  return list.sort((a, b) => (a.order ?? a.displayOrder ?? 0) - (b.order ?? b.displayOrder ?? 0));
+}
+
 export function getTestimonialById(id: string): TestimonialItem | undefined {
   const db = loadDatabase();
+  return db.testimonials.find((t) => t.id === id);
+}
+
+export async function getTestimonialByIdAsync(id: string): Promise<TestimonialItem | undefined> {
+  const db = await loadDatabaseAsync();
   return db.testimonials.find((t) => t.id === id);
 }
 
@@ -606,6 +1173,41 @@ export function saveTestimonial(testimonial: Partial<TestimonialItem> & { name: 
   }
 }
 
+export async function saveTestimonialAsync(testimonial: Partial<TestimonialItem> & { name: string; quote: string }): Promise<TestimonialItem> {
+  const db = await loadDatabaseAsync();
+  const existingIdx = db.testimonials.findIndex((t) => t.id === testimonial.id);
+
+  let savedTestimonial: TestimonialItem;
+  if (existingIdx >= 0) {
+    savedTestimonial = {
+      ...db.testimonials[existingIdx],
+      ...testimonial,
+    };
+    db.testimonials[existingIdx] = savedTestimonial;
+  } else {
+    savedTestimonial = {
+      id: testimonial.id || `test_${Date.now()}`,
+      name: testimonial.name,
+      initial: testimonial.initial || testimonial.name.charAt(0).toUpperCase(),
+      location: testimonial.location || 'India',
+      role: testimonial.role,
+      serviceRendered: testimonial.serviceRendered || 'General Care',
+      rating: testimonial.rating || 5,
+      quote: testimonial.quote,
+      fullStory: testimonial.fullStory,
+      avatarUrl: testimonial.avatarUrl,
+      status: testimonial.status || 'published',
+      isFeatured: testimonial.isFeatured || false,
+      order: testimonial.order !== undefined ? testimonial.order : db.testimonials.length + 1,
+      createdAt: new Date().toISOString(),
+    };
+    db.testimonials.push(savedTestimonial);
+  }
+
+  await saveDatabaseAsync(db);
+  return savedTestimonial;
+}
+
 export function deleteTestimonial(id: string): boolean {
   const db = loadDatabase();
   const initialLen = db.testimonials.length;
@@ -617,9 +1219,32 @@ export function deleteTestimonial(id: string): boolean {
   return false;
 }
 
+export async function deleteTestimonialAsync(id: string): Promise<boolean> {
+  const db = await loadDatabaseAsync();
+  const initialLen = db.testimonials.length;
+  db.testimonials = db.testimonials.filter((t) => t.id !== id);
+  if (db.testimonials.length !== initialLen) {
+    await saveDatabaseAsync(db);
+    return true;
+  }
+  return false;
+}
+
 /* ==================== FAQS ==================== */
 export function getFaqs(filter?: { pageAssignment?: string; category?: string }): FAQItem[] {
   const db = loadDatabase();
+  let list = db.faqs;
+  if (filter?.pageAssignment && filter.pageAssignment !== 'all') {
+    list = list.filter((f) => f.pageAssignment === filter.pageAssignment || f.pageAssignment === 'all');
+  }
+  if (filter?.category && filter.category !== 'all') {
+    list = list.filter((f) => f.category === filter.category);
+  }
+  return list.sort((a, b) => (a.order ?? a.displayOrder ?? 0) - (b.order ?? b.displayOrder ?? 0));
+}
+
+export async function getFaqsAsync(filter?: { pageAssignment?: string; category?: string }): Promise<FAQItem[]> {
+  const db = await loadDatabaseAsync();
   let list = db.faqs;
   if (filter?.pageAssignment && filter.pageAssignment !== 'all') {
     list = list.filter((f) => f.pageAssignment === filter.pageAssignment || f.pageAssignment === 'all');
@@ -658,12 +1283,51 @@ export function saveFaq(faq: Partial<FAQItem> & { question: string; answer: stri
   }
 }
 
+export async function saveFaqAsync(faq: Partial<FAQItem> & { question: string; answer: string }): Promise<FAQItem> {
+  const db = await loadDatabaseAsync();
+  const existingIdx = db.faqs.findIndex((f) => f.id === faq.id);
+
+  let savedFaq: FAQItem;
+  if (existingIdx >= 0) {
+    savedFaq = {
+      ...db.faqs[existingIdx],
+      ...faq,
+    };
+    db.faqs[existingIdx] = savedFaq;
+  } else {
+    savedFaq = {
+      id: faq.id || `faq_${Date.now()}`,
+      question: faq.question,
+      answer: faq.answer,
+      category: faq.category || 'General',
+      pageAssignment: faq.pageAssignment || 'all',
+      order: faq.order !== undefined ? faq.order : db.faqs.length + 1,
+      status: faq.status || 'published',
+    };
+    db.faqs.push(savedFaq);
+  }
+
+  await saveDatabaseAsync(db);
+  return savedFaq;
+}
+
 export function deleteFaq(id: string): boolean {
   const db = loadDatabase();
   const initialLen = db.faqs.length;
   db.faqs = db.faqs.filter((f) => f.id !== id);
   if (db.faqs.length !== initialLen) {
     saveDatabase(db);
+    return true;
+  }
+  return false;
+}
+
+export async function deleteFaqAsync(id: string): Promise<boolean> {
+  const db = await loadDatabaseAsync();
+  const initialLen = db.faqs.length;
+  db.faqs = db.faqs.filter((f) => f.id !== id);
+  if (db.faqs.length !== initialLen) {
+    await saveDatabaseAsync(db);
     return true;
   }
   return false;
@@ -690,8 +1354,33 @@ export function getEnquiries(filter?: { status?: string; search?: string }): Con
   return list.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 }
 
+export async function getEnquiriesAsync(filter?: { status?: string; search?: string }): Promise<ContactEnquiry[]> {
+  const db = await loadDatabaseAsync();
+  let list = db.enquiries;
+  if (filter?.status && filter.status !== 'all') {
+    list = list.filter((e) => e.status === filter.status);
+  }
+  if (filter?.search) {
+    const q = filter.search.toLowerCase();
+    list = list.filter(
+      (e) =>
+        e.name.toLowerCase().includes(q) ||
+        e.phone.toLowerCase().includes(q) ||
+        e.email.toLowerCase().includes(q) ||
+        e.location.toLowerCase().includes(q) ||
+        Boolean(e.referenceId && e.referenceId.toLowerCase().includes(q))
+    );
+  }
+  return list.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+}
+
 export function getEnquiryById(id: string): ContactEnquiry | undefined {
   const db = loadDatabase();
+  return db.enquiries.find((e) => e.id === id || e.referenceId === id);
+}
+
+export async function getEnquiryByIdAsync(id: string): Promise<ContactEnquiry | undefined> {
+  const db = await loadDatabaseAsync();
   return db.enquiries.find((e) => e.id === id || e.referenceId === id);
 }
 
@@ -732,6 +1421,43 @@ export function saveEnquiry(enquiry: Partial<ContactEnquiry> & { name: string; p
   }
 }
 
+export async function saveEnquiryAsync(enquiry: Partial<ContactEnquiry> & { name: string; phone: string }): Promise<ContactEnquiry> {
+  const db = await loadDatabaseAsync();
+  const existingIdx = db.enquiries.findIndex((e) => e.id === enquiry.id);
+
+  let savedEnquiry: ContactEnquiry;
+  if (existingIdx >= 0) {
+    savedEnquiry = {
+      ...db.enquiries[existingIdx],
+      ...enquiry,
+      updatedAt: new Date().toISOString(),
+    };
+    db.enquiries[existingIdx] = savedEnquiry;
+  } else {
+    const refNum = Math.floor(1000 + Math.random() * 9000);
+    savedEnquiry = {
+      id: enquiry.id || `enq_${Date.now()}`,
+      referenceId: enquiry.referenceId || `FC-2026-${refNum}`,
+      name: enquiry.name,
+      phone: enquiry.phone,
+      email: enquiry.email || '',
+      location: enquiry.location || '',
+      propertyType: enquiry.propertyType || 'Agricultural Land',
+      projectDescription: enquiry.projectDescription || '',
+      status: enquiry.status || 'new',
+      priority: enquiry.priority || 'medium',
+      internalNotes: enquiry.internalNotes || [],
+      assignedTo: enquiry.assignedTo,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    db.enquiries.unshift(savedEnquiry);
+  }
+
+  await saveDatabaseAsync(db);
+  return savedEnquiry;
+}
+
 export function deleteEnquiry(id: string): boolean {
   const db = loadDatabase();
   const initialLen = db.enquiries.length;
@@ -743,9 +1469,32 @@ export function deleteEnquiry(id: string): boolean {
   return false;
 }
 
+export async function deleteEnquiryAsync(id: string): Promise<boolean> {
+  const db = await loadDatabaseAsync();
+  const initialLen = db.enquiries.length;
+  db.enquiries = db.enquiries.filter((e) => e.id !== id);
+  if (db.enquiries.length !== initialLen) {
+    await saveDatabaseAsync(db);
+    return true;
+  }
+  return false;
+}
+
 /* ==================== MEDIA LIBRARY ==================== */
 export function getMediaAssets(filter?: { folder?: string; tag?: string }): MediaAsset[] {
   const db = loadDatabase();
+  let list = db.mediaAssets;
+  if (filter?.folder && filter.folder !== 'all') {
+    list = list.filter((m) => m.folder === filter.folder);
+  }
+  if (filter?.tag) {
+    list = list.filter((m) => m.tags?.includes(filter.tag!));
+  }
+  return list.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+}
+
+export async function getMediaAssetsAsync(filter?: { folder?: string; tag?: string }): Promise<MediaAsset[]> {
+  const db = await loadDatabaseAsync();
   let list = db.mediaAssets;
   if (filter?.folder && filter.folder !== 'all') {
     list = list.filter((m) => m.folder === filter.folder);
@@ -790,6 +1539,40 @@ export function saveMediaAsset(asset: Partial<MediaAsset> & { url: string; filen
   }
 }
 
+export async function saveMediaAssetAsync(asset: Partial<MediaAsset> & { url: string; filename: string }): Promise<MediaAsset> {
+  const db = await loadDatabaseAsync();
+  const existingIdx = db.mediaAssets.findIndex((m) => m.id === asset.id || m.url === asset.url);
+
+  let savedAsset: MediaAsset;
+  if (existingIdx >= 0) {
+    savedAsset = {
+      ...db.mediaAssets[existingIdx],
+      ...asset,
+      updatedAt: new Date().toISOString(),
+    };
+    db.mediaAssets[existingIdx] = savedAsset;
+  } else {
+    savedAsset = {
+      id: asset.id || `med_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
+      filename: asset.filename,
+      originalName: asset.originalName || asset.filename,
+      mimeType: asset.mimeType || 'image/jpeg',
+      size: asset.size || 0,
+      url: asset.url,
+      alt: asset.alt || asset.filename,
+      caption: asset.caption,
+      folder: asset.folder || 'general',
+      tags: asset.tags || [],
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    db.mediaAssets.unshift(savedAsset);
+  }
+
+  await saveDatabaseAsync(db);
+  return savedAsset;
+}
+
 export function deleteMediaAsset(id: string): boolean {
   const db = loadDatabase();
   const initialLen = db.mediaAssets.length;
@@ -801,9 +1584,29 @@ export function deleteMediaAsset(id: string): boolean {
   return false;
 }
 
+export async function deleteMediaAssetAsync(id: string): Promise<boolean> {
+  const db = await loadDatabaseAsync();
+  const initialLen = db.mediaAssets.length;
+  db.mediaAssets = db.mediaAssets.filter((m) => m.id !== id);
+  if (db.mediaAssets.length !== initialLen) {
+    await saveDatabaseAsync(db);
+    return true;
+  }
+  return false;
+}
+
 /* ==================== DASHBOARD STATS ==================== */
 export function getDashboardStats(): DashboardStats & Record<string, any> {
   const db = loadDatabase();
+  return computeDashboardStats(db);
+}
+
+export async function getDashboardStatsAsync(): Promise<DashboardStats & Record<string, any>> {
+  const db = await loadDatabaseAsync();
+  return computeDashboardStats(db);
+}
+
+function computeDashboardStats(db: DatabaseSchema): DashboardStats & Record<string, any> {
   const totalPages = db.pages.length;
   const publishedPages = db.pages.filter((p) => p.status === 'published' || p.isPublished).length;
   const totalServices = db.services.length;

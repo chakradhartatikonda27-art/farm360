@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
-import { saveFaq, deleteFaq, addAuditLog } from '@/lib/cms/db';
+import { revalidatePath } from 'next/cache';
+import { saveFaqAsync, deleteFaqAsync, addAuditLogAsync } from '@/lib/cms/db';
 import { getCurrentAdminUser, hasPermission } from '@/lib/cms/auth';
+
+export const dynamic = 'force-dynamic';
 
 export async function PUT(
   req: Request,
@@ -13,12 +16,12 @@ export async function PUT(
 
   try {
     const body = await req.json();
-    const updated = saveFaq({
+    const updated = await saveFaqAsync({
       ...body,
       id: params.id,
     });
 
-    addAuditLog({
+    await addAuditLogAsync({
       userId: user.id,
       userName: user.name,
       action: 'UPDATE_FAQ',
@@ -26,6 +29,11 @@ export async function PUT(
       entityId: updated.id,
       details: `Updated FAQ: "${updated.question}"`,
     });
+
+    try {
+      revalidatePath('/', 'layout');
+      revalidatePath('/');
+    } catch {}
 
     return NextResponse.json({ success: true, data: updated });
   } catch (err: any) {
@@ -42,9 +50,9 @@ export async function DELETE(
     return NextResponse.json({ error: 'Forbidden: Super Admin only' }, { status: 403 });
   }
 
-  deleteFaq(params.id);
+  await deleteFaqAsync(params.id);
 
-  addAuditLog({
+  await addAuditLogAsync({
     userId: user.id,
     userName: user.name,
     action: 'DELETE_FAQ',
@@ -52,6 +60,11 @@ export async function DELETE(
     entityId: params.id,
     details: `Deleted FAQ: ${params.id}`,
   });
+
+  try {
+    revalidatePath('/', 'layout');
+    revalidatePath('/');
+  } catch {}
 
   return NextResponse.json({ success: true, message: 'FAQ deleted' });
 }

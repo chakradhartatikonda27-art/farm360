@@ -1,12 +1,14 @@
 import { NextResponse } from 'next/server';
-import { getEnquiryById, saveEnquiry, deleteEnquiry, addAuditLog } from '@/lib/cms/db';
+import { getEnquiryById, getEnquiryByIdAsync, saveEnquiryAsync, deleteEnquiryAsync, addAuditLogAsync } from '@/lib/cms/db';
 import { getCurrentAdminUser, hasPermission } from '@/lib/cms/auth';
+
+export const dynamic = 'force-dynamic';
 
 export async function GET(
   req: Request,
   { params }: { params: { id: string } }
 ) {
-  const enquiry = getEnquiryById(params.id);
+  const enquiry = (await getEnquiryByIdAsync(params.id)) || getEnquiryById(params.id);
   if (!enquiry) {
     return NextResponse.json({ error: 'Enquiry not found' }, { status: 404 });
   }
@@ -24,7 +26,7 @@ export async function PUT(
 
   try {
     const body = await req.json();
-    const existing = getEnquiryById(params.id);
+    const existing = (await getEnquiryByIdAsync(params.id)) || getEnquiryById(params.id);
     if (!existing) {
       return NextResponse.json({ error: 'Enquiry not found' }, { status: 404 });
     }
@@ -37,7 +39,7 @@ export async function PUT(
       notes.unshift(`[${timestamp} by ${user.name}]: ${newNote.trim()}`);
     }
 
-    const updated = saveEnquiry({
+    const updated = await saveEnquiryAsync({
       ...existing,
       status: status || existing.status,
       priority: priority || existing.priority,
@@ -45,7 +47,7 @@ export async function PUT(
       internalNotes: notes,
     });
 
-    addAuditLog({
+    await addAuditLogAsync({
       userId: user.id,
       userName: user.name,
       action: 'UPDATE_ENQUIRY',
@@ -69,14 +71,14 @@ export async function DELETE(
     return NextResponse.json({ error: 'Forbidden: Super Admin only' }, { status: 403 });
   }
 
-  const existing = getEnquiryById(params.id);
+  const existing = (await getEnquiryByIdAsync(params.id)) || getEnquiryById(params.id);
   if (!existing) {
     return NextResponse.json({ error: 'Enquiry not found' }, { status: 404 });
   }
 
-  deleteEnquiry(existing.id);
+  await deleteEnquiryAsync(existing.id);
 
-  addAuditLog({
+  await addAuditLogAsync({
     userId: user.id,
     userName: user.name,
     action: 'DELETE_ENQUIRY',

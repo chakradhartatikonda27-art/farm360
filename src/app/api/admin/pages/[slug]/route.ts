@@ -1,12 +1,15 @@
 import { NextResponse } from 'next/server';
-import { getPageBySlug, savePage, deletePage, addAuditLog } from '@/lib/cms/db';
+import { revalidatePath } from 'next/cache';
+import { getPageBySlug, getPageBySlugAsync, savePageAsync, deletePageAsync, addAuditLogAsync } from '@/lib/cms/db';
 import { getCurrentAdminUser, hasPermission } from '@/lib/cms/auth';
+
+export const dynamic = 'force-dynamic';
 
 export async function GET(
   req: Request,
   { params }: { params: { slug: string } }
 ) {
-  const page = getPageBySlug(params.slug);
+  const page = (await getPageBySlugAsync(params.slug)) || getPageBySlug(params.slug);
   if (!page) {
     return NextResponse.json({ error: 'Page not found' }, { status: 404 });
   }
@@ -24,13 +27,13 @@ export async function PUT(
 
   try {
     const body = await req.json();
-    const updated = savePage({
+    const updated = await savePageAsync({
       ...body,
       slug: params.slug,
       title: body.title || params.slug,
     });
 
-    addAuditLog({
+    await addAuditLogAsync({
       userId: user.id,
       userName: user.name,
       action: 'UPDATE_PAGE',
@@ -38,6 +41,17 @@ export async function PUT(
       entityId: updated.id,
       details: `Updated content & sections for page: "${updated.title}"`,
     });
+
+    // Invalidate Next.js cache so the live website immediately reflects the change
+    try {
+      revalidatePath('/', 'layout');
+      revalidatePath('/');
+      if (params.slug !== 'home') {
+        revalidatePath(`/${params.slug}`);
+      }
+    } catch (e) {
+      console.warn('revalidatePath warning:', e);
+    }
 
     return NextResponse.json({ success: true, data: updated });
   } catch (err: any) {
@@ -54,12 +68,12 @@ export async function DELETE(
     return NextResponse.json({ error: 'Forbidden: Super Admin only' }, { status: 403 });
   }
 
-  const deleted = deletePage(params.slug);
+  const deleted = await deletePageAsync(params.slug);
   if (!deleted) {
     return NextResponse.json({ error: 'Page not found' }, { status: 404 });
   }
 
-  addAuditLog({
+  await addAuditLogAsync({
     userId: user.id,
     userName: user.name,
     action: 'DELETE_PAGE',
@@ -67,6 +81,11 @@ export async function DELETE(
     entityId: params.slug,
     details: `Deleted page: /${params.slug}`,
   });
+
+  try {
+    revalidatePath('/', 'layout');
+    revalidatePath('/');
+  } catch {}
 
   return NextResponse.json({ success: true, message: 'Page deleted' });
 }

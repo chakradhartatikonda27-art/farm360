@@ -1,9 +1,12 @@
 import { NextResponse } from 'next/server';
-import { getBusinessModels, saveBusinessModel, addAuditLog } from '@/lib/cms/db';
+import { revalidatePath } from 'next/cache';
+import { getBusinessModels, getBusinessModelsAsync, saveBusinessModelAsync, addAuditLogAsync } from '@/lib/cms/db';
 import { getCurrentAdminUser, hasPermission } from '@/lib/cms/auth';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
-  const models = getBusinessModels();
+  const models = (await getBusinessModelsAsync()) || getBusinessModels();
   return NextResponse.json({ success: true, data: models });
 }
 
@@ -19,8 +22,8 @@ export async function PUT(req: Request) {
       return NextResponse.json({ error: 'Model ID and Title are required' }, { status: 400 });
     }
 
-    const updated = saveBusinessModel(body);
-    addAuditLog({
+    const updated = await saveBusinessModelAsync(body);
+    await addAuditLogAsync({
       userId: user.id,
       userName: user.name,
       action: 'UPDATE_BUSINESS_MODEL',
@@ -28,6 +31,11 @@ export async function PUT(req: Request) {
       entityId: updated.id,
       details: `Updated business model: "${updated.title}" (${updated.code})`,
     });
+
+    try {
+      revalidatePath('/', 'layout');
+      revalidatePath('/');
+    } catch {}
 
     return NextResponse.json({ success: true, data: updated });
   } catch (err: any) {

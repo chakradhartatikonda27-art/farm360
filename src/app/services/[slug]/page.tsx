@@ -6,7 +6,11 @@ import type { Metadata } from 'next';
 import referencePagesRaw from '@/data/referencePages.json';
 import { FAQAccordion } from '@/components/common/FAQAccordion';
 import { Breadcrumbs } from '@/components/common/Breadcrumbs';
-import { getServiceBySlug, getServices } from '@/lib/cms/db';
+import { getServiceBySlug, getServiceBySlugAsync, getServices } from '@/lib/cms/db';
+
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+export const fetchCache = 'force-no-store';
 
 interface ReferencePageData {
   id: string;
@@ -83,7 +87,7 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const cmsService = getServiceBySlug(params.slug);
+  const cmsService = (await getServiceBySlugAsync(params.slug)) || getServiceBySlug(params.slug);
   if (cmsService) {
     return {
       title: `${cmsService.seoTitle || cmsService.title} | FarmCare 360°`,
@@ -101,8 +105,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default function ServiceDetailPage({ params }: Props) {
-  const cmsService = getServiceBySlug(params.slug);
+export default async function ServiceDetailPage({ params }: Props) {
+  const cmsService = (await getServiceBySlugAsync(params.slug)) || getServiceBySlug(params.slug);
   const pageId = ALIASES[params.slug] || `p-${params.slug}`;
   let data = referencePages[pageId];
 

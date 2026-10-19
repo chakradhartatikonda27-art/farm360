@@ -5,9 +5,11 @@ import { ShieldCheck, Eye, CheckCircle2, AlertTriangle, FileText, Smartphone, Ar
 import { Breadcrumbs } from '@/components/common/Breadcrumbs';
 import { transparencyWorkflow, fiveCorePrinciples } from '@/data/visionData';
 import { companyConfig } from '@/data/companyConfig';
-import { getTransparencyData } from '@/lib/cms/db';
+import { getTransparencyData, getTransparencyDataAsync } from '@/lib/cms/db';
 
+export const dynamic = 'force-dynamic';
 export const revalidate = 0;
+export const fetchCache = 'force-no-store';
 
 export const metadata: Metadata = {
   title: `Customer Transparency Model | ${companyConfig.brandName} — Trust & Accountability`,
@@ -20,8 +22,8 @@ export const metadata: Metadata = {
   },
 };
 
-export default function TransparencyPage() {
-  const cmsData = getTransparencyData();
+export default async function TransparencyPage() {
+  const cmsData = (await getTransparencyDataAsync()) || getTransparencyData();
   const workflow =
     cmsData.steps && cmsData.steps.length > 0
       ? cmsData.steps.map((s) => ({

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
-import { getEnquiries, saveEnquiry, addAuditLog } from '@/lib/cms/db';
-import { getCurrentAdminUser, hasPermission } from '@/lib/cms/auth';
+import { getEnquiries, getEnquiriesAsync, saveEnquiryAsync } from '@/lib/cms/db';
+
+export const dynamic = 'force-dynamic';
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -8,7 +9,7 @@ export async function GET(req: Request) {
   const search = searchParams.get('search') || undefined;
   const format = searchParams.get('format') || 'json';
 
-  const enquiries = getEnquiries({ status, search });
+  const enquiries = (await getEnquiriesAsync({ status, search })) || getEnquiries({ status, search });
 
   // Handle CSV Export
   if (format === 'csv') {
@@ -48,7 +49,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Name and phone number are required' }, { status: 400 });
     }
 
-    const saved = saveEnquiry(body);
+    const saved = await saveEnquiryAsync(body);
     return NextResponse.json({
       success: true,
       referenceId: saved.referenceId,

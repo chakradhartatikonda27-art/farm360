@@ -1,8 +1,11 @@
 import { NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import fs from 'fs';
 import path from 'path';
-import { getMediaAssets, saveMediaAsset, deleteMediaAsset, addAuditLog } from '@/lib/cms/db';
+import { getMediaAssets, getMediaAssetsAsync, saveMediaAssetAsync, deleteMediaAssetAsync, addAuditLogAsync } from '@/lib/cms/db';
 import { getCurrentAdminUser, hasPermission } from '@/lib/cms/auth';
+
+export const dynamic = 'force-dynamic';
 
 const UPLOAD_DIR = path.join(process.cwd(), 'public', 'uploads');
 
@@ -16,7 +19,7 @@ export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const folder = searchParams.get('folder') || undefined;
   const tag = searchParams.get('tag') || undefined;
-  const assets = getMediaAssets({ folder, tag });
+  const assets = (await getMediaAssetsAsync({ folder, tag })) || getMediaAssets({ folder, tag });
   return NextResponse.json({ success: true, data: assets });
 }
 
@@ -65,15 +68,33 @@ export async function POST(req: Request) {
       const filePath = path.join(UPLOAD_DIR, uniqueFilename);
 
       let publicUrl = `/uploads/${uniqueFilename}`;
-      try {
-        ensureUploadDir();
-        fs.writeFileSync(filePath, buffer);
-      } catch (writeErr) {
-        // Fallback for read-only serverless platforms like Vercel
-        publicUrl = `data:${file.type};base64,${buffer.toString('base64')}`;
+
+      // Upload directly to Vercel Blob if token is available
+      if (process.env.BLOB_READ_WRITE_TOKEN) {
+        try {
+          const { put } = await import('@vercel/blob');
+          const blob = await put(`media/${uniqueFilename}`, buffer, {
+            access: 'public',
+            contentType: file.type,
+            addRandomSuffix: false,
+          });
+          publicUrl = blob.url;
+        } catch (blobErr) {
+          console.warn('Vercel Blob direct media upload notice:', blobErr);
+        }
       }
 
-      const saved = saveMediaAsset({
+      // Also attempt local disk write if not on read-only system
+      if (!publicUrl.startsWith('http')) {
+        try {
+          ensureUploadDir();
+          fs.writeFileSync(filePath, buffer);
+        } catch {
+          publicUrl = `data:${file.type};base64,${buffer.toString('base64')}`;
+        }
+      }
+
+      const saved = await saveMediaAssetAsync({
         filename: uniqueFilename,
         originalName: file.name,
         mimeType: file.type,
@@ -84,7 +105,7 @@ export async function POST(req: Request) {
         folder: folder,
       });
 
-      addAuditLog({
+      await addAuditLogAsync({
         userId: user.id,
         userName: user.name,
         action: 'UPLOAD_MEDIA',
@@ -92,6 +113,10 @@ export async function POST(req: Request) {
         entityId: saved.id,
         details: `Uploaded file: ${file.name} (${(file.size / 1024).toFixed(1)} KB)`,
       });
+
+      try {
+        revalidatePath('/', 'layout');
+      } catch {}
 
       return NextResponse.json(saved);
     }
@@ -102,8 +127,8 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'URL and filename are required' }, { status: 400 });
     }
 
-    const saved = saveMediaAsset(body);
-    addAuditLog({
+    const saved = await saveMediaAssetAsync(body);
+    await addAuditLogAsync({
       userId: user.id,
       userName: user.name,
       action: 'UPDATE_MEDIA_METADATA',
@@ -111,6 +136,10 @@ export async function POST(req: Request) {
       entityId: saved.id,
       details: `Saved media metadata: "${saved.alt || saved.filename}"`,
     });
+
+    try {
+      revalidatePath('/', 'layout');
+    } catch {}
 
     return NextResponse.json(saved);
   } catch (err: any) {
@@ -133,9 +162,9 @@ export async function DELETE(req: Request) {
       return NextResponse.json({ error: 'Media ID is required' }, { status: 400 });
     }
 
-    deleteMediaAsset(id);
+    await deleteMediaAssetAsync(id);
 
-    addAuditLog({
+    await addAuditLogAsync({
       userId: user.id,
       userName: user.name,
       action: 'DELETE_MEDIA',
@@ -143,6 +172,10 @@ export async function DELETE(req: Request) {
       entityId: id,
       details: `Deleted media asset with ID: ${id}`,
     });
+
+    try {
+      revalidatePath('/', 'layout');
+    } catch {}
 
     return NextResponse.json({ success: true, message: 'Media deleted' });
   } catch (err: any) {

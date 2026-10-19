@@ -1,9 +1,12 @@
 import { NextResponse } from 'next/server';
-import { getGlobalSettings, updateGlobalSettings, addAuditLog } from '@/lib/cms/db';
+import { revalidatePath } from 'next/cache';
+import { getGlobalSettings, getGlobalSettingsAsync, updateGlobalSettingsAsync, addAuditLogAsync } from '@/lib/cms/db';
 import { getCurrentAdminUser, hasPermission } from '@/lib/cms/auth';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
-  const settings = getGlobalSettings();
+  const settings = (await getGlobalSettingsAsync()) || getGlobalSettings();
   return NextResponse.json({ success: true, data: settings, ...settings });
 }
 
@@ -15,9 +18,9 @@ export async function PUT(req: Request) {
 
   try {
     const body = await req.json();
-    const updated = updateGlobalSettings(body);
+    const updated = await updateGlobalSettingsAsync(body);
 
-    addAuditLog({
+    await addAuditLogAsync({
       userId: user.id,
       userName: user.name,
       action: 'UPDATE_GLOBAL_SETTINGS',
@@ -25,6 +28,11 @@ export async function PUT(req: Request) {
       entityId: 'global_config',
       details: `Updated global website settings: brand, contact, and announcement ticker`,
     });
+
+    try {
+      revalidatePath('/', 'layout');
+      revalidatePath('/');
+    } catch {}
 
     return NextResponse.json({ success: true, data: updated, ...updated });
   } catch (err: any) {

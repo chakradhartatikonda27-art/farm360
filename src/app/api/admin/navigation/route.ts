@@ -1,9 +1,12 @@
 import { NextResponse } from 'next/server';
-import { getNavigation, updateNavigation, addAuditLog } from '@/lib/cms/db';
+import { revalidatePath } from 'next/cache';
+import { getNavigation, getNavigationAsync, updateNavigationAsync, addAuditLogAsync } from '@/lib/cms/db';
 import { getCurrentAdminUser, hasPermission } from '@/lib/cms/auth';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
-  const nav = getNavigation();
+  const nav = (await getNavigationAsync()) || getNavigation();
   return NextResponse.json({ success: true, data: nav, ...nav });
 }
 
@@ -15,9 +18,9 @@ export async function PUT(req: Request) {
 
   try {
     const body = await req.json();
-    const updated = updateNavigation(body);
+    const updated = await updateNavigationAsync(body);
 
-    addAuditLog({
+    await addAuditLogAsync({
       userId: user.id,
       userName: user.name,
       action: 'UPDATE_NAVIGATION',
@@ -25,6 +28,11 @@ export async function PUT(req: Request) {
       entityId: 'global_menus',
       details: 'Updated header/footer navigation items and links',
     });
+
+    try {
+      revalidatePath('/', 'layout');
+      revalidatePath('/');
+    } catch {}
 
     return NextResponse.json({ success: true, data: updated, ...updated });
   } catch (err: any) {

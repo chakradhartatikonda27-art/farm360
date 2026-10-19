@@ -1,12 +1,15 @@
 import { NextResponse } from 'next/server';
-import { getSpaceById, saveSpace, deleteSpace, addAuditLog } from '@/lib/cms/db';
+import { revalidatePath } from 'next/cache';
+import { getSpaceById, getSpaceByIdAsync, saveSpaceAsync, deleteSpaceAsync, addAuditLogAsync } from '@/lib/cms/db';
 import { getCurrentAdminUser, hasPermission } from '@/lib/cms/auth';
+
+export const dynamic = 'force-dynamic';
 
 export async function GET(
   req: Request,
   { params }: { params: { id: string } }
 ) {
-  const space = getSpaceById(params.id);
+  const space = (await getSpaceByIdAsync(params.id)) || getSpaceById(params.id);
   if (!space) {
     return NextResponse.json({ error: 'Space not found' }, { status: 404 });
   }
@@ -24,19 +27,19 @@ export async function PUT(
 
   try {
     const body = await req.json();
-    const existing = getSpaceById(params.id);
+    const existing = (await getSpaceByIdAsync(params.id)) || getSpaceById(params.id);
     if (!existing) {
       return NextResponse.json({ error: 'Space not found' }, { status: 404 });
     }
 
-    const updated = saveSpace({
+    const updated = await saveSpaceAsync({
       ...existing,
       ...body,
       id: existing.id,
       title: body.title || existing.title,
     });
 
-    addAuditLog({
+    await addAuditLogAsync({
       userId: user.id,
       userName: user.name,
       action: 'UPDATE_SPACE',
@@ -44,6 +47,11 @@ export async function PUT(
       entityId: updated.id,
       details: `Updated space: "${updated.title}"`,
     });
+
+    try {
+      revalidatePath('/', 'layout');
+      revalidatePath('/');
+    } catch {}
 
     return NextResponse.json({ success: true, data: updated });
   } catch (err: any) {
@@ -60,14 +68,14 @@ export async function DELETE(
     return NextResponse.json({ error: 'Forbidden: Super Admin only' }, { status: 403 });
   }
 
-  const existing = getSpaceById(params.id);
+  const existing = (await getSpaceByIdAsync(params.id)) || getSpaceById(params.id);
   if (!existing) {
     return NextResponse.json({ error: 'Space not found' }, { status: 404 });
   }
 
-  deleteSpace(existing.id);
+  await deleteSpaceAsync(existing.id);
 
-  addAuditLog({
+  await addAuditLogAsync({
     userId: user.id,
     userName: user.name,
     action: 'DELETE_SPACE',
@@ -75,6 +83,11 @@ export async function DELETE(
     entityId: existing.id,
     details: `Deleted space: "${existing.title}"`,
   });
+
+  try {
+    revalidatePath('/', 'layout');
+    revalidatePath('/');
+  } catch {}
 
   return NextResponse.json({ success: true, message: 'Space deleted' });
 }

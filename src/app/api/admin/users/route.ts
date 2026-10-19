@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
-import { getUsers, saveUser, deleteUser, addAuditLog } from '@/lib/cms/db';
+import { getUsers, getUsersAsync, saveUserAsync, deleteUserAsync, addAuditLogAsync } from '@/lib/cms/db';
 import { getCurrentAdminUser, hasPermission, hashPassword } from '@/lib/cms/auth';
+
+export const dynamic = 'force-dynamic';
 
 export async function GET() {
   const user = await getCurrentAdminUser();
@@ -8,7 +10,8 @@ export async function GET() {
     return NextResponse.json({ error: 'Forbidden: Super Admin only' }, { status: 403 });
   }
 
-  const users = getUsers().map((u) => ({
+  const userList = (await getUsersAsync()) || getUsers();
+  const users = userList.map((u) => ({
     id: u.id,
     email: u.email,
     name: u.name,
@@ -36,7 +39,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Email and password are required' }, { status: 400 });
     }
 
-    const saved = saveUser({
+    const saved = await saveUserAsync({
       email,
       name: name || email.split('@')[0],
       passwordHash: hashPassword(password),
@@ -45,7 +48,7 @@ export async function POST(req: Request) {
       active: active !== undefined ? active : true,
     });
 
-    addAuditLog({
+    await addAuditLogAsync({
       userId: user.id,
       userName: user.name,
       action: 'CREATE_USER',
@@ -91,9 +94,9 @@ export async function PUT(req: Request) {
       if (active !== undefined) updatePayload.active = active;
     }
 
-    const updated = saveUser(updatePayload);
+    const updated = await saveUserAsync(updatePayload);
 
-    addAuditLog({
+    await addAuditLogAsync({
       userId: user.id,
       userName: user.name,
       action: 'UPDATE_USER',
@@ -131,9 +134,9 @@ export async function DELETE(req: Request) {
     return NextResponse.json({ error: 'Cannot delete your own account' }, { status: 400 });
   }
 
-  deleteUser(id);
+  await deleteUserAsync(id);
 
-  addAuditLog({
+  await addAuditLogAsync({
     userId: user.id,
     userName: user.name,
     action: 'DELETE_USER',

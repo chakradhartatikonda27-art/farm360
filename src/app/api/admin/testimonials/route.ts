@@ -1,11 +1,14 @@
 import { NextResponse } from 'next/server';
-import { getTestimonials, saveTestimonial, addAuditLog } from '@/lib/cms/db';
+import { revalidatePath } from 'next/cache';
+import { getTestimonials, getTestimonialsAsync, saveTestimonialAsync, addAuditLogAsync } from '@/lib/cms/db';
 import { getCurrentAdminUser, hasPermission } from '@/lib/cms/auth';
+
+export const dynamic = 'force-dynamic';
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const status = searchParams.get('status') || undefined;
-  const list = getTestimonials({ status });
+  const list = (await getTestimonialsAsync({ status })) || getTestimonials({ status });
   return NextResponse.json({ success: true, data: list });
 }
 
@@ -21,8 +24,8 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Client name and quote are required' }, { status: 400 });
     }
 
-    const saved = saveTestimonial(body);
-    addAuditLog({
+    const saved = await saveTestimonialAsync(body);
+    await addAuditLogAsync({
       userId: user.id,
       userName: user.name,
       action: 'CREATE_TESTIMONIAL',
@@ -30,6 +33,11 @@ export async function POST(req: Request) {
       entityId: saved.id,
       details: `Added testimonial from: "${saved.name}" (${saved.location})`,
     });
+
+    try {
+      revalidatePath('/', 'layout');
+      revalidatePath('/');
+    } catch {}
 
     return NextResponse.json(saved);
   } catch (err: any) {

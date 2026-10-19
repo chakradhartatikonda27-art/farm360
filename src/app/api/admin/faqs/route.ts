@@ -1,12 +1,15 @@
 import { NextResponse } from 'next/server';
-import { getFaqs, saveFaq, addAuditLog } from '@/lib/cms/db';
+import { revalidatePath } from 'next/cache';
+import { getFaqs, getFaqsAsync, saveFaqAsync, addAuditLogAsync } from '@/lib/cms/db';
 import { getCurrentAdminUser, hasPermission } from '@/lib/cms/auth';
+
+export const dynamic = 'force-dynamic';
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const pageAssignment = searchParams.get('page') || undefined;
   const category = searchParams.get('category') || undefined;
-  const list = getFaqs({ pageAssignment, category });
+  const list = (await getFaqsAsync({ pageAssignment, category })) || getFaqs({ pageAssignment, category });
   return NextResponse.json({ success: true, data: list });
 }
 
@@ -22,8 +25,8 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Question and answer are required' }, { status: 400 });
     }
 
-    const saved = saveFaq(body);
-    addAuditLog({
+    const saved = await saveFaqAsync(body);
+    await addAuditLogAsync({
       userId: user.id,
       userName: user.name,
       action: 'CREATE_FAQ',
@@ -31,6 +34,11 @@ export async function POST(req: Request) {
       entityId: saved.id,
       details: `Created FAQ: "${saved.question}"`,
     });
+
+    try {
+      revalidatePath('/', 'layout');
+      revalidatePath('/');
+    } catch {}
 
     return NextResponse.json(saved);
   } catch (err: any) {

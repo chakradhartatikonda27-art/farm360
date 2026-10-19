@@ -1,12 +1,15 @@
 import { NextResponse } from 'next/server';
-import { getServiceById, getServiceBySlug, saveService, deleteService, addAuditLog } from '@/lib/cms/db';
+import { revalidatePath } from 'next/cache';
+import { getServiceById, getServiceByIdAsync, getServiceBySlug, getServiceBySlugAsync, saveServiceAsync, deleteServiceAsync, addAuditLogAsync } from '@/lib/cms/db';
 import { getCurrentAdminUser, hasPermission } from '@/lib/cms/auth';
+
+export const dynamic = 'force-dynamic';
 
 export async function GET(
   req: Request,
   { params }: { params: { id: string } }
 ) {
-  const service = getServiceById(params.id) || getServiceBySlug(params.id);
+  const service = (await getServiceByIdAsync(params.id)) || (await getServiceBySlugAsync(params.id)) || getServiceById(params.id) || getServiceBySlug(params.id);
   if (!service) {
     return NextResponse.json({ error: 'Service not found' }, { status: 404 });
   }
@@ -24,12 +27,12 @@ export async function PUT(
 
   try {
     const body = await req.json();
-    const existing = getServiceById(params.id) || getServiceBySlug(params.id);
+    const existing = (await getServiceByIdAsync(params.id)) || (await getServiceBySlugAsync(params.id)) || getServiceById(params.id) || getServiceBySlug(params.id);
     if (!existing) {
       return NextResponse.json({ error: 'Service not found' }, { status: 404 });
     }
 
-    const updated = saveService({
+    const updated = await saveServiceAsync({
       ...existing,
       ...body,
       id: existing.id,
@@ -37,7 +40,7 @@ export async function PUT(
       name: body.name || existing.name,
     });
 
-    addAuditLog({
+    await addAuditLogAsync({
       userId: user.id,
       userName: user.name,
       action: 'UPDATE_SERVICE',
@@ -45,6 +48,16 @@ export async function PUT(
       entityId: updated.id,
       details: `Updated service: "${updated.name}"`,
     });
+
+    try {
+      revalidatePath('/', 'layout');
+      revalidatePath('/');
+      revalidatePath('/services');
+      revalidatePath(`/services/${updated.slug}`);
+      if (existing.slug !== updated.slug) {
+        revalidatePath(`/services/${existing.slug}`);
+      }
+    } catch {}
 
     return NextResponse.json({ success: true, data: updated });
   } catch (err: any) {
@@ -61,14 +74,14 @@ export async function DELETE(
     return NextResponse.json({ error: 'Forbidden: Super Admin only' }, { status: 403 });
   }
 
-  const existing = getServiceById(params.id) || getServiceBySlug(params.id);
+  const existing = (await getServiceByIdAsync(params.id)) || (await getServiceBySlugAsync(params.id)) || getServiceById(params.id) || getServiceBySlug(params.id);
   if (!existing) {
     return NextResponse.json({ error: 'Service not found' }, { status: 404 });
   }
 
-  deleteService(existing.id);
+  await deleteServiceAsync(existing.id);
 
-  addAuditLog({
+  await addAuditLogAsync({
     userId: user.id,
     userName: user.name,
     action: 'DELETE_SERVICE',
@@ -76,6 +89,12 @@ export async function DELETE(
     entityId: existing.id,
     details: `Deleted service: "${existing.name}" (/services/${existing.slug})`,
   });
+
+  try {
+    revalidatePath('/', 'layout');
+    revalidatePath('/');
+    revalidatePath('/services');
+  } catch {}
 
   return NextResponse.json({ success: true, message: 'Service deleted successfully' });
 }
