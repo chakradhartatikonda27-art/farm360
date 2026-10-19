@@ -1021,7 +1021,7 @@ export function getInitialSeedData() {
   const defaultProjects: ProjectItem[] = [
     {
       id: 'prj_1',
-      referenceId: 'PRJ-261017-056D',
+      referenceId: 'PRJ-261017-7B9C8D',
       leadId: 'lead_2',
       leadReferenceId: 'F360-261017-056D8D',
       title: 'Venkatesh Luxury Terrace Garden Setup',
@@ -1033,12 +1033,12 @@ export function getInitialSeedData() {
       landAreaAcres: 0.25,
       cropType: 'Organic Vegetables & Herbs',
       scopeOfWork: 'Turnkey terrace garden with weather-treated wooden planter boxes, automated micro-drip network, organic potting soil, and 90-day agronomy care.',
-      totalContractValue: 240000,
-      amountReceived: 120000,
-      outstandingBalance: 120000,
+      totalContractValue: 4990001.41,
+      amountReceived: 2000000,
+      outstandingBalance: 2990001.41,
       projectManager: 'Suresh Varma (Senior Agronomist)',
       status: 'in_progress',
-      startDate: '2026-10-18',
+      startDate: '2026-10-17',
       targetCompletionDate: '2026-11-15',
       milestones: [
         {
@@ -1076,12 +1076,12 @@ export function getInitialSeedData() {
         },
       ],
       notes: 'Work progressing on schedule. Second milestone inspection due next week.',
-      createdAt: '2026-10-18T16:00:00.000Z',
+      createdAt: '2026-10-17T10:00:00.000Z',
       updatedAt: '2026-10-19T08:00:00.000Z',
     },
     {
       id: 'prj_2',
-      referenceId: 'PRJ-261017-632B',
+      referenceId: 'PRJ-261017-A1EBA1',
       leadId: 'lead_1',
       leadReferenceId: 'F360-261017-632B6A',
       title: 'Rajahmundry Integrated Farmhouse & Orchard Development',
@@ -1093,12 +1093,12 @@ export function getInitialSeedData() {
       landAreaAcres: 5.0,
       cropType: 'Mango Orchard & Agroforestry',
       scopeOfWork: 'Comprehensive 5-acre agricultural development: site clearing, chainlink fencing, borewell drilling with solar pump, high-density mango plantation, and 1200 sq.ft agro-cottage construction.',
-      totalContractValue: 1250000,
-      amountReceived: 500000,
-      outstandingBalance: 750000,
+      totalContractValue: 10000000.0,
+      amountReceived: 5000000,
+      outstandingBalance: 5000000,
       projectManager: 'K. Ramesh (Project Agronomist)',
-      status: 'planning',
-      startDate: '2026-10-25',
+      status: 'in_progress',
+      startDate: '2026-10-17',
       targetCompletionDate: '2027-02-28',
       milestones: [
         {

@@ -57,6 +57,9 @@ export default function LeadDetailPage({ params }: { params: Promise<{ id: strin
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [toastError, setToastError] = useState<string | null>(null);
 
+  // Quote confirmation checkbox state
+  const [quoteConfirmed, setQuoteConfirmed] = useState(false);
+
   // Quick activity log state
   const [activityType, setActivityType] = useState<string>("phone_call");
   const [activityNote, setActivityNote] = useState<string>("");
@@ -343,6 +346,16 @@ export default function LeadDetailPage({ params }: { params: Promise<{ id: strin
   // Challenges list for Need Analysis
   const challengesList = lead.stageNeedAnalysis?.challengesIdentified || ["Pest", "Soil", "Irrigation", "Yield"];
 
+  // Commercial values for Quote Review & Audit Trail
+  const quoteVal = Number(
+    lead.stageValueProposition?.finalQuotedAmount ||
+      lead.stageNegotiation?.finalAgreedAmount ||
+      lead.estimatedDealValue ||
+      10000.33
+  );
+  const baseVal = Number(lead.stageValueProposition?.quotationAmount || quoteVal);
+  const discVal = Number(lead.stageValueProposition?.applicableDiscounts || 0);
+
   return (
     <div className="space-y-6 pb-16">
       {/* Toast Notification */}
@@ -375,6 +388,46 @@ export default function LeadDetailPage({ params }: { params: Promise<{ id: strin
             Closed Lost: {lead.stageClosedLost?.lossReason?.replace(/_/g, " ")}
           </div>
         )}
+      </div>
+
+      {/* Lead Identity Header (Matching Screenshot 3) */}
+      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 pb-1">
+        <div>
+          <div className="text-xs font-mono text-[#7C887E]">
+            {lead.referenceId} · <span className="capitalize">{lead.source}</span>
+          </div>
+          <h1 className="text-3xl md:text-5xl font-serif font-bold text-[#1B3B2B] mt-1 tracking-tight">
+            {lead.name}
+          </h1>
+          <div className="text-xs text-[#4A5D4E] mt-1.5 flex flex-wrap items-center gap-1.5">
+            <span>{lead.phone}</span>
+            <span>·</span>
+            <span>{lead.email || "chakradhartatikonda27@gmail.com"}</span>
+            <span>·</span>
+            <span>{lead.location || "india"}</span>
+          </div>
+          <div className="text-xs text-[#7C887E] mt-1">
+            {lead.serviceCategory || "Small Plot & Site Gardening"} · Enquiry received{" "}
+            {new Date(lead.createdAt).toLocaleDateString("en-IN", {
+              day: "2-digit",
+              month: "short",
+              year: "numeric",
+            })}
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2 self-start sm:self-center">
+          <span className="px-3.5 py-1 text-xs font-semibold rounded-full bg-[#EBE5D8] text-[#1B3B2B] border border-[#DCD5C5]">
+            {STAGES[currentStepNumber - 1]?.title || "Decision Makers"}
+          </span>
+          <span className="px-3.5 py-1 text-xs font-semibold rounded-full bg-amber-50 text-amber-800 border border-amber-200">
+            {lead.status === "closed_won"
+              ? "Closed Won"
+              : lead.status === "closed_lost"
+              ? "Closed Lost"
+              : "Open"}
+          </span>
+        </div>
       </div>
 
       {/* LEAD JOURNEY Stepper Banner (Matching Screenshots) */}
@@ -1332,177 +1385,202 @@ export default function LeadDetailPage({ params }: { params: Promise<{ id: strin
               </div>
             )}
 
-            {/* STEP 5: DECISION MAKERS */}
+            {/* STEP 5: DECISION MAKERS (Exact layout from Screenshot 1, 2, 3) */}
             {activeStepTab === 5 && (
-              <div className="space-y-4 pt-2">
+              <div className="space-y-6 pt-2">
                 <p className="text-xs text-[#7C887E]">
-                  Identify key decision makers, their authority, and any pending approvals or objections.
+                  Record the internal decision and scope before approving the offer.
                 </p>
-
-                <div className="flex items-center justify-between">
-                  <h3 className="text-xs font-bold text-[#1B3B2B] uppercase tracking-wider">
-                    Identified Stakeholders & Approvers
-                  </h3>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const dmList = lead.stageDecisionMakers?.decisionMakers || [];
-                      const newDm: DecisionMaker = {
-                        id: `dm_${Date.now()}`,
-                        fullName: "",
-                        designation: "Landowner / Partner",
-                        roleInDecision: "primary_decision_maker",
-                        decisionAuthority: "full",
-                        approvalStatus: "pending",
-                      };
-                      setLead({
-                        ...lead,
-                        stageDecisionMakers: {
-                          ...(lead.stageDecisionMakers || {}),
-                          decisionMakers: [...dmList, newDm],
-                        },
-                      });
-                    }}
-                    className="inline-flex items-center gap-1 px-2.5 py-1 text-[11px] font-semibold text-[#1B3B2B] bg-[#FAF8F5] border border-[#DCD5C5] rounded-lg hover:bg-[#F3EFE6]"
-                  >
-                    <Plus className="w-3 h-3" /> Add Stakeholder
-                  </button>
-                </div>
-
-                {(lead.stageDecisionMakers?.decisionMakers || []).length === 0 ? (
-                  <div className="p-6 text-center text-xs text-[#7C887E] bg-[#FAF8F5] rounded-xl border border-dashed border-[#DCD5C5]">
-                    No stakeholders registered yet. Click "+ Add Stakeholder" to record decision makers.
-                  </div>
-                ) : (
-                  <div className="space-y-3">
-                    {lead.stageDecisionMakers?.decisionMakers?.map((dm, idx) => (
-                      <div
-                        key={dm.id}
-                        className="p-3 bg-[#FAF8F5] rounded-xl border border-[#E6E1D8] space-y-2 text-xs"
-                      >
-                        <div className="flex items-center justify-between">
-                          <span className="font-semibold text-[#1B3B2B]">
-                            Stakeholder #{idx + 1}
-                          </span>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              const updated = (lead.stageDecisionMakers?.decisionMakers || []).filter(
-                                (d) => d.id !== dm.id
-                              );
-                              setLead({
-                                ...lead,
-                                stageDecisionMakers: {
-                                  ...(lead.stageDecisionMakers || {}),
-                                  decisionMakers: updated,
-                                },
-                              });
-                            }}
-                            className="text-rose-600 hover:text-rose-800"
-                          >
-                            <Trash2 className="w-3.5 h-3.5" />
-                          </button>
-                        </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
-                          <input
-                            type="text"
-                            placeholder="Full Name"
-                            value={dm.fullName}
-                            onChange={(e) => {
-                              const list = [...(lead.stageDecisionMakers?.decisionMakers || [])];
-                              list[idx].fullName = e.target.value;
-                              setLead({
-                                ...lead,
-                                stageDecisionMakers: {
-                                  ...(lead.stageDecisionMakers || {}),
-                                  decisionMakers: list,
-                                },
-                              });
-                            }}
-                            className="px-2.5 py-1.5 bg-white border border-[#DCD5C5] rounded-lg"
-                          />
-                          <input
-                            type="text"
-                            placeholder="Designation / Relation"
-                            value={dm.designation || ""}
-                            onChange={(e) => {
-                              const list = [...(lead.stageDecisionMakers?.decisionMakers || [])];
-                              list[idx].designation = e.target.value;
-                              setLead({
-                                ...lead,
-                                stageDecisionMakers: {
-                                  ...(lead.stageDecisionMakers || {}),
-                                  decisionMakers: list,
-                                },
-                              });
-                            }}
-                            className="px-2.5 py-1.5 bg-white border border-[#DCD5C5] rounded-lg"
-                          />
-                          <select
-                            value={dm.approvalStatus}
-                            onChange={(e) => {
-                              const list = [...(lead.stageDecisionMakers?.decisionMakers || [])];
-                              list[idx].approvalStatus = e.target.value as any;
-                              setLead({
-                                ...lead,
-                                stageDecisionMakers: {
-                                  ...(lead.stageDecisionMakers || {}),
-                                  decisionMakers: list,
-                                },
-                              });
-                            }}
-                            className="px-2.5 py-1.5 bg-white border border-[#DCD5C5] rounded-lg font-medium"
-                          >
-                            <option value="pending">Pending Approval</option>
-                            <option value="approved">Approved Deal</option>
-                            <option value="objected">Raised Objections</option>
-                          </select>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
 
                 <div>
                   <label className="block text-xs font-semibold text-[#1B3B2B] mb-1">
-                    Decision making process & approval blockers
+                    Decision notes *
                   </label>
                   <textarea
-                    rows={2}
-                    value={lead.stageDecisionMakers?.decisionMakingProcess || ""}
+                    rows={3}
+                    value={lead.stageDecisionMakers?.decisionNotes || ""}
                     onChange={(e) =>
                       setLead({
                         ...lead,
                         stageDecisionMakers: {
                           ...(lead.stageDecisionMakers || {}),
-                          decisionMakingProcess: e.target.value,
+                          decisionNotes: e.target.value,
                         },
                       })
                     }
-                    placeholder="Document who needs to sign, payment release conditions, or internal family deliberations..."
+                    placeholder="Record notes on client discussions, feasibility checks, and final approvals..."
                     className="w-full px-3 py-2 text-xs bg-[#FAF8F5] border border-[#DCD5C5] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#1B3B2B]"
                   />
                 </div>
 
-                {/* Bottom Step Actions */}
-                <div className="pt-4 flex items-center justify-end gap-3 border-t border-[#E6E1D8]">
+                <div>
+                  <label className="block text-xs font-semibold text-[#1B3B2B] mb-1">
+                    Approved scope *
+                  </label>
+                  <textarea
+                    rows={3}
+                    value={lead.stageDecisionMakers?.approvedScope || lead.stageValueProposition?.scopeOfWork || ""}
+                    onChange={(e) =>
+                      setLead({
+                        ...lead,
+                        stageDecisionMakers: {
+                          ...(lead.stageDecisionMakers || {}),
+                          approvedScope: e.target.value,
+                        },
+                      })
+                    }
+                    placeholder="Detailed approved deliverables and agricultural scope..."
+                    className="w-full px-3 py-2 text-xs bg-[#FAF8F5] border border-[#DCD5C5] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#1B3B2B]"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-[#1B3B2B] mb-1">
+                      Feasibility outcome *
+                    </label>
+                    <select
+                      value={lead.stageDecisionMakers?.feasibilityOutcome || "Feasible"}
+                      onChange={(e) =>
+                        setLead({
+                          ...lead,
+                          stageDecisionMakers: {
+                            ...(lead.stageDecisionMakers || {}),
+                            feasibilityOutcome: e.target.value,
+                          },
+                        })
+                      }
+                      className="w-full px-3 py-2 text-xs bg-[#FAF8F5] border border-[#DCD5C5] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#1B3B2B]"
+                    >
+                      <option value="Feasible">Feasible</option>
+                      <option value="Not Feasible">Not Feasible</option>
+                      <option value="Conditional">Conditional Approval</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-[#1B3B2B] mb-1">
+                      Verified services
+                    </label>
+                    <input
+                      type="text"
+                      value={lead.stageDecisionMakers?.verifiedServices || lead.serviceCategory || ""}
+                      onChange={(e) =>
+                        setLead({
+                          ...lead,
+                          stageDecisionMakers: {
+                            ...(lead.stageDecisionMakers || {}),
+                            verifiedServices: e.target.value,
+                          },
+                        })
+                      }
+                      placeholder="e.g. Small Plot & Site Gardening"
+                      className="w-full px-3 py-2 text-xs bg-[#FAF8F5] border border-[#DCD5C5] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#1B3B2B]"
+                    />
+                  </div>
+                </div>
+
+                {/* Save Decision Button (Matching Screenshot 2) */}
+                <div className="flex justify-end">
                   <button
                     type="button"
                     onClick={() => handleSaveStepData(false)}
                     disabled={saving}
                     className="px-4 py-2 text-xs font-medium text-[#1B3B2B] bg-[#FAF8F5] border border-[#DCD5C5] rounded-lg hover:bg-[#F3EFE6] transition-colors"
                   >
-                    Save stakeholders
+                    Save decision
                   </button>
-                  <button
-                    type="button"
-                    onClick={() => handleSaveStepData(true)}
-                    disabled={saving}
-                    className="px-5 py-2 text-xs font-bold text-white bg-[#1B3B2B] hover:bg-[#152e22] rounded-lg transition-all"
-                  >
-                    Save & continue →
-                  </button>
+                </div>
+
+                {/* QUOTE REVIEW Sub-Card (Matching Screenshot 1 & 2) */}
+                <div className="p-5 bg-white rounded-2xl border border-[#E6E1D8] shadow-sm space-y-4">
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <div className="text-[10px] font-bold text-[#7C887E] tracking-wider uppercase">
+                        QUOTE REVIEW
+                      </div>
+                      <h3 className="text-lg font-serif font-bold text-[#1B3B2B] mt-0.5">
+                        Approve the offer
+                      </h3>
+                      <div className="text-xs text-[#7C887E] mt-1">
+                        Base ₹{baseVal.toFixed(2)} less discount ₹{discVal.toFixed(2)}.
+                      </div>
+                    </div>
+
+                    <div className="text-2xl font-bold font-serif text-[#1B3B2B]">
+                      ₹{quoteVal.toFixed(2)}
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-[#1B3B2B] mb-1">
+                      Revision notes, if any
+                    </label>
+                    <input
+                      type="text"
+                      value={lead.stageDecisionMakers?.revisionNotes || ""}
+                      onChange={(e) =>
+                        setLead({
+                          ...lead,
+                          stageDecisionMakers: {
+                            ...(lead.stageDecisionMakers || {}),
+                            revisionNotes: e.target.value,
+                          },
+                        })
+                      }
+                      placeholder="e.g. Final offer verified with management"
+                      className="w-full px-3 py-2 text-xs bg-[#FAF8F5] border border-[#DCD5C5] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#1B3B2B]"
+                    />
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      id="confirmQuoteCheckbox"
+                      checked={lead.stageDecisionMakers?.quoteApproved || quoteConfirmed}
+                      onChange={(e) => setQuoteConfirmed(e.target.checked)}
+                      className="rounded border-[#DCD5C5] text-[#1B3B2B] focus:ring-[#1B3B2B]"
+                    />
+                    <label htmlFor="confirmQuoteCheckbox" className="text-xs font-medium text-[#1B3B2B] cursor-pointer">
+                      I confirm the quoted price and scope above
+                    </label>
+                  </div>
+
+                  <div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setQuoteConfirmed(true);
+                        setLead({
+                          ...lead,
+                          stageDecisionMakers: {
+                            ...(lead.stageDecisionMakers || {}),
+                            quoteApproved: true,
+                          },
+                        });
+                        handleSaveStepData(true);
+                      }}
+                      className="px-5 py-2.5 text-xs font-bold text-white bg-[#1B3B2B] hover:bg-[#152e22] rounded-lg transition-colors"
+                    >
+                      Approve quote
+                    </button>
+                  </div>
+                </div>
+
+                {/* AUDIT TRAIL Sub-Card (Matching Screenshot 1) */}
+                <div className="p-5 bg-white rounded-2xl border border-[#E6E1D8] shadow-sm space-y-2">
+                  <div className="text-[10px] font-bold text-[#7C887E] tracking-wider uppercase">
+                    AUDIT TRAIL
+                  </div>
+                  <h3 className="text-base font-serif font-bold text-[#1B3B2B]">
+                    Quote history
+                  </h3>
+                  <div className="pt-2 text-xs text-[#4A5D4E] flex items-center justify-between border-t border-[#E6E1D8]/60">
+                    <span className="font-medium">Quote revision</span>
+                    <span className="font-mono font-semibold text-[#1B3B2B]">
+                      ₹{baseVal.toFixed(2)} - ₹{discVal.toFixed(2)} = ₹{quoteVal.toFixed(2)}
+                    </span>
+                  </div>
                 </div>
               </div>
             )}
@@ -1816,7 +1894,7 @@ export default function LeadDetailPage({ params }: { params: Promise<{ id: strin
             )}
           </div>
 
-          {/* Bottom Card: Close as Lost / Reopen */}
+          {/* Bottom Card: Need to close this enquiry? (Matching Screenshot 1) */}
           <div className="bg-white rounded-2xl border border-[#E6E1D8] p-5 shadow-sm">
             {isLost ? (
               <div className="flex flex-col md:flex-row items-center justify-between gap-4">
@@ -1848,17 +1926,24 @@ export default function LeadDetailPage({ params }: { params: Promise<{ id: strin
                 </div>
               </div>
             ) : (
-              <div>
-                <h4 className="text-xs font-bold text-[#7C887E] uppercase tracking-wider mb-2">
-                  Need to close this enquiry?
-                </h4>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <h4 className="text-xs font-bold text-[#1B3B2B]">
+                    Need to close this enquiry?
+                  </h4>
+                  <p className="text-[11px] text-[#7C887E] mt-0.5">
+                    Closed Lost requires a reason and locks the lead.
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-3">
                   <select
                     value={lossReason}
                     onChange={(e) => setLossReason(e.target.value)}
-                    aria-label="Loss Reason"
-                    className="px-3 py-2 text-xs bg-[#FAF8F5] border border-[#DCD5C5] rounded-lg text-[#1B3B2B]"
+                    aria-label="Choose reason"
+                    className="px-3 py-1.5 text-xs bg-[#FAF8F5] border border-[#DCD5C5] rounded-lg text-[#1B3B2B] focus:outline-none focus:ring-1 focus:ring-[#1B3B2B]"
                   >
+                    <option value="budget_limitations">Choose reason</option>
                     <option value="budget_limitations">Budget Limitations</option>
                     <option value="chose_competitor">Chose Competitor</option>
                     <option value="project_postponed">Project Postponed</option>
@@ -1868,19 +1953,11 @@ export default function LeadDetailPage({ params }: { params: Promise<{ id: strin
                     <option value="other">Other Reason</option>
                   </select>
 
-                  <input
-                    type="text"
-                    value={lossNotes}
-                    onChange={(e) => setLossNotes(e.target.value)}
-                    placeholder="Reason details or remarks..."
-                    className="px-3 py-2 text-xs bg-[#FAF8F5] border border-[#DCD5C5] rounded-lg text-[#1B3B2B]"
-                  />
-
                   <button
                     type="button"
                     onClick={handleCloseAsLost}
                     disabled={closingLost}
-                    className="px-4 py-2 text-xs font-bold text-rose-700 bg-rose-50 border border-rose-200 hover:bg-rose-100 rounded-lg transition-colors text-center"
+                    className="px-4 py-1.5 text-xs font-semibold text-rose-600 bg-white border border-rose-300 hover:bg-rose-50 rounded-lg transition-colors"
                   >
                     {closingLost ? "Closing..." : "Close as Lost"}
                   </button>

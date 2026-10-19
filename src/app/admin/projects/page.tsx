@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import {
   Briefcase,
@@ -10,37 +10,20 @@ import {
   Clock,
   ArrowUpRight,
   Plus,
-  DollarSign,
-  MapPin,
-  Calendar,
-  Layers,
   RefreshCw,
   AlertCircle,
+  ExternalLink,
 } from "lucide-react";
 import { ProjectItem } from "@/lib/cms/types";
-
-const STATUS_CONFIG: Record<string, { label: string; color: string }> = {
-  planning: { label: "Planning", color: "bg-blue-50 text-blue-700 border-blue-200" },
-  mobilization: { label: "Mobilization", color: "bg-amber-50 text-amber-700 border-amber-200" },
-  in_progress: { label: "In Progress", color: "bg-emerald-50 text-emerald-800 border-emerald-300" },
-  on_hold: { label: "On Hold", color: "bg-slate-100 text-slate-700 border-slate-200" },
-  completed: { label: "Completed", color: "bg-teal-50 text-teal-800 border-teal-300" },
-};
 
 export default function ProjectsListPage() {
   const [projects, setProjects] = useState<ProjectItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState("");
-  const [statusFilter, setStatusFilter] = useState("all");
 
   const fetchProjects = async () => {
     try {
       setLoading(true);
-      const params = new URLSearchParams();
-      if (search) params.set("search", search);
-      if (statusFilter !== "all") params.set("status", statusFilter);
-
-      const res = await fetch(`/api/admin/projects?${params.toString()}`);
+      const res = await fetch("/api/admin/projects");
       const data = await res.json();
       if (data.success && Array.isArray(data.data)) {
         setProjects(data.data);
@@ -54,202 +37,195 @@ export default function ProjectsListPage() {
 
   useEffect(() => {
     fetchProjects();
-  }, [statusFilter]);
+  }, []);
 
-  const handleSearchSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    fetchProjects();
-  };
+  const stats = useMemo(() => {
+    const total = projects.length;
+    const inProgress = projects.filter((p) => p.status === "in_progress" || p.status === "mobilization").length;
+    const notStarted = projects.filter((p) => p.status === "planning").length;
+    const completed = projects.filter((p) => p.status === "completed").length;
+    return { total, inProgress, notStarted, completed };
+  }, [projects]);
 
   return (
-    <div className="space-y-6 pb-16">
-      {/* Top Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-2 border-b border-[#E6E1D8]">
+    <div className="space-y-8 pb-16">
+      {/* Top Header matching screenshot 4 */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
-          <div className="flex items-center gap-3">
-            <h1 className="text-2xl md:text-3xl font-serif text-[#1B3B2B] font-bold">
-              Active Projects
-            </h1>
-            <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200">
-              {projects.length} Total Projects
-            </span>
+          <div className="text-[11px] font-bold text-[#4A5D4E] tracking-wider uppercase mb-1">
+            DELIVERY & CLIENT CARE
           </div>
-          <p className="text-xs md:text-sm text-[#4A5D4E] mt-1">
-            Converted Closed Won customer contracts in field execution & milestone delivery.
+          <h1 className="text-3xl md:text-5xl font-serif font-bold text-[#1B3B2B] tracking-tight">
+            Projects
+          </h1>
+          <p className="text-xs md:text-sm text-[#7C887E] mt-1.5">
+            A clear record of every agreement, payment and step forward.
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div>
           <Link
             href="/admin/leads"
-            className="px-4 py-2 bg-[#FAF8F5] text-[#1B3B2B] border border-[#DCD5C5] text-xs font-semibold rounded-lg hover:bg-[#F3EFE6] transition-colors"
+            className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-medium text-[#1B3B2B] bg-white border border-[#DCD5C5] rounded-lg hover:bg-[#F3EFE6] transition-colors shadow-sm"
           >
-            ← View Leads Desk
+            <span>View lead desk</span>
+            <span className="text-sm">↗</span>
           </Link>
         </div>
       </div>
 
-      {/* Filter Bar */}
-      <div className="bg-white p-4 rounded-xl border border-[#E6E1D8] shadow-sm">
-        <form onSubmit={handleSearchSubmit} className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-          <div className="relative flex-1">
-            <Search className="w-4 h-4 text-[#8C7A5B] absolute left-3 top-1/2 -translate-y-1/2" />
-            <input
-              type="text"
-              placeholder="Search by project title, customer, reference ID..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-9 pr-3 py-2 text-xs md:text-sm bg-[#FAF8F5] border border-[#DCD5C5] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#1B3B2B]"
-            />
+      {/* Stats Cards Ribbon (4 cards matching screenshot 4) */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="bg-white p-5 rounded-2xl border border-[#E6E1D8] shadow-sm">
+          <div className="text-xs font-medium text-[#7C887E]">All projects</div>
+          <div className="text-3xl font-bold text-[#1B3B2B] mt-2 font-serif">
+            {stats.total}
           </div>
+        </div>
 
-          <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-3 py-2 text-xs bg-[#FAF8F5] border border-[#DCD5C5] rounded-lg text-[#1B3B2B]"
-          >
-            <option value="all">Every status</option>
-            <option value="planning">Planning</option>
-            <option value="mobilization">Mobilization</option>
-            <option value="in_progress">In Progress</option>
-            <option value="completed">Completed</option>
-            <option value="on_hold">On Hold</option>
-          </select>
+        <div className="bg-white p-5 rounded-2xl border border-[#E6E1D8] shadow-sm">
+          <div className="text-xs font-medium text-[#7C887E]">In progress</div>
+          <div className="text-3xl font-bold text-[#1B3B2B] mt-2 font-serif">
+            {stats.inProgress}
+          </div>
+        </div>
 
-          <button
-            type="submit"
-            className="px-4 py-2 bg-[#1B3B2B] text-white text-xs font-semibold rounded-lg hover:bg-[#152e22]"
-          >
-            Filter
-          </button>
-        </form>
+        <div className="bg-white p-5 rounded-2xl border border-[#E6E1D8] shadow-sm">
+          <div className="text-xs font-medium text-[#7C887E]">Not started</div>
+          <div className="text-3xl font-bold text-[#1B3B2B] mt-2 font-serif">
+            {stats.notStarted}
+          </div>
+        </div>
+
+        <div className="bg-white p-5 rounded-2xl border border-[#E6E1D8] shadow-sm">
+          <div className="text-xs font-medium text-[#7C887E]">Completed</div>
+          <div className="text-3xl font-bold text-[#1B3B2B] mt-2 font-serif">
+            {stats.completed}
+          </div>
+        </div>
       </div>
 
-      {/* Projects Table */}
-      <div className="bg-white rounded-xl border border-[#E6E1D8] shadow-sm overflow-hidden">
-        {loading ? (
-          <div className="p-12 text-center text-[#7C887E]">
-            <RefreshCw className="w-6 h-6 animate-spin mx-auto text-[#1B3B2B] mb-2" />
-            <p className="text-xs">Loading projects...</p>
+      {/* Project Register Section (matching screenshot 4) */}
+      <div className="space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
+          <div>
+            <div className="text-[10px] font-bold text-[#7C887E] tracking-wider uppercase">
+              CLIENT WORK
+            </div>
+            <h2 className="text-xl font-serif font-bold text-[#1B3B2B] mt-0.5">
+              Your project register
+            </h2>
           </div>
-        ) : projects.length === 0 ? (
-          <div className="p-12 text-center text-[#7C887E]">
-            <Briefcase className="w-10 h-10 mx-auto text-[#B5A48B] mb-3 opacity-60" />
-            <h3 className="text-base font-semibold text-[#1B3B2B]">No projects found</h3>
-            <p className="text-xs text-[#7C887E] mt-1">
-              Mark a deal as "Closed Won" in the Lead Journey to automatically initiate an execution project.
-            </p>
+          <div className="text-xs text-[#7C887E]">
+            Created from a won lead after an advance payment is verified
           </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
-              <thead className="bg-[#FAF8F5] text-[#7C887E] uppercase text-[10px] tracking-wider font-semibold border-b border-[#E6E1D8]">
-                <tr>
-                  <th className="py-3 px-4">Project Ref</th>
-                  <th className="py-3 px-4">Title & Customer</th>
-                  <th className="py-3 px-4">Scope & Location</th>
-                  <th className="py-3 px-4">Contract Value</th>
-                  <th className="py-3 px-4">Status</th>
-                  <th className="py-3 px-4">Milestones</th>
-                  <th className="py-3 px-4 text-right">Action</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-[#E6E1D8]">
-                {projects.map((project) => {
-                  const statusInfo = STATUS_CONFIG[project.status] || {
-                    label: project.status,
-                    color: "bg-gray-100 text-gray-700",
-                  };
-                  const completedMilestones = (project.milestones || []).filter(
-                    (m) => m.status === "completed"
-                  ).length;
-                  const totalMilestones = (project.milestones || []).length;
+        </div>
 
-                  return (
+        <div className="bg-white rounded-2xl border border-[#E6E1D8] shadow-sm overflow-hidden">
+          {loading ? (
+            <div className="p-12 text-center text-[#7C887E]">
+              <RefreshCw className="w-6 h-6 animate-spin mx-auto text-[#1B3B2B] mb-2" />
+              <p className="text-xs">Loading project register...</p>
+            </div>
+          ) : projects.length === 0 ? (
+            <div className="p-12 text-center text-[#7C887E]">
+              <Briefcase className="w-10 h-10 mx-auto text-[#B5A48B] mb-3 opacity-60" />
+              <h3 className="text-base font-semibold text-[#1B3B2B]">No active projects</h3>
+              <p className="text-xs text-[#7C887E] mt-1">
+                When an enquiry advances to Closed Won, convert it into a registered project.
+              </p>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs">
+                <thead className="bg-[#FAF8F5] text-[#7C887E] uppercase text-[10px] tracking-wider font-semibold border-b border-[#E6E1D8]">
+                  <tr>
+                    <th className="py-3 px-5">PROJECT</th>
+                    <th className="py-3 px-5">CLIENT</th>
+                    <th className="py-3 px-5">SERVICE</th>
+                    <th className="py-3 px-5">STATUS</th>
+                    <th className="py-3 px-5">AGREED VALUE</th>
+                    <th className="py-3 px-5">CREATED</th>
+                    <th className="py-3 px-5 text-right"></th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[#E6E1D8]">
+                  {projects.map((project) => (
                     <tr
                       key={project.id}
                       className="hover:bg-[#FAF8F5]/80 transition-colors group cursor-pointer"
                       onClick={() => (window.location.href = `/admin/projects/${project.id}`)}
                     >
-                      <td className="py-3.5 px-4 font-mono">
+                      {/* PROJECT */}
+                      <td className="py-4 px-5 font-mono text-xs font-bold text-[#1B3B2B]">
+                        {project.referenceId}
+                      </td>
+
+                      {/* CLIENT */}
+                      <td className="py-4 px-5">
                         <div className="font-bold text-[#1B3B2B] text-xs">
-                          {project.referenceId}
-                        </div>
-                        {project.leadReferenceId && (
-                          <div className="text-[10px] text-[#7C887E] mt-0.5">
-                            From: {project.leadReferenceId}
-                          </div>
-                        )}
-                      </td>
-
-                      <td className="py-3.5 px-4">
-                        <div className="font-semibold text-[#1B3B2B] text-xs">
-                          {project.title}
-                        </div>
-                        <div className="text-[11px] text-[#4A5D4E] mt-0.5">
-                          {project.customerName} ({project.customerPhone})
-                        </div>
-                      </td>
-
-                      <td className="py-3.5 px-4">
-                        <div className="text-[#1B3B2B] font-medium">
-                          {project.serviceCategory}
+                          {project.customerName}
                         </div>
                         <div className="text-[11px] text-[#7C887E] mt-0.5">
-                          {project.location} {project.landAreaAcres ? `• ${project.landAreaAcres} Acres` : ""}
+                          {project.customerPhone}
+                          {project.location ? ` · ${project.location}` : ""}
                         </div>
                       </td>
 
-                      <td className="py-3.5 px-4">
-                        <div className="font-bold text-[#1B3B2B]">
-                          ₹{(project.totalContractValue || 0).toLocaleString("en-IN")}
-                        </div>
-                        <div className="text-[10px] text-emerald-700 mt-0.5">
-                          Rec: ₹{(project.amountReceived || 0).toLocaleString("en-IN")}
-                        </div>
+                      {/* SERVICE */}
+                      <td className="py-4 px-5 text-[#1B3B2B] text-xs font-medium">
+                        {project.serviceCategory || "Agricultural Planning"}
                       </td>
 
-                      <td className="py-3.5 px-4">
-                        <span
-                          className={`inline-block px-2.5 py-1 rounded-full text-[11px] font-semibold border ${statusInfo.color}`}
-                        >
-                          {statusInfo.label}
+                      {/* STATUS */}
+                      <td className="py-4 px-5">
+                        <span className="inline-block px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200">
+                          {project.status === "in_progress"
+                            ? "In Progress"
+                            : project.status === "planning"
+                            ? "Not Started"
+                            : project.status === "completed"
+                            ? "Completed"
+                            : "In Progress"}
                         </span>
                       </td>
 
-                      <td className="py-3.5 px-4">
-                        <div className="flex items-center gap-1.5">
-                          <span className="font-semibold text-[#1B3B2B]">
-                            {completedMilestones} / {totalMilestones}
-                          </span>
-                          <span className="text-[10px] text-[#7C887E]">done</span>
-                        </div>
-                        <div className="w-20 h-1.5 bg-[#FAF8F5] border border-[#DCD5C5] rounded-full overflow-hidden mt-1">
-                          <div
-                            className="h-full bg-emerald-600 rounded-full"
-                            style={{
-                              width: `${totalMilestones > 0 ? (completedMilestones / totalMilestones) * 100 : 0}%`,
-                            }}
-                          />
-                        </div>
+                      {/* AGREED VALUE */}
+                      <td className="py-4 px-5 font-bold text-[#1B3B2B] text-xs font-mono">
+                        ₹
+                        {Number(project.totalContractValue || 0).toLocaleString("en-IN", {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        })}
                       </td>
 
-                      <td className="py-3.5 px-4 text-right">
+                      {/* CREATED */}
+                      <td className="py-4 px-5 text-[#7C887E] text-xs whitespace-nowrap">
+                        {new Date(project.createdAt).toLocaleDateString("en-IN", {
+                          day: "2-digit",
+                          month: "short",
+                          year: "numeric",
+                        })}
+                      </td>
+
+                      {/* VIEW DETAILS */}
+                      <td className="py-4 px-5 text-right">
                         <Link
                           href={`/admin/projects/${project.id}`}
                           onClick={(e) => e.stopPropagation()}
-                          className="inline-flex items-center justify-center w-7 h-7 rounded-lg text-[#1B3B2B] bg-[#FAF8F5] border border-[#DCD5C5] hover:bg-[#1B3B2B] hover:text-white transition-all shadow-sm"
+                          className="inline-flex items-center gap-1 text-xs font-semibold text-[#1B3B2B] hover:underline"
                         >
-                          <ArrowUpRight className="w-3.5 h-3.5" />
+                          <span>View details</span>
+                          <span>→</span>
                         </Link>
                       </td>
                     </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        )}
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

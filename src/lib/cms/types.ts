@@ -542,6 +542,12 @@ export interface DecisionMaker {
 }
 
 export interface StageDecisionMakersData {
+  decisionNotes?: string;
+  approvedScope?: string;
+  feasibilityOutcome?: 'Feasible' | 'Not Feasible' | 'Conditional' | string;
+  verifiedServices?: string;
+  quoteApproved?: boolean;
+  revisionNotes?: string;
   decisionMakers?: DecisionMaker[];
   decisionMakingProcess?: string;
   otherStakeholders?: string;
