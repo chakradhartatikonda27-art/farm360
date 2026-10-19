@@ -144,6 +144,9 @@ function normalizeDb(db: any): DatabaseSchema {
     const gmailUser = seed.users.find((u: any) => u.email?.toLowerCase() === 'admin@gmail.com');
     if (gmailUser) db.users.push(gmailUser);
   }
+  if (!db.enquiries || !Array.isArray(db.enquiries)) {
+    db.enquiries = [];
+  }
   if (!db.leads || !Array.isArray(db.leads)) {
     db.leads = [];
   }

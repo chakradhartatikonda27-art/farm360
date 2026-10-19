@@ -513,64 +513,7 @@ export function getInitialSeedData() {
     },
   ];
 
-  const defaultEnquiries: ContactEnquiry[] = [
-    {
-      id: 'enq_1001',
-      referenceId: 'FC-2026-8821',
-      name: 'Dr. Anand Mahindra',
-      phone: '+91 98450 12345',
-      email: 'anand.mahindra@example.com',
-      location: 'Chikkaballapur District, Karnataka',
-      propertyType: '15-Acre Commercial Farmland',
-      projectDescription: 'Looking for turnkey high-density mango and guava orchard planning with automated solar drip irrigation and perimeter solar fencing.',
-      status: 'new',
-      priority: 'high',
-      internalNotes: [
-        'Initial contact via website consultation form on Oct 18.',
-        'Requested site audit report for upcoming weekend.',
-      ],
-      assignedTo: 'Lead Agronomist - Karnataka Cluster',
-      createdAt: '2026-10-18T14:30:00Z',
-      updatedAt: '2026-10-18T14:30:00Z',
-    },
-    {
-      id: 'enq_1002',
-      referenceId: 'FC-2026-7452',
-      name: 'Sunita & Vikram Rao',
-      phone: '+91 99890 54321',
-      email: 'sunita.rao@example.com',
-      location: 'Shadnagar Outskirts, Hyderabad',
-      propertyType: '4-Acre Weekend Farmhouse Site',
-      projectDescription: 'Need landscape planning, fruit trees, indigenous vegetable patches, and monthly scheduled maintenance visits.',
-      status: 'in_progress',
-      priority: 'medium',
-      internalNotes: [
-        'Spoke on phone on Oct 17. Soil and borewell water samples collected for testing.',
-        'Preparing Model 2 Managed Farm Living proposal.',
-      ],
-      assignedTo: 'Project Manager - Hyderabad Cluster',
-      createdAt: '2026-10-17T09:15:00Z',
-      updatedAt: '2026-10-18T11:20:00Z',
-    },
-    {
-      id: 'enq_1003',
-      referenceId: 'FC-2026-5129',
-      name: 'Rajesh K. Varma',
-      phone: '+91 97000 98765',
-      email: 'rajesh.varma@example.com',
-      location: 'Whitefield, Bangalore',
-      propertyType: 'Residential Penthouse Terrace (2,200 sq.ft)',
-      projectDescription: 'Rooftop kitchen garden with automated drip lines, hydroponic herbs, and citrus planters.',
-      status: 'resolved',
-      priority: 'medium',
-      internalNotes: [
-        'Site assessment completed. Proposal approved. Installation scheduled for next month.',
-      ],
-      assignedTo: 'Urban Garden Specialist',
-      createdAt: '2026-10-15T16:45:00Z',
-      updatedAt: '2026-10-17T18:00:00Z',
-    },
-  ];
+  const defaultEnquiries: ContactEnquiry[] = [];
 
   const defaultMediaAssets: MediaAsset[] = [
     {

@@ -93,7 +93,7 @@ export default function AdminDashboardPage() {
         {
           title: "New Enquiries",
           value: `${stats.newEnquiries}`,
-          sublabel: `Total: ${stats.totalEnquiries} leads`,
+          sublabel: stats.totalEnquiries === 1 ? "1 Total Enquiry" : `${stats.totalEnquiries} Total Enquiries`,
           icon: Inbox,
           href: "/admin/enquiries",
           color: stats.newEnquiries > 0 ? "rose" : "forest",
@@ -278,13 +278,20 @@ export default function AdminDashboardPage() {
         {/* Recent Enquiries / CRM Preview */}
         <AdminCard
           title="Recent Landowner Enquiries"
-          subtitle="Incoming consultation requests and leads"
+          subtitle="Incoming website consultation requests"
           actions={
-            <Link href="/admin/enquiries">
-              <AdminButton variant="outline" size="sm">
-                View All CRM Leads
-              </AdminButton>
-            </Link>
+            <div className="flex items-center gap-2">
+              <Link href="/admin/leads">
+                <AdminButton variant="outline" size="sm">
+                  Lead Desk
+                </AdminButton>
+              </Link>
+              <Link href="/admin/enquiries">
+                <AdminButton variant="secondary" size="sm">
+                  View All Enquiries
+                </AdminButton>
+              </Link>
+            </div>
           }
           className="lg:col-span-2"
         >
