@@ -351,11 +351,7 @@ export function SiteHeader() {
         {/* Mobile Navigation Drawer */}
         {isMobileMenuOpen && (
           <nav 
-            className="lg:hidden fixed inset-x-0 top-[74px] h-[calc(100dvh-74px)] bg-[#FAF8F2] z-50 flex flex-col px-6 pt-5 pb-[calc(2rem+env(safe-area-inset-bottom,0px))] overflow-y-auto animate-in fade-in duration-200 border-t border-charcoal/10 overscroll-contain"
-            style={{
-              paddingLeft: 'max(1.5rem, env(safe-area-inset-left, 0px))',
-              paddingRight: 'max(1.5rem, env(safe-area-inset-right, 0px))',
-            }}
+            className="lg:hidden fixed inset-x-0 top-[74px] h-[calc(100dvh-74px)] bg-[#FAF8F2] z-50 flex flex-col px-6 pt-5 pb-8 overflow-y-auto animate-in fade-in duration-200 border-t border-charcoal/10 overscroll-contain"
             aria-label="Mobile navigation"
           >
             <div className="space-y-6">

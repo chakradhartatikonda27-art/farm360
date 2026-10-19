@@ -1,10 +1,16 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 export function BeforeAfterComparison() {
   const [percent, setPercent] = useState<number>(50);
   const cmpRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (cmpRef.current) {
+      cmpRef.current.style.setProperty('--p', `${percent}%`);
+    }
+  }, []);
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = Number(e.target.value);
@@ -45,12 +51,11 @@ export function BeforeAfterComparison() {
             <div 
               ref={cmpRef}
               className="cmp select-none" 
-              style={{ ['--p' as any]: `${percent}%`, touchAction: 'pan-y' }}
+              style={{ touchAction: 'pan-y' }}
               onClick={(e) => updateFromClientX(e.clientX)}
               onTouchMove={(e) => {
                 if (e.touches.length > 0) updateFromClientX(e.touches[0].clientX);
               }}
-              suppressHydrationWarning
             >
               <img
                 src="/images/managed/plot-after.jpg"

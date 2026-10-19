@@ -22,11 +22,7 @@ export function FloatingWhatsApp() {
   return (
     <aside
       aria-label="Instant WhatsApp Assistance"
-      className="fixed z-40"
-      style={{
-        bottom: 'max(1.25rem, calc(1rem + env(safe-area-inset-bottom, 0px)))',
-        right: 'max(1.25rem, calc(1rem + env(safe-area-inset-right, 0px)))',
-      }}
+      className="fixed bottom-5 right-5 sm:bottom-6 sm:right-6 z-40"
     >
       <a
         href={whatsappUrl}
