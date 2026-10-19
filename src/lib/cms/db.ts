@@ -144,11 +144,11 @@ function normalizeDb(db: any): DatabaseSchema {
     const gmailUser = seed.users.find((u: any) => u.email?.toLowerCase() === 'admin@gmail.com');
     if (gmailUser) db.users.push(gmailUser);
   }
-  if (!db.leads || !Array.isArray(db.leads) || db.leads.length === 0) {
-    db.leads = seed.leads;
+  if (!db.leads || !Array.isArray(db.leads)) {
+    db.leads = [];
   }
-  if (!db.projects || !Array.isArray(db.projects) || db.projects.length === 0) {
-    db.projects = seed.projects;
+  if (!db.projects || !Array.isArray(db.projects)) {
+    db.projects = [];
   }
   if (!db.crmSettings) {
     db.crmSettings = seed.crmSettings;
