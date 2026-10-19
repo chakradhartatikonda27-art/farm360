@@ -120,9 +120,14 @@ export default function AdminDashboardPage() {
         </div>
 
         <div className="flex flex-wrap items-center gap-2.5">
+          <Link href="/admin/leads">
+            <AdminButton variant="gold" size="sm" icon={<Inbox className="w-4 h-4" />}>
+              Lead Desk & CRM
+            </AdminButton>
+          </Link>
           <Link href="/admin/services">
-            <AdminButton variant="gold" size="sm" icon={<Plus className="w-4 h-4" />}>
-              Add Service
+            <AdminButton variant="outline" size="sm" className="bg-forest-deep/60 border-forest-light/40 text-ivory hover:bg-forest-deep hover:text-white" icon={<Briefcase className="w-4 h-4" />}>
+              Services
             </AdminButton>
           </Link>
           <Link href="/admin/media">

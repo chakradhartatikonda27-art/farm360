@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getEnquiries, getEnquiriesAsync, saveEnquiryAsync } from '@/lib/cms/db';
+import { getEnquiries, getEnquiriesAsync, saveEnquiryAsync, saveLeadAsync, generateLeadReferenceId } from '@/lib/cms/db';
 
 export const dynamic = 'force-dynamic';
 
@@ -50,6 +50,44 @@ export async function POST(req: Request) {
     }
 
     const saved = await saveEnquiryAsync(body);
+
+    // Register into CRM leads as well
+    try {
+      const leadRef = generateLeadReferenceId();
+      await saveLeadAsync({
+        referenceId: leadRef,
+        name: body.name,
+        phone: body.phone,
+        email: body.email || '',
+        location: body.location || '',
+        source: 'website',
+        serviceCategory: body.serviceInterest || body.propertyType || 'Agricultural Care',
+        subject: body.subject || 'Enquiry form submission',
+        message: body.message || body.projectDescription || '',
+        priority: body.priority || 'medium',
+        currentStage: 'prospecting',
+        status: 'open',
+        stageProspecting: {
+          enquiryReason: body.message || body.projectDescription || 'Submitted via enquiry form',
+          customerExpectations: body.serviceInterest || body.propertyType || '',
+          initialRequirements: `Location: ${body.location || 'N/A'}, Size: ${body.landSize || 'N/A'}`,
+          prospectingNotes: 'Auto-registered from website enquiry submission.',
+          qualificationStartDate: new Date().toISOString().split('T')[0],
+        },
+        activities: [
+          {
+            id: `act_${Date.now()}`,
+            timestamp: new Date().toISOString(),
+            type: 'lead_created',
+            title: 'Lead Captured',
+            description: `Enquiry received from ${body.name} (${body.phone}). Reference: ${leadRef}`,
+          },
+        ],
+      });
+    } catch (leadErr) {
+      console.error('Failed to sync enquiry to CRM lead:', leadErr);
+    }
+
     return NextResponse.json({
       success: true,
       referenceId: saved.referenceId,

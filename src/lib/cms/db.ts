@@ -17,7 +17,15 @@ import {
   MediaAsset,
   AuditLogEntry,
   ContentRevision,
-  DashboardStats
+  DashboardStats,
+  LeadItem,
+  ProjectItem,
+  CrmSettings,
+  SalesStage,
+  LeadStatus,
+  LeadSource,
+  LeadPriority,
+  LeadActivity
 } from './types';
 import { getInitialSeedData } from './seedData';
 
@@ -38,6 +46,9 @@ export interface DatabaseSchema {
   faqs: FAQItem[];
   enquiries: ContactEnquiry[];
   mediaAssets: MediaAsset[];
+  leads: LeadItem[];
+  projects: ProjectItem[];
+  crmSettings: CrmSettings;
   auditLogs: AuditLogEntry[];
   revisions: ContentRevision[];
 }
@@ -124,9 +135,24 @@ export async function syncToCloudAsync(db: DatabaseSchema): Promise<void> {
   }
 }
 
+function normalizeDb(db: any): DatabaseSchema {
+  if (!db) return db;
+  const seed = getInitialSeedData();
+  if (!db.leads || !Array.isArray(db.leads) || db.leads.length === 0) {
+    db.leads = seed.leads;
+  }
+  if (!db.projects || !Array.isArray(db.projects) || db.projects.length === 0) {
+    db.projects = seed.projects;
+  }
+  if (!db.crmSettings) {
+    db.crmSettings = seed.crmSettings;
+  }
+  return db as DatabaseSchema;
+}
+
 export function loadDatabase(): DatabaseSchema {
   if (memoryDb) {
-    return memoryDb;
+    return normalizeDb(memoryDb);
   }
 
   ensureDbDirectory();
@@ -135,7 +161,7 @@ export function loadDatabase(): DatabaseSchema {
   try {
     if (fs.existsSync(DB_FILE)) {
       const fileContent = fs.readFileSync(DB_FILE, 'utf8');
-      memoryDb = JSON.parse(fileContent);
+      memoryDb = normalizeDb(JSON.parse(fileContent));
       return memoryDb!;
     }
   } catch {}
@@ -144,7 +170,7 @@ export function loadDatabase(): DatabaseSchema {
   try {
     if (fs.existsSync(BUNDLED_DB_FILE)) {
       const fileContent = fs.readFileSync(BUNDLED_DB_FILE, 'utf8');
-      memoryDb = JSON.parse(fileContent);
+      memoryDb = normalizeDb(JSON.parse(fileContent));
 
       // On Vercel, copy bundled to writable /tmp for future updates
       if (IS_VERCEL) {
@@ -165,7 +191,7 @@ export function loadDatabase(): DatabaseSchema {
     ...seed,
   };
   saveDatabase(initialDb);
-  memoryDb = initialDb;
+  memoryDb = normalizeDb(initialDb);
   return memoryDb;
 }
 
@@ -1670,3 +1696,586 @@ function computeDashboardStats(db: DatabaseSchema): DashboardStats & Record<stri
     recentAudits: db.auditLogs.slice(0, 8),
   };
 }
+
+/* ==================== LEADS & SALES PIPELINE CRM ==================== */
+
+export function getLeads(filter?: { stage?: string; status?: string; source?: string; search?: string }): LeadItem[] {
+  const db = loadDatabase();
+  let list = db.leads || [];
+
+  if (filter?.stage && filter.stage !== 'all') {
+    list = list.filter((l) => l.currentStage === filter.stage);
+  }
+  if (filter?.status && filter.status !== 'all') {
+    list = list.filter((l) => l.status === filter.status);
+  }
+  if (filter?.source && filter.source !== 'all') {
+    list = list.filter((l) => l.source === filter.source);
+  }
+  if (filter?.search) {
+    const q = filter.search.toLowerCase();
+    list = list.filter(
+      (l) =>
+        l.name.toLowerCase().includes(q) ||
+        l.phone.toLowerCase().includes(q) ||
+        (l.email && l.email.toLowerCase().includes(q)) ||
+        (l.referenceId && l.referenceId.toLowerCase().includes(q)) ||
+        (l.location && l.location.toLowerCase().includes(q)) ||
+        (l.serviceCategory && l.serviceCategory.toLowerCase().includes(q))
+    );
+  }
+
+  return list.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+}
+
+export async function getLeadsAsync(filter?: { stage?: string; status?: string; source?: string; search?: string }): Promise<LeadItem[]> {
+  const db = await loadDatabaseAsync();
+  let list = db.leads || [];
+
+  if (filter?.stage && filter.stage !== 'all') {
+    list = list.filter((l) => l.currentStage === filter.stage);
+  }
+  if (filter?.status && filter.status !== 'all') {
+    list = list.filter((l) => l.status === filter.status);
+  }
+  if (filter?.source && filter.source !== 'all') {
+    list = list.filter((l) => l.source === filter.source);
+  }
+  if (filter?.search) {
+    const q = filter.search.toLowerCase();
+    list = list.filter(
+      (l) =>
+        l.name.toLowerCase().includes(q) ||
+        l.phone.toLowerCase().includes(q) ||
+        (l.email && l.email.toLowerCase().includes(q)) ||
+        (l.referenceId && l.referenceId.toLowerCase().includes(q)) ||
+        (l.location && l.location.toLowerCase().includes(q)) ||
+        (l.serviceCategory && l.serviceCategory.toLowerCase().includes(q))
+    );
+  }
+
+  return list.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+}
+
+export function getLeadById(idOrRef: string): LeadItem | undefined {
+  const db = loadDatabase();
+  const leads = db.leads || [];
+  return leads.find(
+    (l) => l.id === idOrRef || l.referenceId.toLowerCase() === idOrRef.toLowerCase()
+  );
+}
+
+export async function getLeadByIdAsync(idOrRef: string): Promise<LeadItem | undefined> {
+  const db = await loadDatabaseAsync();
+  const leads = db.leads || [];
+  return leads.find(
+    (l) => l.id === idOrRef || l.referenceId.toLowerCase() === idOrRef.toLowerCase()
+  );
+}
+
+export function generateLeadReferenceId(): string {
+  const now = new Date();
+  const yy = String(now.getFullYear()).slice(-2);
+  const mm = String(now.getMonth() + 1).padStart(2, '0');
+  const dd = String(now.getDate()).padStart(2, '0');
+  const randomHex = Math.random().toString(36).substring(2, 8).toUpperCase();
+  return `F360-${yy}${mm}${dd}-${randomHex}`;
+}
+
+export function saveLead(lead: Partial<LeadItem> & { name: string; phone: string }): LeadItem {
+  const db = loadDatabase();
+  db.leads = db.leads || [];
+  const existingIdx = db.leads.findIndex((l) => (lead.id && l.id === lead.id) || (lead.referenceId && l.referenceId === lead.referenceId));
+
+  if (existingIdx >= 0) {
+    const updated: LeadItem = {
+      ...db.leads[existingIdx],
+      ...lead,
+      updatedAt: new Date().toISOString(),
+    };
+    db.leads[existingIdx] = updated;
+    saveDatabase(db);
+    return updated;
+  } else {
+    const newLead: LeadItem = {
+      id: lead.id || `lead_${Date.now()}`,
+      referenceId: lead.referenceId || generateLeadReferenceId(),
+      name: lead.name,
+      phone: lead.phone,
+      email: lead.email || '',
+      companyOrLandownerName: lead.companyOrLandownerName,
+      location: lead.location || 'India',
+      source: lead.source || 'web',
+      serviceCategory: lead.serviceCategory || 'Agricultural Land Planning',
+      subject: lead.subject,
+      message: lead.message,
+      assignedExecutive: lead.assignedExecutive || 'Client Relations Officer',
+      priority: lead.priority || 'medium',
+      currentStage: lead.currentStage || 'prospecting',
+      status: lead.status || 'open',
+      estimatedDealValue: lead.estimatedDealValue || 0,
+      nextFollowUpDate: lead.nextFollowUpDate,
+      stageProspecting: lead.stageProspecting || {
+        initialReason: lead.message || 'Website Consultation Request',
+        priority: lead.priority || 'medium',
+      },
+      activities: lead.activities || [
+        {
+          id: `act_${Date.now()}`,
+          timestamp: new Date().toISOString(),
+          type: 'lead_created',
+          title: 'Lead created',
+          description: `Enquiry received from ${lead.source || 'web'}`,
+        },
+      ],
+      tags: lead.tags || [lead.serviceCategory || 'General', lead.location || 'India'],
+      createdAt: lead.createdAt || new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    db.leads.unshift(newLead);
+    saveDatabase(db);
+    return newLead;
+  }
+}
+
+export async function saveLeadAsync(lead: Partial<LeadItem> & { name: string; phone: string }): Promise<LeadItem> {
+  const db = await loadDatabaseAsync();
+  db.leads = db.leads || [];
+  const existingIdx = db.leads.findIndex((l) => (lead.id && l.id === lead.id) || (lead.referenceId && l.referenceId === lead.referenceId));
+
+  let savedLead: LeadItem;
+  if (existingIdx >= 0) {
+    savedLead = {
+      ...db.leads[existingIdx],
+      ...lead,
+      updatedAt: new Date().toISOString(),
+    };
+    db.leads[existingIdx] = savedLead;
+  } else {
+    savedLead = {
+      id: lead.id || `lead_${Date.now()}`,
+      referenceId: lead.referenceId || generateLeadReferenceId(),
+      name: lead.name,
+      phone: lead.phone,
+      email: lead.email || '',
+      companyOrLandownerName: lead.companyOrLandownerName,
+      location: lead.location || 'India',
+      source: lead.source || 'web',
+      serviceCategory: lead.serviceCategory || 'Agricultural Land Planning',
+      subject: lead.subject,
+      message: lead.message,
+      assignedExecutive: lead.assignedExecutive || 'Client Relations Officer',
+      priority: lead.priority || 'medium',
+      currentStage: lead.currentStage || 'prospecting',
+      status: lead.status || 'open',
+      estimatedDealValue: lead.estimatedDealValue || 0,
+      nextFollowUpDate: lead.nextFollowUpDate,
+      stageProspecting: lead.stageProspecting || {
+        initialReason: lead.message || 'Website Consultation Request',
+        priority: lead.priority || 'medium',
+      },
+      activities: lead.activities || [
+        {
+          id: `act_${Date.now()}`,
+          timestamp: new Date().toISOString(),
+          type: 'lead_created',
+          title: 'Lead created',
+          description: `Enquiry received from ${lead.source || 'web'}`,
+        },
+      ],
+      tags: lead.tags || [lead.serviceCategory || 'General', lead.location || 'India'],
+      createdAt: lead.createdAt || new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    db.leads.unshift(savedLead);
+  }
+
+  await saveDatabaseAsync(db);
+  return savedLead;
+}
+
+export function deleteLead(id: string): boolean {
+  const db = loadDatabase();
+  db.leads = db.leads || [];
+  const initialLen = db.leads.length;
+  db.leads = db.leads.filter((l) => l.id !== id && l.referenceId !== id);
+  if (db.leads.length !== initialLen) {
+    saveDatabase(db);
+    return true;
+  }
+  return false;
+}
+
+export async function deleteLeadAsync(id: string): Promise<boolean> {
+  const db = await loadDatabaseAsync();
+  db.leads = db.leads || [];
+  const initialLen = db.leads.length;
+  db.leads = db.leads.filter((l) => l.id !== id && l.referenceId !== id);
+  if (db.leads.length !== initialLen) {
+    await saveDatabaseAsync(db);
+    return true;
+  }
+  return false;
+}
+
+export async function addLeadActivityAsync(
+  leadId: string,
+  activity: Omit<LeadActivity, 'id' | 'timestamp'>
+): Promise<LeadActivity | undefined> {
+  const db = await loadDatabaseAsync();
+  const lead = (db.leads || []).find((l) => l.id === leadId || l.referenceId === leadId);
+  if (!lead) return undefined;
+
+  const newActivity: LeadActivity = {
+    id: `act_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
+    timestamp: new Date().toISOString(),
+    ...activity,
+  };
+
+  lead.activities = lead.activities || [];
+  lead.activities.unshift(newActivity);
+  lead.updatedAt = new Date().toISOString();
+
+  await saveDatabaseAsync(db);
+  return newActivity;
+}
+
+/* ==================== PROJECTS & CONVERSION ==================== */
+
+export function getProjects(filter?: { status?: string; search?: string }): ProjectItem[] {
+  const db = loadDatabase();
+  let list = db.projects || [];
+  if (filter?.status && filter.status !== 'all') {
+    list = list.filter((p) => p.status === filter.status);
+  }
+  if (filter?.search) {
+    const q = filter.search.toLowerCase();
+    list = list.filter(
+      (p) =>
+        p.title.toLowerCase().includes(q) ||
+        p.customerName.toLowerCase().includes(q) ||
+        p.referenceId.toLowerCase().includes(q) ||
+        p.location.toLowerCase().includes(q)
+    );
+  }
+  return list.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+}
+
+export async function getProjectsAsync(filter?: { status?: string; search?: string }): Promise<ProjectItem[]> {
+  const db = await loadDatabaseAsync();
+  let list = db.projects || [];
+  if (filter?.status && filter.status !== 'all') {
+    list = list.filter((p) => p.status === filter.status);
+  }
+  if (filter?.search) {
+    const q = filter.search.toLowerCase();
+    list = list.filter(
+      (p) =>
+        p.title.toLowerCase().includes(q) ||
+        p.customerName.toLowerCase().includes(q) ||
+        p.referenceId.toLowerCase().includes(q) ||
+        p.location.toLowerCase().includes(q)
+    );
+  }
+  return list.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+}
+
+export function getProjectById(idOrRef: string): ProjectItem | undefined {
+  const db = loadDatabase();
+  const projects = db.projects || [];
+  return projects.find((p) => p.id === idOrRef || p.referenceId.toLowerCase() === idOrRef.toLowerCase());
+}
+
+export async function getProjectByIdAsync(idOrRef: string): Promise<ProjectItem | undefined> {
+  const db = await loadDatabaseAsync();
+  const projects = db.projects || [];
+  return projects.find((p) => p.id === idOrRef || p.referenceId.toLowerCase() === idOrRef.toLowerCase());
+}
+
+export function generateProjectReferenceId(): string {
+  const now = new Date();
+  const yy = String(now.getFullYear()).slice(-2);
+  const mm = String(now.getMonth() + 1).padStart(2, '0');
+  const dd = String(now.getDate()).padStart(2, '0');
+  const randomHex = Math.random().toString(36).substring(2, 6).toUpperCase();
+  return `PRJ-${yy}${mm}${dd}-${randomHex}`;
+}
+
+export async function saveProjectAsync(project: Partial<ProjectItem> & { title: string }): Promise<ProjectItem> {
+  const db = await loadDatabaseAsync();
+  db.projects = db.projects || [];
+  const existingIdx = db.projects.findIndex((p) => (project.id && p.id === project.id) || (project.referenceId && p.referenceId === project.referenceId));
+
+  let savedProject: ProjectItem;
+  if (existingIdx >= 0) {
+    savedProject = {
+      ...db.projects[existingIdx],
+      ...project,
+      updatedAt: new Date().toISOString(),
+    };
+    db.projects[existingIdx] = savedProject;
+  } else {
+    savedProject = {
+      id: project.id || `prj_${Date.now()}`,
+      referenceId: project.referenceId || generateProjectReferenceId(),
+      leadId: project.leadId || '',
+      leadReferenceId: project.leadReferenceId || '',
+      title: project.title,
+      customerName: project.customerName || 'Client',
+      customerPhone: project.customerPhone || '',
+      customerEmail: project.customerEmail || '',
+      location: project.location || 'India',
+      serviceCategory: project.serviceCategory || 'Agricultural Land Planning',
+      landAreaAcres: project.landAreaAcres || 0,
+      cropType: project.cropType || '',
+      scopeOfWork: project.scopeOfWork || '',
+      totalContractValue: project.totalContractValue || 0,
+      amountReceived: project.amountReceived || 0,
+      outstandingBalance: (project.totalContractValue || 0) - (project.amountReceived || 0),
+      projectManager: project.projectManager || 'Senior Project Agronomist',
+      status: project.status || 'planning',
+      startDate: project.startDate || new Date().toISOString().split('T')[0],
+      targetCompletionDate: project.targetCompletionDate,
+      milestones: project.milestones || [
+        {
+          id: `m_${Date.now()}_1`,
+          title: 'Site Demarcation & Soil Compaction Audit',
+          description: 'Establish GPS boundaries, assess soil viability, and finalize infrastructure plans.',
+          status: 'in_progress',
+          dueDate: new Date(Date.now() + 7 * 86400000).toISOString().split('T')[0],
+        },
+        {
+          id: `m_${Date.now()}_2`,
+          title: 'Infrastructure & Irrigation Mobilization',
+          description: 'Deploy boundary protection, water supply lines, and drip valves.',
+          status: 'pending',
+          dueDate: new Date(Date.now() + 21 * 86400000).toISOString().split('T')[0],
+        },
+        {
+          id: `m_${Date.now()}_3`,
+          title: 'Plantation & Commissioning Handover',
+          description: 'Nursery planting, system testing, and digital logbook handover.',
+          status: 'pending',
+          dueDate: new Date(Date.now() + 45 * 86400000).toISOString().split('T')[0],
+        },
+      ],
+      notes: project.notes,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    db.projects.unshift(savedProject);
+  }
+
+  await saveDatabaseAsync(db);
+  return savedProject;
+}
+
+export async function deleteProjectAsync(id: string): Promise<boolean> {
+  const db = await loadDatabaseAsync();
+  db.projects = db.projects || [];
+  const initialLen = db.projects.length;
+  db.projects = db.projects.filter((p) => p.id !== id && p.referenceId !== id);
+  if (db.projects.length !== initialLen) {
+    await saveDatabaseAsync(db);
+    return true;
+  }
+  return false;
+}
+
+export async function convertLeadToProjectAsync(
+  leadId: string,
+  overrides?: Partial<ProjectItem>
+): Promise<{ lead: LeadItem; project: ProjectItem }> {
+  const db = await loadDatabaseAsync();
+  const lead = (db.leads || []).find((l) => l.id === leadId || l.referenceId === leadId);
+  if (!lead) {
+    throw new Error('Lead not found');
+  }
+
+  // Idempotency: Prevent duplicate project creation if already converted
+  if (lead.projectId) {
+    const existingProject = (db.projects || []).find((p) => p.id === lead.projectId);
+    if (existingProject) {
+      return { lead, project: existingProject };
+    }
+  }
+
+  const projectRef = generateProjectReferenceId();
+  const projectId = `prj_${Date.now()}`;
+  const totalValue =
+    lead.stageNegotiation?.finalAgreedAmount ||
+    lead.stageValueProposition?.finalQuotedAmount ||
+    lead.estimatedDealValue ||
+    0;
+  const received = lead.stageNegotiation?.totalReceived || 0;
+
+  const newProject: ProjectItem = {
+    id: projectId,
+    referenceId: projectRef,
+    leadId: lead.id,
+    leadReferenceId: lead.referenceId,
+    title: overrides?.title || `${lead.name} — ${lead.serviceCategory || 'Agricultural Project'}`,
+    customerName: lead.name,
+    customerPhone: lead.phone,
+    customerEmail: lead.email,
+    location: lead.location,
+    serviceCategory: lead.serviceCategory || 'Agricultural Care',
+    landAreaAcres: lead.stageQualification?.totalAreaAcres || 0,
+    cropType: lead.stageQualification?.cropType || lead.stageQualification?.primaryCrop || '',
+    scopeOfWork:
+      lead.stageValueProposition?.scopeOfWork ||
+      lead.stageValueProposition?.proposedSolution ||
+      lead.stageQualification?.requirementSummary ||
+      '',
+    totalContractValue: overrides?.totalContractValue !== undefined ? overrides.totalContractValue : totalValue,
+    amountReceived: overrides?.amountReceived !== undefined ? overrides.amountReceived : received,
+    outstandingBalance: Math.max(0, (overrides?.totalContractValue || totalValue) - (overrides?.amountReceived || received)),
+    projectManager: overrides?.projectManager || 'Suresh Varma (Senior Agronomist)',
+    status: 'planning',
+    startDate: overrides?.startDate || new Date().toISOString().split('T')[0],
+    targetCompletionDate:
+      overrides?.targetCompletionDate ||
+      new Date(Date.now() + 60 * 86400000).toISOString().split('T')[0],
+    milestones: [
+      {
+        id: `m_${Date.now()}_1`,
+        title: 'Project Kickoff & Agronomic Site Verification',
+        description: 'Verify soil parameters, GPS boundaries, and finalize mobilization team.',
+        status: 'in_progress',
+        dueDate: new Date(Date.now() + 7 * 86400000).toISOString().split('T')[0],
+      },
+      {
+        id: `m_${Date.now()}_2`,
+        title: 'Input Mobilization & Field Execution',
+        description: 'Procure seeds/saplings, mobilize machinery, and execute land development.',
+        status: 'pending',
+        dueDate: new Date(Date.now() + 25 * 86400000).toISOString().split('T')[0],
+      },
+      {
+        id: `m_${Date.now()}_3`,
+        title: 'Commissioning & Client Handover',
+        description: 'Complete inspection with client, provide digital ledger & photo audit.',
+        status: 'pending',
+        dueDate: new Date(Date.now() + 60 * 86400000).toISOString().split('T')[0],
+      },
+    ],
+    notes: overrides?.notes || `Converted from Deal ${lead.referenceId}. All qualification and proposal data linked.`,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  };
+
+  db.projects = db.projects || [];
+  db.projects.unshift(newProject);
+
+  // Update lead to Closed Won
+  lead.currentStage = 'closed_won';
+  lead.status = 'closed_won';
+  lead.projectId = projectId;
+  lead.finalWonRevenue = totalValue;
+  lead.closedAt = new Date().toISOString();
+  lead.updatedAt = new Date().toISOString();
+  lead.stageClosedWon = {
+    wonDate: new Date().toISOString(),
+    projectId: projectId,
+    projectCreated: true,
+    transferredDataSummary: `Transferred customer details, ${lead.stageQualification?.totalAreaAcres || 0} acres land specs, and Rs ${totalValue} commercial quotation.`,
+    assignedProjectManager: newProject.projectManager,
+    projectStartDate: newProject.startDate,
+    projectTargetCompletionDate: newProject.targetCompletionDate,
+  };
+
+  // Add conversion activity
+  lead.activities = lead.activities || [];
+  lead.activities.unshift({
+    id: `act_${Date.now()}`,
+    timestamp: new Date().toISOString(),
+    type: 'converted_to_project',
+    title: 'Closed Won - Project Created',
+    description: `Successfully converted deal to Project ${newProject.referenceId} (${newProject.title})`,
+  });
+
+  await saveDatabaseAsync(db);
+  return { lead, project: newProject };
+}
+
+/* ==================== CRM SETTINGS ==================== */
+
+export function getCrmSettings(): CrmSettings {
+  const db = loadDatabase();
+  return db.crmSettings || getInitialSeedData().crmSettings;
+}
+
+export async function getCrmSettingsAsync(): Promise<CrmSettings> {
+  const db = await loadDatabaseAsync();
+  return db.crmSettings || getInitialSeedData().crmSettings;
+}
+
+export async function updateCrmSettingsAsync(settings: Partial<CrmSettings>): Promise<CrmSettings> {
+  const db = await loadDatabaseAsync();
+  db.crmSettings = {
+    ...db.crmSettings,
+    ...settings,
+  };
+  await saveDatabaseAsync(db);
+  return db.crmSettings;
+}
+
+/* ==================== CRM STATS & REPORTING ==================== */
+
+export async function getCrmStatsAsync(): Promise<Record<string, any>> {
+  const db = await loadDatabaseAsync();
+  const leads = db.leads || [];
+  const projects = db.projects || [];
+
+  const totalLeads = leads.length;
+  const todayStr = new Date().toISOString().split('T')[0];
+  const newLeadsToday = leads.filter((l) => l.createdAt.startsWith(todayStr)).length;
+  const unassignedLeads = leads.filter((l) => !l.assignedExecutive || l.assignedExecutive === 'Unassigned').length;
+
+  const closedWon = leads.filter((l) => l.status === 'closed_won' || l.currentStage === 'closed_won');
+  const closedLost = leads.filter((l) => l.status === 'closed_lost' || l.currentStage === 'closed_lost');
+  const openLeads = leads.filter((l) => l.status === 'open');
+
+  const wonRevenue = closedWon.reduce((acc, l) => acc + (l.finalWonRevenue || l.estimatedDealValue || 0), 0);
+  const totalPipelineValue = openLeads.reduce((acc, l) => acc + (l.estimatedDealValue || 0), 0);
+
+  const decidedCount = closedWon.length + closedLost.length;
+  const conversionRate = decidedCount > 0 ? Math.round((closedWon.length / decidedCount) * 100) : 0;
+
+  const leadsByStage: Record<string, number> = {
+    prospecting: leads.filter((l) => l.currentStage === 'prospecting').length,
+    qualification: leads.filter((l) => l.currentStage === 'qualification').length,
+    need_analysis: leads.filter((l) => l.currentStage === 'need_analysis').length,
+    value_proposition: leads.filter((l) => l.currentStage === 'value_proposition').length,
+    decision_makers: leads.filter((l) => l.currentStage === 'decision_makers').length,
+    negotiation: leads.filter((l) => l.currentStage === 'negotiation').length,
+    closed_won: closedWon.length,
+    closed_lost: closedLost.length,
+  };
+
+  const leadsBySource: Record<string, number> = {};
+  leads.forEach((l) => {
+    leadsBySource[l.source] = (leadsBySource[l.source] || 0) + 1;
+  });
+
+  return {
+    totalLeads,
+    newLeadsToday,
+    unassignedLeads,
+    openLeadsCount: openLeads.length,
+    closedWonCount: closedWon.length,
+    closedLostCount: closedLost.length,
+    totalPipelineValue,
+    wonRevenue,
+    conversionRate,
+    leadsByStage,
+    leadsBySource,
+    qualificationPending: leads.filter((l) => l.currentStage === 'prospecting' || l.currentStage === 'qualification').length,
+    proposalsSubmitted: leads.filter((l) => l.currentStage === 'value_proposition' || l.currentStage === 'decision_makers').length,
+    negotiationsInProgress: leads.filter((l) => l.currentStage === 'negotiation').length,
+    activeProjectsCount: projects.filter((p) => p.status !== 'completed').length,
+    totalProjectsCount: projects.length,
+    recentLeads: leads.slice(0, 5),
+  };
+}
+

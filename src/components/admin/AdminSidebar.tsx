@@ -44,19 +44,28 @@ const navSections = [
     ],
   },
   {
+    title: "Sales & CRM",
+    items: [
+      { name: "Lead Desk", href: "/admin/leads", icon: Inbox },
+      { name: "CRM Analytics", href: "/admin/leads/dashboard", icon: Sparkles },
+      { name: "Projects", href: "/admin/projects", icon: Briefcase },
+      { name: "CRM Settings", href: "/admin/leads/settings", icon: Settings },
+    ],
+  },
+  {
     title: "Content & Pages",
     items: [
       { name: "Pages & Sections", href: "/admin/pages", icon: FileText },
-      { name: "Services", href: "/admin/services", icon: Briefcase },
-      { name: "Spaces We Serve", href: "/admin/spaces", icon: Layers },
-      { name: "Business Models", href: "/admin/models", icon: Building2 },
+      { name: "Services", href: "/admin/services", icon: Layers },
+      { name: "Spaces We Serve", href: "/admin/spaces", icon: Building2 },
+      { name: "Business Models", href: "/admin/models", icon: ShieldCheck },
       { name: "Transparency & Process", href: "/admin/transparency", icon: ShieldCheck },
     ],
   },
   {
-    title: "Engagement & CRM",
+    title: "Engagement & Assets",
     items: [
-      { name: "Enquiries & Leads", href: "/admin/enquiries", icon: Inbox },
+      { name: "Website Enquiries", href: "/admin/enquiries", icon: Inbox },
       { name: "Testimonials", href: "/admin/testimonials", icon: MessageSquareQuote },
       { name: "FAQ Library", href: "/admin/faqs", icon: HelpCircle },
       { name: "Media Assets", href: "/admin/media", icon: ImageIcon },

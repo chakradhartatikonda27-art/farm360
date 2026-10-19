@@ -3,7 +3,7 @@
  * Handles server-side validation and dispatch to CRM / Webhooks / Local Storage.
  */
 
-import { saveEnquiry } from '@/lib/cms/db';
+import { saveEnquiry, saveLeadAsync, generateLeadReferenceId } from '@/lib/cms/db';
 
 export interface ConsultationSubmission {
   fullName: string;
@@ -130,8 +130,41 @@ export async function processConsultation(
         },
       ],
     });
+
+    // Also register lead into full Sales CRM
+    const leadRef = generateLeadReferenceId();
+    await saveLeadAsync({
+      referenceId: leadRef,
+      name: data.fullName,
+      phone: data.phone,
+      email: data.email,
+      location: data.location,
+      source: 'website',
+      serviceCategory: `${data.preferredEngagement} — ${data.serviceCategory || data.propertyType}`,
+      subject: `Website Consultation: ${data.propertyType}`,
+      message: data.projectDescription,
+      priority: 'medium',
+      currentStage: 'prospecting',
+      status: 'open',
+      stageProspecting: {
+        enquiryReason: data.projectDescription,
+        customerExpectations: `Interested in ${data.serviceCategory || data.propertyType} (${data.preferredEngagement})`,
+        initialRequirements: `Property: ${data.propertyType}, Approx Size: ${data.approxSize || 'Not specified'}, Location: ${data.location}`,
+        prospectingNotes: 'Submitted through website consultation booking form.',
+        qualificationStartDate: new Date().toISOString().split('T')[0],
+      },
+      activities: [
+        {
+          id: `act_${Date.now()}`,
+          timestamp: new Date().toISOString(),
+          type: 'lead_created',
+          title: 'Lead Captured via Website',
+          description: `Visitor ${data.fullName} submitted consultation request for ${data.propertyType} in ${data.location}. Reference: ${leadRef}`,
+        },
+      ],
+    });
   } catch (err) {
-    console.error('Failed to save enquiry to CMS store:', err);
+    console.error('Failed to save enquiry/lead to CMS store:', err);
   }
 
   // Log lead to server console for operational traceability
