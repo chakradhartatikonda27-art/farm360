@@ -9,6 +9,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/services',
     '/for-your-space',
     '/managed-care',
+    '/gallery',
+    '/testimonials',
     '/landowners',
     '/about',
     '/contact',

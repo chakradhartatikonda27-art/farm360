@@ -62,6 +62,8 @@ export const companyConfig: CompanyConfig = {
       { label: 'Home', href: '/' },
       { label: 'Our Services', href: '/services' },
       { label: 'Managed Care', href: '/managed-care' },
+      { label: 'Photo Gallery', href: '/gallery' },
+      { label: 'Testimonials', href: '/testimonials' },
       { label: 'For Landowners', href: '/landowners' },
       { label: 'About Us', href: '/about' },
       { label: 'Contact', href: '/contact' },

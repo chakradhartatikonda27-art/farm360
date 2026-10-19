@@ -32,6 +32,8 @@ export function SiteHeader() {
     { label: 'Home', href: '/' },
     { label: 'Our Services', href: '/services' },
     { label: 'Managed Care', href: '/managed-care' },
+    { label: 'Gallery', href: '/gallery' },
+    { label: 'Testimonials', href: '/testimonials' },
     { label: 'For Landowners', href: '/landowners' },
     { label: 'About Us', href: '/about' },
     { label: 'Contact', href: '/contact' },
@@ -78,7 +80,7 @@ export function SiteHeader() {
           </Link>
 
           {/* Desktop Navigation Links */}
-          <nav className="hidden lg:flex items-center gap-7 text-[15px]" aria-label="Main navigation">
+          <nav className="hidden lg:flex items-center gap-4 xl:gap-6 text-[14px] xl:text-[15px]" aria-label="Main navigation">
             {navLinks.map((link) => {
               const currentPath = pathname || '/';
               const isActive = link.href === '/' 

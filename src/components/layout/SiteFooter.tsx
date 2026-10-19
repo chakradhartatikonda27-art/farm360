@@ -98,6 +98,16 @@ export function SiteFooter() {
                 </Link>
               </li>
               <li>
+                <Link href="/gallery" className="hover:text-white transition-colors">
+                  Photo Gallery
+                </Link>
+              </li>
+              <li>
+                <Link href="/testimonials" className="hover:text-white transition-colors">
+                  Testimonials
+                </Link>
+              </li>
+              <li>
                 <Link href="/landowners" className="hover:text-white transition-colors">
                   For Landowners
                 </Link>
