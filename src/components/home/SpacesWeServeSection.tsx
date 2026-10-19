@@ -45,17 +45,17 @@ export function SpacesWeServeSection() {
                     : 'bg-white hover:bg-cream/60 text-charcoal/80 border-charcoal/10 shadow-2xs'
                 }`}
               >
-                <div className="flex items-center justify-between w-full">
+                <span className="flex items-center justify-between w-full">
                   <span className={`font-mono text-[11px] sm:text-xs font-bold tracking-widest ${isSelected ? 'text-gold' : 'text-charcoal/40'}`}>
                     {space.number}
                   </span>
                   <span className={`w-2 h-2 rounded-full ${isSelected ? 'bg-gold' : 'bg-charcoal/25'}`} />
-                </div>
-                <div className="mt-2 sm:mt-3">
-                  <h3 className={`font-serif text-[14.5px] sm:text-lg font-medium leading-tight ${isSelected ? 'text-white' : 'text-forest-deep'}`}>
+                </span>
+                <span className="block mt-2 sm:mt-3">
+                  <span className={`block font-serif text-[14.5px] sm:text-lg font-medium leading-tight ${isSelected ? 'text-white' : 'text-forest-deep'}`}>
                     {space.title}
-                  </h3>
-                </div>
+                  </span>
+                </span>
               </button>
             );
           })}

@@ -49,19 +49,19 @@ export function BusinessModelsSection() {
                     : 'bg-white hover:bg-cream text-charcoal/80 border-charcoal/10 shadow-2xs'
                 }`}
               >
-                <div>
+                <span className="block">
                   <span className={`inline-block px-2 py-0.5 rounded text-[10.5px] sm:text-[11px] font-bold tracking-wider uppercase mb-1.5 sm:mb-2 ${
                     isSelected ? 'bg-gold/25 text-gold' : 'bg-charcoal/10 text-charcoal/70'
                   }`}>
                     {m.code}
                   </span>
-                  <h3 className={`font-serif text-base sm:text-lg font-medium leading-snug ${isSelected ? 'text-white' : 'text-forest-deep'}`}>
+                  <span className={`block font-serif text-base sm:text-lg font-medium leading-snug ${isSelected ? 'text-white' : 'text-forest-deep'}`}>
                     {m.title}
-                  </h3>
-                </div>
-                <p className={`text-xs mt-2 sm:mt-3 line-clamp-2 ${isSelected ? 'text-white/80' : 'text-charcoal/60'}`}>
+                  </span>
+                </span>
+                <span className={`block text-xs mt-2 sm:mt-3 line-clamp-2 ${isSelected ? 'text-white/80' : 'text-charcoal/60'}`}>
                   {m.tagline}
-                </p>
+                </span>
               </button>
             );
           })}

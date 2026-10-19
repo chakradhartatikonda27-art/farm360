@@ -127,7 +127,7 @@ export function CarePlanEstimator() {
                       : 'bg-ivory border-cream hover:border-gold/50 text-charcoal'
                   }`}
                 >
-                  <div className="font-serif text-base">{space.name}</div>
+                  <span className="block font-serif text-base">{space.name}</span>
                 </button>
               );
             })}
@@ -179,10 +179,10 @@ export function CarePlanEstimator() {
                       : 'bg-ivory/60 border-cream/80 hover:bg-ivory text-charcoal'
                   }`}
                 >
-                  <div className="flex items-center gap-2">
+                  <span className="flex items-center gap-2">
                     <Calendar className="w-4 h-4 text-gold shrink-0" />
                     <span>{cadence}</span>
-                  </div>
+                  </span>
                 </button>
               );
             })}

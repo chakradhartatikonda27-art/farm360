@@ -93,12 +93,12 @@ export function ProjectGallery() {
                 className="object-cover transition-transform duration-500 group-hover:scale-105"
                 sizes={item.isHero ? '(max-width: 768px) 100vw, 50vw' : '(max-width: 768px) 50vw, 25vw'}
               />
-              <figcaption className="absolute inset-x-0 bottom-0 pt-7 pb-3 px-3 text-white font-sans text-sm font-medium bg-gradient-to-t from-forest-dark/90 via-forest-dark/45 to-transparent flex items-center justify-between">
+              <div className="absolute inset-x-0 bottom-0 pt-7 pb-3 px-3 text-white font-sans text-sm font-medium bg-gradient-to-t from-forest-dark/90 via-forest-dark/45 to-transparent flex items-center justify-between pointer-events-none">
                 <span>{item.title}</span>
                 <span className="opacity-0 group-hover:opacity-100 transition-opacity text-gold text-xs font-bold">
                   View →
                 </span>
-              </figcaption>
+              </div>
             </Link>
           ))}
         </div>

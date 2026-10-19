@@ -68,15 +68,15 @@ export default function ForYourSpacePage() {
                       : 'bg-white hover:bg-cream text-charcoal/80 border-charcoal/10 shadow-2xs'
                   }`}
                 >
-                  <div className="flex items-center justify-between w-full mb-2 sm:mb-3">
+                  <span className="flex items-center justify-between w-full mb-2 sm:mb-3">
                     <span className={`font-mono text-xs font-bold ${isSelected ? 'text-gold' : 'text-charcoal/40'}`}>
                       {space.number}
                     </span>
                     <span className={`w-2 h-2 rounded-full ${isSelected ? 'bg-gold' : 'bg-charcoal/25'}`} />
-                  </div>
-                  <h2 className={`font-serif text-[14px] sm:text-lg font-medium leading-tight ${isSelected ? 'text-white' : 'text-forest-deep'}`}>
+                  </span>
+                  <span className={`block font-serif text-[14px] sm:text-lg font-medium leading-tight ${isSelected ? 'text-white' : 'text-forest-deep'}`}>
                     {space.title}
-                  </h2>
+                  </span>
                 </button>
               );
             })}

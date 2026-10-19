@@ -65,6 +65,9 @@ export const metadata: Metadata = {
     statusBarStyle: 'default',
     title: companyConfig.brandName,
   },
+  other: {
+    'mobile-web-app-capable': 'yes',
+  },
   formatDetection: {
     telephone: true,
     date: false,
@@ -104,14 +107,18 @@ export default function RootLayout({
   };
 
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
+        <meta name="mobile-web-app-capable" content="yes" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className="bg-ivory text-charcoal min-h-screen flex flex-col font-sans selection:bg-forest selection:text-ivory">
+      <body 
+        className="bg-ivory text-charcoal min-h-screen flex flex-col font-sans selection:bg-forest selection:text-ivory"
+        suppressHydrationWarning
+      >
         <SiteHeader />
         <main className="flex-1 w-full">{children}</main>
         <SiteFooter />
