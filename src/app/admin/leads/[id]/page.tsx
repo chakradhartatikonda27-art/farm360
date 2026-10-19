@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState, useEffect, use } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import {
   ArrowLeft,
   CheckCircle2,
@@ -46,8 +46,9 @@ const STAGES: { key: SalesStage; title: string; step: number }[] = [
   { key: "closed_won", title: "Closed Won", step: 7 },
 ];
 
-export default function LeadDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = use(params);
+export default function LeadDetailPage() {
+  const urlParams = useParams();
+  const id = (urlParams?.id as string) || "";
   const router = useRouter();
 
   const [lead, setLead] = useState<LeadItem | null>(null);
@@ -77,7 +78,37 @@ export default function LeadDetailPage({ params }: { params: Promise<{ id: strin
   // Conversion state
   const [converting, setConverting] = useState(false);
 
+  const formatDate = (val?: string) => {
+    if (!val) return "";
+    try {
+      const d = new Date(val);
+      if (isNaN(d.getTime())) return "";
+      return d.toLocaleDateString("en-IN", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+      });
+    } catch {
+      return "";
+    }
+  };
+
+  const formatTime = (val?: string) => {
+    if (!val) return "";
+    try {
+      const d = new Date(val);
+      if (isNaN(d.getTime())) return "";
+      return d.toLocaleTimeString("en-IN", {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+    } catch {
+      return "";
+    }
+  };
+
   const fetchLead = async () => {
+    if (!id) return;
     try {
       setLoading(true);
       const res = await fetch(`/api/admin/leads/${id}`);
@@ -117,7 +148,9 @@ export default function LeadDetailPage({ params }: { params: Promise<{ id: strin
   // Helper to toggle challenges in Step 3
   const toggleChallenge = (challengeName: string) => {
     if (!lead) return;
-    const currentList = lead.stageNeedAnalysis?.challengesIdentified || ["Pest", "Soil", "Irrigation", "Yield"];
+    const currentList = Array.isArray(lead.stageNeedAnalysis?.challengesIdentified)
+      ? lead.stageNeedAnalysis.challengesIdentified
+      : ["Pest", "Soil", "Irrigation", "Yield"];
     const exists = currentList.includes(challengeName);
     const updated = exists ? currentList.filter((c) => c !== challengeName) : [...currentList, challengeName];
 
@@ -341,10 +374,12 @@ export default function LeadDetailPage({ params }: { params: Promise<{ id: strin
   const currentStageIndex = STAGES.findIndex((s) => s.key === lead.currentStage);
   const currentStepNumber = currentStageIndex >= 0 ? currentStageIndex + 1 : 1;
   const isLost = lead.status === "closed_lost" || lead.currentStage === "closed_lost";
-  const cleanPhone = lead.phone.replace(/[^\d]/g, "");
+  const cleanPhone = (lead.phone || "").replace(/[^\d]/g, "");
 
   // Challenges list for Need Analysis
-  const challengesList = lead.stageNeedAnalysis?.challengesIdentified || ["Pest", "Soil", "Irrigation", "Yield"];
+  const challengesList = Array.isArray(lead.stageNeedAnalysis?.challengesIdentified)
+    ? lead.stageNeedAnalysis.challengesIdentified
+    : ["Pest", "Soil", "Irrigation", "Yield"];
 
   // Commercial values for Quote Review & Audit Trail
   const quoteVal = Number(
@@ -352,9 +387,9 @@ export default function LeadDetailPage({ params }: { params: Promise<{ id: strin
       lead.stageNegotiation?.finalAgreedAmount ||
       lead.estimatedDealValue ||
       10000.33
-  );
-  const baseVal = Number(lead.stageValueProposition?.quotationAmount || quoteVal);
-  const discVal = Number(lead.stageValueProposition?.applicableDiscounts || 0);
+  ) || 0;
+  const baseVal = Number(lead.stageValueProposition?.quotationAmount || quoteVal) || 0;
+  const discVal = Number(lead.stageValueProposition?.applicableDiscounts || 0) || 0;
 
   return (
     <div className="space-y-6 pb-16">
@@ -394,25 +429,21 @@ export default function LeadDetailPage({ params }: { params: Promise<{ id: strin
       <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 pb-1">
         <div>
           <div className="text-xs font-mono text-[#7C887E]">
-            {lead.referenceId} · <span className="capitalize">{lead.source}</span>
+            {lead.referenceId || lead.id} · <span className="capitalize">{lead.source || "web"}</span>
           </div>
           <h1 className="text-3xl md:text-5xl font-serif font-bold text-[#1B3B2B] mt-1 tracking-tight">
             {lead.name}
           </h1>
           <div className="text-xs text-[#4A5D4E] mt-1.5 flex flex-wrap items-center gap-1.5">
-            <span>{lead.phone}</span>
+            <span>{lead.phone || "—"}</span>
             <span>·</span>
             <span>{lead.email || "chakradhartatikonda27@gmail.com"}</span>
             <span>·</span>
             <span>{lead.location || "india"}</span>
           </div>
           <div className="text-xs text-[#7C887E] mt-1">
-            {lead.serviceCategory || "Small Plot & Site Gardening"} · Enquiry received{" "}
-            {new Date(lead.createdAt).toLocaleDateString("en-IN", {
-              day: "2-digit",
-              month: "short",
-              year: "numeric",
-            })}
+            {lead.serviceCategory || "Small Plot & Site Gardening"}
+            {lead.createdAt ? ` · Enquiry received ${formatDate(lead.createdAt)}` : ""}
           </div>
         </div>
 
@@ -536,7 +567,7 @@ export default function LeadDetailPage({ params }: { params: Promise<{ id: strin
                   CURRENT STEP • 0{activeStepTab} / 07
                 </div>
                 <h2 className="text-xl md:text-2xl font-serif font-bold text-[#1B3B2B] mt-0.5">
-                  {STAGES[activeStepTab - 1].title}
+                  {STAGES[activeStepTab - 1]?.title || "Current Step"}
                 </h2>
               </div>
 
@@ -1979,7 +2010,7 @@ export default function LeadDetailPage({ params }: { params: Promise<{ id: strin
             </h3>
 
             {/* Timeline items matching screenshot */}
-            {(!lead.activities || lead.activities.length === 0) ? (
+            {(!lead.activities || !Array.isArray(lead.activities) || lead.activities.length === 0) ? (
               <p className="text-xs text-[#7C887E]">No activities recorded yet.</p>
             ) : (
               <div className="space-y-4">
@@ -1992,15 +2023,9 @@ export default function LeadDetailPage({ params }: { params: Promise<{ id: strin
                         {act.title}
                       </div>
                       <div className="text-[11px] text-[#7C887E]">
-                        {new Date(act.timestamp).toLocaleDateString("en-IN", {
-                          day: "2-digit",
-                          month: "short",
-                          year: "numeric",
-                        })}{", "}
-                        {new Date(act.timestamp).toLocaleTimeString("en-IN", {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}{" · "}
+                        {formatDate(act.timestamp)}
+                        {formatTime(act.timestamp) ? `, ${formatTime(act.timestamp)}` : ""}
+                        {" · "}
                         {act.userName || "admin@gmail.com"}
                       </div>
                       {act.description && (

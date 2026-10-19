@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState, useEffect, use } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import {
   ArrowLeft,
   CheckCircle2,
@@ -22,8 +23,9 @@ import {
 } from "lucide-react";
 import { ProjectItem, ProjectMilestone } from "@/lib/cms/types";
 
-export default function ProjectDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = use(params);
+export default function ProjectDetailPage() {
+  const urlParams = useParams();
+  const id = (urlParams?.id as string) || "";
 
   const [project, setProject] = useState<ProjectItem | null>(null);
   const [loading, setLoading] = useState(true);

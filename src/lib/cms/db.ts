@@ -1758,18 +1758,22 @@ export async function getLeadsAsync(filter?: { stage?: string; status?: string; 
 }
 
 export function getLeadById(idOrRef: string): LeadItem | undefined {
+  if (!idOrRef) return undefined;
   const db = loadDatabase();
   const leads = db.leads || [];
+  const target = String(idOrRef).toLowerCase();
   return leads.find(
-    (l) => l.id === idOrRef || l.referenceId.toLowerCase() === idOrRef.toLowerCase()
+    (l) => l.id === idOrRef || (Boolean(l.referenceId) && l.referenceId.toLowerCase() === target)
   );
 }
 
 export async function getLeadByIdAsync(idOrRef: string): Promise<LeadItem | undefined> {
+  if (!idOrRef) return undefined;
   const db = await loadDatabaseAsync();
   const leads = db.leads || [];
+  const target = String(idOrRef).toLowerCase();
   return leads.find(
-    (l) => l.id === idOrRef || l.referenceId.toLowerCase() === idOrRef.toLowerCase()
+    (l) => l.id === idOrRef || (Boolean(l.referenceId) && l.referenceId.toLowerCase() === target)
   );
 }
 
@@ -1981,15 +1985,19 @@ export async function getProjectsAsync(filter?: { status?: string; search?: stri
 }
 
 export function getProjectById(idOrRef: string): ProjectItem | undefined {
+  if (!idOrRef) return undefined;
   const db = loadDatabase();
   const projects = db.projects || [];
-  return projects.find((p) => p.id === idOrRef || p.referenceId.toLowerCase() === idOrRef.toLowerCase());
+  const target = String(idOrRef).toLowerCase();
+  return projects.find((p) => p.id === idOrRef || (Boolean(p.referenceId) && p.referenceId.toLowerCase() === target));
 }
 
 export async function getProjectByIdAsync(idOrRef: string): Promise<ProjectItem | undefined> {
+  if (!idOrRef) return undefined;
   const db = await loadDatabaseAsync();
   const projects = db.projects || [];
-  return projects.find((p) => p.id === idOrRef || p.referenceId.toLowerCase() === idOrRef.toLowerCase());
+  const target = String(idOrRef).toLowerCase();
+  return projects.find((p) => p.id === idOrRef || (Boolean(p.referenceId) && p.referenceId.toLowerCase() === target));
 }
 
 export function generateProjectReferenceId(): string {
