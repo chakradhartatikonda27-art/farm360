@@ -10,7 +10,7 @@ export async function GET(
   if (!item) {
     return NextResponse.json({ error: 'Testimonial not found' }, { status: 404 });
   }
-  return NextResponse.json(item);
+  return NextResponse.json({ success: true, data: item });
 }
 
 export async function PUT(
@@ -46,7 +46,7 @@ export async function PUT(
       details: `Updated testimonial from "${updated.name}" (Status: ${updated.status})`,
     });
 
-    return NextResponse.json(updated);
+    return NextResponse.json({ success: true, data: updated });
   } catch (err: any) {
     return NextResponse.json({ error: err.message || 'Failed to update testimonial' }, { status: 500 });
   }

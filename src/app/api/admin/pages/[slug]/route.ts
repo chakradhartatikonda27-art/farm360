@@ -10,7 +10,7 @@ export async function GET(
   if (!page) {
     return NextResponse.json({ error: 'Page not found' }, { status: 404 });
   }
-  return NextResponse.json(page);
+  return NextResponse.json({ success: true, data: page });
 }
 
 export async function PUT(
@@ -39,7 +39,7 @@ export async function PUT(
       details: `Updated content & sections for page: "${updated.title}"`,
     });
 
-    return NextResponse.json(updated);
+    return NextResponse.json({ success: true, data: updated });
   } catch (err: any) {
     return NextResponse.json({ error: err.message || 'Failed to update page' }, { status: 500 });
   }

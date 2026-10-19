@@ -16,7 +16,8 @@ import {
   GlobalSettings, 
   MediaAsset,
   AuditLogEntry,
-  ContentRevision
+  ContentRevision,
+  DashboardStats
 } from './types';
 import { getInitialSeedData } from './seedData';
 
@@ -801,32 +802,55 @@ export function deleteMediaAsset(id: string): boolean {
 }
 
 /* ==================== DASHBOARD STATS ==================== */
-export function getDashboardStats() {
+export function getDashboardStats(): DashboardStats & Record<string, any> {
   const db = loadDatabase();
+  const totalPages = db.pages.length;
+  const publishedPages = db.pages.filter((p) => p.status === 'published' || p.isPublished).length;
+  const totalServices = db.services.length;
+  const activeServices = db.services.filter((s) => s.status === 'published' || s.isActive).length;
+  const spacesCount = db.spaces.length;
+  const mediaAssetsCount = db.mediaAssets.length;
+  const totalTestimonials = db.testimonials.length;
+  const approvedTestimonials = db.testimonials.filter((t) => t.isApproved ?? (t.status === 'published')).length;
+  const totalEnquiries = db.enquiries.length;
+  const newEnquiries = db.enquiries.filter((e) => e.status === 'new').length;
+
   return {
+    totalPages,
+    publishedPages,
+    totalServices,
+    activeServices,
+    spacesCount,
+    mediaAssetsCount,
+    totalTestimonials,
+    approvedTestimonials,
+    totalEnquiries,
+    newEnquiries,
+    recentEnquiries: db.enquiries.slice(0, 5),
+    recentActivity: db.auditLogs.slice(0, 8),
     pages: {
-      total: db.pages.length,
-      published: db.pages.filter((p) => p.status === 'published').length,
+      total: totalPages,
+      published: publishedPages,
     },
     services: {
-      total: db.services.length,
-      published: db.services.filter((s) => s.status === 'published').length,
+      total: totalServices,
+      published: activeServices,
       categories: Array.from(new Set(db.services.map((s) => s.category))),
     },
     spaces: {
-      total: db.spaces.length,
-      published: db.spaces.filter((s) => s.status === 'published').length,
+      total: spacesCount,
+      published: db.spaces.filter((s) => s.status === 'published' || s.isActive).length,
     },
     models: {
       total: db.businessModels.length,
     },
     media: {
-      total: db.mediaAssets.length,
-      totalSize: db.mediaAssets.reduce((acc, m) => acc + m.size, 0),
+      total: mediaAssetsCount,
+      totalSize: db.mediaAssets.reduce((acc, m) => acc + (m.size || 0), 0),
     },
     testimonials: {
-      total: db.testimonials.length,
-      published: db.testimonials.filter((t) => t.status === 'published').length,
+      total: totalTestimonials,
+      published: approvedTestimonials,
       featured: db.testimonials.filter((t) => t.isFeatured).length,
     },
     faqs: {
@@ -834,13 +858,12 @@ export function getDashboardStats() {
       published: db.faqs.filter((f) => f.status === 'published').length,
     },
     enquiries: {
-      total: db.enquiries.length,
-      new: db.enquiries.filter((e) => e.status === 'new').length,
+      total: totalEnquiries,
+      new: newEnquiries,
       inProgress: db.enquiries.filter((e) => e.status === 'in_progress').length,
       resolved: db.enquiries.filter((e) => e.status === 'resolved').length,
       archived: db.enquiries.filter((e) => e.status === 'archived').length,
     },
-    recentEnquiries: db.enquiries.slice(0, 5),
     recentAudits: db.auditLogs.slice(0, 8),
   };
 }

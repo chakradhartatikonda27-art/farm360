@@ -11,7 +11,7 @@ import { getCurrentAdminUser, hasPermission } from '@/lib/cms/auth';
 
 export async function GET() {
   const data = getTransparencyData();
-  return NextResponse.json(data);
+  return NextResponse.json({ success: true, data: data, ...data });
 }
 
 export async function PUT(req: Request) {

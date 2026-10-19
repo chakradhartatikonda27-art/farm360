@@ -40,11 +40,12 @@ export default function AdminNavigationPage() {
       setLoading(true);
       const res = await fetch("/api/admin/navigation");
       const json = await res.json();
-      if (json.success && json.data) {
-        setHeaderMenu(json.data.header || []);
-        setFooterMenu(json.data.footer || []);
-        if (json.data.announcement) {
-          setAnnouncement(json.data.announcement);
+      const data = json.data || json;
+      if (data) {
+        setHeaderMenu(data.header || []);
+        setFooterMenu(data.footer || []);
+        if (data.announcement) {
+          setAnnouncement(data.announcement);
         }
       }
     } catch (err) {

@@ -49,10 +49,11 @@ export default function AdminTransparencyPage() {
       setLoading(true);
       const res = await fetch("/api/admin/transparency");
       const json = await res.json();
-      if (json.success && json.data) {
-        setSteps(json.data.steps || []);
-        setPrinciples(json.data.principles || []);
-        setDocuments(json.data.documents || []);
+      const data = json.data || json;
+      if (data) {
+        setSteps(data.steps || []);
+        setPrinciples(data.principles || []);
+        setDocuments(data.documents || []);
       }
     } catch (err) {
       console.error("Failed to load transparency data:", err);

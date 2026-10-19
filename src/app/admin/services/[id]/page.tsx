@@ -73,8 +73,9 @@ export default function AdminServiceEditorPage() {
       setLoading(true);
       const res = await fetch(`/api/admin/services/${id}`);
       const json = await res.json();
-      if (json.success && json.data) {
-        setService(json.data);
+      const data = json.data || json;
+      if (data && (data.id || data.slug)) {
+        setService(data);
       } else {
         setErrorMsg("Failed to load service details.");
       }

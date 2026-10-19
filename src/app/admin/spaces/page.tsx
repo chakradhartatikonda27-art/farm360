@@ -48,8 +48,9 @@ export default function AdminSpacesPage() {
       setLoading(true);
       const res = await fetch("/api/admin/spaces");
       const json = await res.json();
-      if (json.success) {
-        setSpaces(json.data);
+      const list = json.data || json;
+      if (Array.isArray(list)) {
+        setSpaces(list);
       }
     } catch (err) {
       console.error("Failed to load spaces:", err);

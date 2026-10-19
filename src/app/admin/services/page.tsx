@@ -39,8 +39,9 @@ export default function AdminServicesListPage() {
       setLoading(true);
       const res = await fetch("/api/admin/services");
       const json = await res.json();
-      if (json.success) {
-        setServices(json.data);
+      const list = json.data || json;
+      if (Array.isArray(list)) {
+        setServices(list);
       }
     } catch (err) {
       console.error("Failed to load services:", err);

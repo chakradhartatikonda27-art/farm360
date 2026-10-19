@@ -38,8 +38,9 @@ export default function AdminFaqsPage() {
       setLoading(true);
       const res = await fetch("/api/admin/faqs");
       const json = await res.json();
-      if (json.success) {
-        setFaqs(json.data);
+      const list = json.data || json;
+      if (Array.isArray(list)) {
+        setFaqs(list);
       }
     } catch (err) {
       console.error("Failed to load FAQs:", err);

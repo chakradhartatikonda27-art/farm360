@@ -4,7 +4,7 @@ import { getCurrentAdminUser, hasPermission } from '@/lib/cms/auth';
 
 export async function GET() {
   const settings = getGlobalSettings();
-  return NextResponse.json(settings);
+  return NextResponse.json({ success: true, data: settings, ...settings });
 }
 
 export async function PUT(req: Request) {
@@ -26,7 +26,7 @@ export async function PUT(req: Request) {
       details: `Updated global website settings: brand, contact, and announcement ticker`,
     });
 
-    return NextResponse.json(updated);
+    return NextResponse.json({ success: true, data: updated, ...updated });
   } catch (err: any) {
     return NextResponse.json({ error: err.message || 'Failed to update settings' }, { status: 500 });
   }

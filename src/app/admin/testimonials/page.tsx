@@ -42,8 +42,9 @@ export default function AdminTestimonialsPage() {
       setLoading(true);
       const res = await fetch("/api/admin/testimonials");
       const json = await res.json();
-      if (json.success) {
-        setTestimonials(json.data);
+      const list = json.data || json;
+      if (Array.isArray(list)) {
+        setTestimonials(list);
       }
     } catch (err) {
       console.error("Failed to load testimonials:", err);

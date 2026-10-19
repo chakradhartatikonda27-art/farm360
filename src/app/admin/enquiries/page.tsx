@@ -50,8 +50,9 @@ export default function AdminEnquiriesCRMPage() {
       setLoading(true);
       const res = await fetch("/api/admin/enquiries");
       const json = await res.json();
-      if (json.success) {
-        setEnquiries(json.data);
+      const list = json.data || json;
+      if (Array.isArray(list)) {
+        setEnquiries(list);
       }
     } catch (err) {
       console.error("Failed to load enquiries:", err);

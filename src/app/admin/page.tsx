@@ -33,8 +33,9 @@ export default function AdminDashboardPage() {
       setLoading(true);
       const res = await fetch("/api/admin/stats");
       const json = await res.json();
-      if (json.success) {
-        setStats(json.data);
+      const data = json.data || json;
+      if (data && (data.totalPages !== undefined || data.pages !== undefined)) {
+        setStats(data);
       }
     } catch (err) {
       console.error("Failed to fetch dashboard stats:", err);

@@ -39,8 +39,9 @@ export default function AdminSettingsPage() {
       setLoading(true);
       const res = await fetch("/api/admin/settings");
       const json = await res.json();
-      if (json.success && json.data) {
-        setSettings(json.data);
+      const data = json.data || json;
+      if (data && (data.brandName || data.contactPhone || data.contact)) {
+        setSettings(data);
       }
     } catch (err) {
       console.error("Failed to load settings:", err);

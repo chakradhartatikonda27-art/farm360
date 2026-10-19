@@ -6,7 +6,7 @@ export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const status = searchParams.get('status') || undefined;
   const spaces = getSpaces({ status });
-  return NextResponse.json(spaces);
+  return NextResponse.json({ success: true, data: spaces });
 }
 
 export async function POST(req: Request) {

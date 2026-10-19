@@ -10,7 +10,7 @@ export async function GET(
   if (!service) {
     return NextResponse.json({ error: 'Service not found' }, { status: 404 });
   }
-  return NextResponse.json(service);
+  return NextResponse.json({ success: true, data: service });
 }
 
 export async function PUT(
@@ -46,7 +46,7 @@ export async function PUT(
       details: `Updated service: "${updated.name}"`,
     });
 
-    return NextResponse.json(updated);
+    return NextResponse.json({ success: true, data: updated });
   } catch (err: any) {
     return NextResponse.json({ error: err.message || 'Failed to update service' }, { status: 500 });
   }

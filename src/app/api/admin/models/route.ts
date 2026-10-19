@@ -4,7 +4,7 @@ import { getCurrentAdminUser, hasPermission } from '@/lib/cms/auth';
 
 export async function GET() {
   const models = getBusinessModels();
-  return NextResponse.json(models);
+  return NextResponse.json({ success: true, data: models });
 }
 
 export async function PUT(req: Request) {
@@ -29,7 +29,7 @@ export async function PUT(req: Request) {
       details: `Updated business model: "${updated.title}" (${updated.code})`,
     });
 
-    return NextResponse.json(updated);
+    return NextResponse.json({ success: true, data: updated });
   } catch (err: any) {
     return NextResponse.json({ error: err.message || 'Failed to update business model' }, { status: 500 });
   }

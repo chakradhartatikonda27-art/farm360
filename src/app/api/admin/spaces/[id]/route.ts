@@ -10,7 +10,7 @@ export async function GET(
   if (!space) {
     return NextResponse.json({ error: 'Space not found' }, { status: 404 });
   }
-  return NextResponse.json(space);
+  return NextResponse.json({ success: true, data: space });
 }
 
 export async function PUT(
@@ -45,7 +45,7 @@ export async function PUT(
       details: `Updated space: "${updated.title}"`,
     });
 
-    return NextResponse.json(updated);
+    return NextResponse.json({ success: true, data: updated });
   } catch (err: any) {
     return NextResponse.json({ error: err.message || 'Failed to update space' }, { status: 500 });
   }

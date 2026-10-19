@@ -38,8 +38,9 @@ export default function AdminMediaPage() {
       setLoading(true);
       const res = await fetch("/api/admin/media");
       const json = await res.json();
-      if (json.success) {
-        setAssets(json.data);
+      const list = json.data || json;
+      if (Array.isArray(list)) {
+        setAssets(list);
       }
     } catch (err) {
       console.error("Failed to fetch media assets:", err);

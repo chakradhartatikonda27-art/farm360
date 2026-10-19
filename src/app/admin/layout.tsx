@@ -41,8 +41,9 @@ export default function AdminRootLayout({
           return;
         }
         const json = await res.json();
-        if (json.success && json.user) {
-          setCurrentUser(json.user);
+        const user = json.user || json.data?.user || json.data;
+        if (user && user.email) {
+          setCurrentUser(user);
         } else {
           router.push("/admin/login");
         }

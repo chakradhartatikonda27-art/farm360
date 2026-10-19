@@ -4,7 +4,7 @@ import { getDashboardStats } from '@/lib/cms/db';
 export async function GET() {
   try {
     const stats = getDashboardStats();
-    return NextResponse.json(stats);
+    return NextResponse.json({ success: true, data: stats, ...stats });
   } catch (err: any) {
     return NextResponse.json({ error: 'Failed to fetch dashboard stats' }, { status: 500 });
   }

@@ -8,7 +8,7 @@ export async function GET(req: Request) {
   const status = searchParams.get('status') || undefined;
 
   const services = getServices({ category, status });
-  return NextResponse.json(services);
+  return NextResponse.json({ success: true, data: services });
 }
 
 export async function POST(req: Request) {

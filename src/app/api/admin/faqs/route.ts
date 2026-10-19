@@ -7,7 +7,7 @@ export async function GET(req: Request) {
   const pageAssignment = searchParams.get('page') || undefined;
   const category = searchParams.get('category') || undefined;
   const list = getFaqs({ pageAssignment, category });
-  return NextResponse.json(list);
+  return NextResponse.json({ success: true, data: list });
 }
 
 export async function POST(req: Request) {

@@ -44,8 +44,9 @@ export default function AdminUsersPage() {
       setLoading(true);
       const res = await fetch("/api/admin/users");
       const json = await res.json();
-      if (json.success) {
-        setUsers(json.data);
+      const list = json.data || json;
+      if (Array.isArray(list)) {
+        setUsers(list);
       }
     } catch (err) {
       console.error("Failed to load users:", err);

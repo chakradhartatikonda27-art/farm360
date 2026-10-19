@@ -19,7 +19,7 @@ export async function GET() {
     updatedAt: u.updatedAt,
   }));
 
-  return NextResponse.json(users);
+  return NextResponse.json({ success: true, data: users });
 }
 
 export async function POST(req: Request) {

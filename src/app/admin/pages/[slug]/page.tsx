@@ -57,8 +57,9 @@ export default function AdminPageEditor() {
       setLoading(true);
       const res = await fetch(`/api/admin/pages/${slug}`);
       const json = await res.json();
-      if (json.success && json.data) {
-        setPage(json.data);
+      const data = json.data || json;
+      if (data && data.slug) {
+        setPage(data);
       } else {
         setErrorMsg("Failed to find page.");
       }

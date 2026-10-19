@@ -29,8 +29,9 @@ export default function AdminPagesListPage() {
       setLoading(true);
       const res = await fetch("/api/admin/pages");
       const json = await res.json();
-      if (json.success) {
-        setPages(json.data);
+      const list = json.data || json;
+      if (Array.isArray(list)) {
+        setPages(list);
       }
     } catch (err) {
       console.error("Failed to load pages:", err);

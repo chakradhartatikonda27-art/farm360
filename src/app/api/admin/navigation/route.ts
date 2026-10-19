@@ -4,7 +4,7 @@ import { getCurrentAdminUser, hasPermission } from '@/lib/cms/auth';
 
 export async function GET() {
   const nav = getNavigation();
-  return NextResponse.json(nav);
+  return NextResponse.json({ success: true, data: nav, ...nav });
 }
 
 export async function PUT(req: Request) {
@@ -26,7 +26,7 @@ export async function PUT(req: Request) {
       details: 'Updated header/footer navigation items and links',
     });
 
-    return NextResponse.json(updated);
+    return NextResponse.json({ success: true, data: updated, ...updated });
   } catch (err: any) {
     return NextResponse.json({ error: err.message || 'Failed to update navigation' }, { status: 500 });
   }

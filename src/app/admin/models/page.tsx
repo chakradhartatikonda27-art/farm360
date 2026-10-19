@@ -38,8 +38,9 @@ export default function AdminBusinessModelsPage() {
       setLoading(true);
       const res = await fetch("/api/admin/models");
       const json = await res.json();
-      if (json.success) {
-        setModels(json.data);
+      const list = json.data || json;
+      if (Array.isArray(list)) {
+        setModels(list);
       }
     } catch (err) {
       console.error("Failed to fetch business models:", err);

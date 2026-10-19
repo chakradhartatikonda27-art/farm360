@@ -38,7 +38,7 @@ export async function GET(req: Request) {
     });
   }
 
-  return NextResponse.json(enquiries);
+  return NextResponse.json({ success: true, data: enquiries });
 }
 
 export async function POST(req: Request) {

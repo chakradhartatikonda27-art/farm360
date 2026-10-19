@@ -10,7 +10,7 @@ export async function GET(
   if (!enquiry) {
     return NextResponse.json({ error: 'Enquiry not found' }, { status: 404 });
   }
-  return NextResponse.json(enquiry);
+  return NextResponse.json({ success: true, data: enquiry });
 }
 
 export async function PUT(
@@ -54,7 +54,7 @@ export async function PUT(
       details: `Updated enquiry ${updated.referenceId} (${updated.name}): status=${updated.status}`,
     });
 
-    return NextResponse.json(updated);
+    return NextResponse.json({ success: true, data: updated });
   } catch (err: any) {
     return NextResponse.json({ error: err.message || 'Failed to update enquiry' }, { status: 500 });
   }

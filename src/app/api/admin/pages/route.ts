@@ -4,7 +4,7 @@ import { getCurrentAdminUser, hasPermission } from '@/lib/cms/auth';
 
 export async function GET() {
   const pages = getPages();
-  return NextResponse.json(pages);
+  return NextResponse.json({ success: true, data: pages });
 }
 
 export async function POST(req: Request) {

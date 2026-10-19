@@ -17,7 +17,7 @@ export async function GET(req: Request) {
   const folder = searchParams.get('folder') || undefined;
   const tag = searchParams.get('tag') || undefined;
   const assets = getMediaAssets({ folder, tag });
-  return NextResponse.json(assets);
+  return NextResponse.json({ success: true, data: assets });
 }
 
 export async function POST(req: Request) {

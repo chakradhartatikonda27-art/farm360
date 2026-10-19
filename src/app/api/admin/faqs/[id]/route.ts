@@ -27,7 +27,7 @@ export async function PUT(
       details: `Updated FAQ: "${updated.question}"`,
     });
 
-    return NextResponse.json(updated);
+    return NextResponse.json({ success: true, data: updated });
   } catch (err: any) {
     return NextResponse.json({ error: err.message || 'Failed to update FAQ' }, { status: 500 });
   }

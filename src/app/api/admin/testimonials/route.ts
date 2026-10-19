@@ -6,7 +6,7 @@ export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const status = searchParams.get('status') || undefined;
   const list = getTestimonials({ status });
-  return NextResponse.json(list);
+  return NextResponse.json({ success: true, data: list });
 }
 
 export async function POST(req: Request) {
