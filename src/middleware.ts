@@ -13,6 +13,22 @@ export async function middleware(req: NextRequest) {
 
   // Protect Admin UI pages
   if (pathname.startsWith('/admin')) {
+    // Direct /admin/logout link
+    if (pathname === '/admin/logout') {
+      const loginUrl = new URL('/admin/login', req.url);
+      const response = NextResponse.redirect(loginUrl);
+      response.cookies.set({
+        name: AUTH_COOKIE_NAME,
+        value: '',
+        path: '/',
+        maxAge: 0,
+        expires: new Date(0),
+        httpOnly: true,
+        sameSite: 'lax',
+      });
+      return response;
+    }
+
     // Allow login page
     if (pathname === '/admin/login') {
       const token = req.cookies.get(AUTH_COOKIE_NAME)?.value;
@@ -50,8 +66,8 @@ export async function middleware(req: NextRequest) {
 
   // Protect Admin API routes
   if (pathname.startsWith('/api/admin')) {
-    // Allow login API
-    if (pathname === '/api/admin/auth/login') {
+    // Allow login and logout API
+    if (pathname === '/api/admin/auth/login' || pathname === '/api/admin/auth/logout') {
       return NextResponse.next();
     }
 
